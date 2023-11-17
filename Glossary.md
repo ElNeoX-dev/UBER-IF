@@ -16,4 +16,4 @@
 14. **_Address:_** The specific location for a delivery, typically including details like street name, number, city, and sometimes latitude and longitude coordinates.
 15. **_Travel Speed:_** The assumed constant speed of the couriers, used for calculating tour durations and feasibility.
 16. **_Delivery Performance Time:_** The time taken to perform a delivery, assumed to be a constant (e.g., five minutes).
-17. **_User:_** The persons operating the application, responsible for loading maps, inputting delivery requests, and managing couriers.
+17. **_User:_** The person operating the application, responsible for loading maps, inputting delivery requests, and managing couriers.
