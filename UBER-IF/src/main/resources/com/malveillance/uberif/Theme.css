@@ -9,6 +9,27 @@
     -fx-font-family: "Uber Move Medium";
     -fx-shadow-highlight-color: #00A3FF;
 }
+.choice-box-popup {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #00A3FF;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: rgba(0, 163, 255, 0.25);
+    -fx-border-width: 3px;
+    -fx-font-family: "Uber Move Medium";
+    -fx-shadow-highlight-color: #00A3FF;
+}
+
+.btn-minus {
+    -fx-background-color: #ffffff;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-width: 3px;
+    -fx-font-family: "Uber Move Medium";
+    -fx-shadow-highlight-color: #00A3FF;
+}
 
 .btn-opti {
     -fx-background-color: #00A3FF;
@@ -36,4 +57,14 @@
 .layout {
     -fx-background-color: #FFFFFF;
     -fx-border-radius: 30;
+}
+
+.grey-state {
+    -fx-text-fill: rgb(93, 93, 93);
+    -fx-border-color: rgba(93, 93, 93, 0.25);
+}
+
+.blue-state {
+    -fx-text-fill: #00A3FF;
+    -fx-border-color: rgba(0, 163, 255, 0.25);
 }
