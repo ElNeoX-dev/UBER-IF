@@ -102,3 +102,59 @@ JFixture est utilisé pour créer automatiquement des instances de String et Use
 Mockito est utilisé pour créer un mock de UserRepository et configurer son comportement avec when(...).thenReturn(...).
 Le test vérifie que userService.getUserById renvoie l'objet User attendu et que le mock userRepository est appelé correctement.
 Cet exemple illustre la combinaison de JFixture pour la génération de données de test et de Mockito pour le mocking dans un contexte de test unitaire Java.
+# Agile
+## First Iteration Report
+
+
+### Table of Contents
+
+1. [Use Case Diagram](#use-case-diagram)
+2. [Description of the main success scenario of all identified use cases](#description-of-the-main-success-scenario-of-all-identified-use-cases)
+3. [Description of all use cases](#description-of-all-use-cases)
+4. [Class and Package Diagrams](#class-and-package-diagrams)
+5. [Planning of the first iteration](#planning-the-first)
+6. [Glossary](#glossary)
+
+## 1. Use Case Diagram
+
+Here's the use case diagram for our application:
+
+![Use Case Diagram](useCase.png "Use Case Diagram")
+
+## 2. Description of the main success scenario of all identified use cases
+
+| USE CASE                  | Main Success Scenario                                                                                     |
+|---------------------------|-----------------------------------------------------------------------------------------------------------|
+| Create Delivery Request   | 1. Manager logs into the system<br>2. Manager selects the option to create a new delivery request<br>3. System displays the form to enter necessary details (courier, time window, destination address)<br>4. Manager fills in the form and submits it<br>5. System checks and validates data<br>6. System creates the delivery request<br>7. System initiates the process of finding an available courier and computing the best tour |
+| Load City Map             | 1. Manager logs into the system<br>2. Manager selects the option to load the city map<br>3. System gets all the necessary information from an XML file<br>4. System confirms successful loading of the map                                 |
+| Modify Number of Couriers | 1. Manager logs into the system<br>2. Manager clicks on “+” or “-” to modify the number of available couriers<br>3. System adjusts the number of couriers                                                             |
+| Save Tours                | 1. Manager logs into the system<br>2. Manager clicks on saving the tours running at the moment<br>3. System saves tours details to an XML file<br>4. System acknowledges successful saving of the tour                                       |
+| Restore Tours             | 1. Manager logs into the system<br>2. Manager clicks on restoring the tours<br>3. Manager chooses the tours they want to restore<br>4. System retrieves and displays the selected tour details                                        |
+
+
+## 3. Description of all use cases
+
+| USE CASE                  | DESCRIPTION                                                                                               |
+|---------------------------|-----------------------------------------------------------------------------------------------------------|
+| Create Delivery Request   | Allows the manager to create a new request and input details of the delivery. The manager has to select a courier, a 1-hour time window, and the destination intersection. This will enable the computing of the best tour by the computer. Then, the departure and arrival times, as well as the tour, are displayed.      |
+| Load City Map             | Display the map of the chosen city on the screen, with the name of the road.      |
+| Modify Number of Couriers | Modify the number of active couriers in the system.      |
+| Save Tours                | Store in a file all the tours done in the city, as well as the departure and arrival time, corresponding courier, and the destination address.      |
+| Restore Tours             | Retrieve and load from file old tours and corresponding information, departure and arrival time as well as destination address, and display them.      |
+
+
+## 4. Class and Package Diagrams
+
+## 5. Planning of the first iteration
+### a. Sprint 1
+- Being able to load map of intersections with file given at the beginning
+- Being able to display best route
+- Change number of couriers
+- Entering and managing delivery request within the right time window
+
+### b. Auto-complétion
+- Add new features: being able to add manually a delivery at an intersection that's not in the XML file given initially
+
+
+## 6. Glossary
+
