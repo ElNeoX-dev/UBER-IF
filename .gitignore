@@ -2,9 +2,19 @@
 *.class
 
 #ideaù
-*.idea
+.idea/
+
+.vscode/
+
+*.properties
 
 *.DS_Store
+
+*.bin
+
+*.lock
+
+
 
 # Log file
 *.log
