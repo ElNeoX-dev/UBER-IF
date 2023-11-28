@@ -9,14 +9,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,6 +36,11 @@ public class HelloController {
 
     @FXML
     private Pane mapPane;
+    @FXML
+    private Pane allPane;
+
+    @FXML
+    private ImageView backgroundMap;
 
     public Pane getMapPane() {
         return mapPane;
@@ -161,8 +170,24 @@ public class HelloController {
         return ((String) choiceMap.getSelectionModel().getSelectedItem()).toLowerCase().split("\\s+")[0] + "Map";
     }
 
+    private void loadBackgroundMap(Image image){
+        BackgroundImage backgroundImage = new BackgroundImage(
+                image,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(mapPane.getWidth(), mapPane.getHeight(), false, false, false, false)
+
+        );
+
+        Background background = new Background(backgroundImage);
+        mapPane.setBackground(background);
+    }
+
 
     public void initialize() {
+        final Image[] image = {null};
+
         minusBtn.getStyleClass().add("grey-state");
 
         // Create a list of choices
@@ -182,21 +207,35 @@ public class HelloController {
 
                 // Load corresponding map
                 loadMap(newValue);
+
+                if (newValue.equals("Small Map")) {
+                    image[0] = new Image("file:src/main/resources/com/malveillance/uberif/smallMap.png");
+                } else if (newValue.equals("Medium Map")) {
+                    image[0] = new Image("file:src/main/resources/com/malveillance/uberif/mediumMap.png");
+                } else if (newValue.equals("Large Map")) {
+                    image[0] = new Image("file:src/main/resources/com/malveillance/uberif/largeMap.png");
+                }
+
+
+                loadBackgroundMap(image[0]);
             }
         });
 
-        // Add a listener to the width property of mapPane
         mapPane.widthProperty().addListener((observable, oldValue, newValue) -> {
             HelloApplication.redrawElementsOnMap(this, parser.parseXmlFile("src/main/resources/com/malveillance/uberif/" + getCurrentMapName() + ".xml"));
+            loadBackgroundMap(new Image("file:src/main/resources/com/malveillance/uberif/largeMap.png"));
+
         });
 
         // Add a listener to the height property of mapPane
         mapPane.heightProperty().addListener((observable, oldValue, newValue) -> {
             HelloApplication.redrawElementsOnMap(this, parser.parseXmlFile("src/main/resources/com/malveillance/uberif/" + getCurrentMapName() + ".xml"));
+
         });
 
 
         // Load initial map
         loadMap((String) choiceMap.getSelectionModel().getSelectedItem());
+
     }
 }

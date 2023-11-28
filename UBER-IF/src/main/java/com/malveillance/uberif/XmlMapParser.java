@@ -18,7 +18,6 @@ public class XmlMapParser {
         Warehouse(String address) {
             this.address = address;
         }
-
         @Override
         public String toString() {
             return "Warehouse Address: " + address;

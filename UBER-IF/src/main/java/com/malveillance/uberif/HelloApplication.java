@@ -72,12 +72,6 @@ public class HelloApplication extends Application {
 
         drawElementsOnMap(controller, mapElements);
 
-
-        /*stage.setScene(scene);
-        stage.show();
-        scene = new Scene(listView, 600, 400);
-        stage.setTitle("XML Map Viewer");*/
-
     }
 
     // Draw a medium green dot at the position of the warehouse
