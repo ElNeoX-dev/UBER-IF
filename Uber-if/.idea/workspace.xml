@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="62e7ad35-7be2-4318-b441-ff346c590532" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/malveillance/uberif/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/malveillance/uberif/HelloController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/malveillance/uberif/model/RoadSegment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/malveillance/uberif/model/RoadSegment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,8 +55,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "android.gradle.sync.needed": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/packages",
     "last_opened_file_path": "/home/hugo/Documents/INSA/4IF/AGILE/Agile/UBER-IF",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
