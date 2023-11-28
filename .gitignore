@@ -14,6 +14,7 @@
 
 *.lock
 
+.gradle/
 
 
 # Log file
