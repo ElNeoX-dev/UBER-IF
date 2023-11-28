@@ -1,10 +1,10 @@
 package com.malveillance.uberif.model;
 
-public class RoadSegment extends Shape{
-    public String destination;
-    public double length;
-    public String name;
-    public String origin;
+public class RoadSegment extends Shape {
+    private String destination;
+    private double length;
+    private String name;
+    private String origin;
 
     public RoadSegment(String origin, String destination, double length, String name) {
         this.origin = origin;
@@ -47,7 +47,12 @@ public class RoadSegment extends Shape{
 
     @Override
     public String toString() {
-        return "Segment: " + name + " [From: " + origin + " To: " + destination + ", Length: " + length + "]";
+        return "RoadSegment{" +
+                "destination='" + destination + '\'' +
+                ", length=" + length +
+                ", name='" + name + '\'' +
+                ", origin='" + origin + '\'' +
+                '}';
     }
 
 }
