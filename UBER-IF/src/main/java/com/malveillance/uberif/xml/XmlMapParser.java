@@ -1,4 +1,4 @@
-package com.malveillance.uberif;
+package com.malveillance.uberif.xml;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
