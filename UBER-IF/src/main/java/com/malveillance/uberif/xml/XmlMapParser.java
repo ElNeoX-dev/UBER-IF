@@ -12,54 +12,8 @@ import java.util.List;
 
 public class XmlMapParser {
 
-    static class Warehouse {
-        String address;
 
-        Warehouse(String address) {
-            this.address = address;
-        }
 
-        @Override
-        public String toString() {
-            return "Warehouse Address: " + address;
-        }
-    }
-
-    static class Intersection {
-        String id;
-        double latitude;
-        double longitude;
-
-        Intersection(String id, double latitude, double longitude) {
-            this.id = id;
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-
-        @Override
-        public String toString() {
-            return "Intersection " + id + " [Lat: " + latitude + ", Long: " + longitude + "]";
-        }
-    }
-
-    static class Segment {
-        String destination;
-        double length;
-        String name;
-        String origin;
-
-        Segment(String origin, String destination, double length, String name) {
-            this.origin = origin;
-            this.destination = destination;
-            this.length = length;
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return "Segment: " + name + " [From: " + origin + " To: " + destination + ", Length: " + length + "]";
-        }
-    }
 
     public List<Object> parseXmlFile(String filePath) {
         List<Object> mapElements = new ArrayList<>();
