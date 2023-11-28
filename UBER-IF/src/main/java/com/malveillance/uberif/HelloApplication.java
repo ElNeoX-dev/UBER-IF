@@ -1,5 +1,10 @@
 package com.malveillance.uberif;
 
+import com.malveillance.uberif.controller.HelloController;
+import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.model.RoadSegment;
+import com.malveillance.uberif.model.Warehouse;
+import com.malveillance.uberif.xml.XmlMapDeserializer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -51,7 +56,10 @@ public class HelloApplication extends Application {
         ListView<String> listView = new ListView<>();
 
         // Parse the XML file and add items to the ListView
-        List<Object> mapElements = parser.parseXmlFile("src/main/resources/com/malveillance/uberif/smallMap.xml");
+        /*
+        XmlMapDeserializer parser = new XmlMapDeserializer("src/main/resources/com/malveillance/uberif/smallMap.xml");
+
+        List<Object> mapElements = parser.mapElements ;
         mapElements.forEach(element -> listView.getItems().add(element.toString()));
 
 
