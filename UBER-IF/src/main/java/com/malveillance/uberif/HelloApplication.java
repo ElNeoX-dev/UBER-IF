@@ -1,7 +1,10 @@
 package com.malveillance.uberif;
 
 import com.malveillance.uberif.controller.HelloController;
-import com.malveillance.uberif.xml.XmlMapParser;
+import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.model.RoadSegment;
+import com.malveillance.uberif.model.Warehouse;
+import com.malveillance.uberif.xml.XmlMapDeserializer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,15 +22,17 @@ import java.util.Map;
 
 public class HelloApplication extends Application {
     // Hashmap of all intersections
-    public static Map<String, XmlMapParser.Intersection> intersectionMap = new HashMap<>();
+    public static Map<String, Intersection> intersectionMap = new HashMap<>();
 
     // Scaling factors
+    /*
     public static double minX = Double.MAX_VALUE;
     public static double maxX = Double.MIN_VALUE;
     public static double minY = Double.MAX_VALUE;
     public static double maxY = Double.MIN_VALUE;
     public static double xRange = .0;
     public static double yRange = .0;
+    */
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -45,19 +50,21 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        XmlMapParser parser = new XmlMapParser();
         HelloController controller = fxmlLoader.getController();
 
         ListView<String> listView = new ListView<>();
 
         // Parse the XML file and add items to the ListView
-        List<Object> mapElements = parser.parseXmlFile("src/main/resources/com/malveillance/uberif/smallMap.xml");
+        /*
+        XmlMapDeserializer parser = new XmlMapDeserializer("src/main/resources/com/malveillance/uberif/smallMap.xml");
+
+        List<Object> mapElements = parser.mapElements ;
         mapElements.forEach(element -> listView.getItems().add(element.toString()));
 
 
         // Fill intersectionsMap (hashmap) while parsing
         for (Object elem : mapElements){
-            if (elem instanceof XmlMapParser.Intersection inter){
+            if (elem instanceof Intersection inter){
                 intersectionMap.put(inter.id, inter);
                 minX = Math.min(minX, inter.longitude);
                 maxX = Math.max(maxX, inter.longitude);
@@ -72,7 +79,7 @@ public class HelloApplication extends Application {
 
         drawElementsOnMap(controller, mapElements);
 
-
+        */
         /*stage.setScene(scene);
         stage.show();
         scene = new Scene(listView, 600, 400);
@@ -81,9 +88,9 @@ public class HelloApplication extends Application {
     }
 
     // Draw a medium green dot at the position of the warehouse
-    private static void drawWarehouse(HelloController controller, XmlMapParser.Warehouse wh){
+    private static void drawWarehouse(HelloController controller, Warehouse wh){
         // Find intersection corresponding to the warehouse
-        XmlMapParser.Intersection intersection = intersectionMap.get(wh.address);
+        Intersection intersection = intersectionMap.get(wh.address);
 
         // If there exists a corresponding intersection
         if (intersection != null){
@@ -94,14 +101,14 @@ public class HelloApplication extends Application {
     }
 
     // Draw a small red dot at the position of an intersection
-    private static void drawIntersection(HelloController controller, XmlMapParser.Intersection intersection){
+    private static void drawIntersection(HelloController controller, Intersection intersection){
         double intersectionX = getIntersectionX(controller, intersection.id);
         double intersectionY = getIntersectionY(controller, intersection.id);
         controller.drawElementOnMap("Intersection", intersectionX, intersectionY);
     }
 
     // Draw a thin grey line fora road -> draw line between origin and destination
-    private static void drawSegment(HelloController controller, XmlMapParser.Segment seg){
+    private static void drawSegment(HelloController controller, RoadSegment seg){
         Line road = new Line(
                 getIntersectionX(controller, seg.origin),
                 getIntersectionY(controller, seg.origin),
@@ -114,76 +121,47 @@ public class HelloApplication extends Application {
         controller.getMapPane().getChildren().add(road);
     }
 
-    // Get X position of coordinates
-    private static double getIntersectionX(HelloController controller, String interId){
-        XmlMapParser.Intersection i = intersectionMap.get(interId);
-
-        if (i != null){
-            return longitudeToX(i.longitude, controller.getMapPane().getWidth());
-        }
-        return .0;
-    }
-
-    // Get Y position of coordinates
-    private static double getIntersectionY(HelloController controller, String interId){
-        XmlMapParser.Intersection i = intersectionMap.get(interId);
-
-        if (i != null){
-            return latitudeToY(i.latitude, controller.getMapPane().getHeight());
-        }
-        return .0;
-    }
-
-    // Method to map longitude to X position
-    private static double longitudeToX(double longitude, double paneWidth){
-        //return ((longitude + 180) / 360)  ;
-        return ( (longitude - minX) / xRange ) * paneWidth;
-    }
-
-    // Method to map latitude to Y position
-    private static double latitudeToY(double latitude, double paneHeight){
-        //return ((90 - latitude) / 180)  ;
-        return ( (maxY - latitude) / yRange ) * paneHeight;
-    }
-
     private void drawElementsOnMap(HelloController controller, List<Object> mapElems) {
         // Draw lines first
         for (Object elem : mapElems) {
-            if (elem instanceof XmlMapParser.Segment) {
-                XmlMapParser.Segment segment = (XmlMapParser.Segment) elem;
+            if (elem instanceof RoadSegment) {
+                RoadSegment segment = (RoadSegment) elem;
                 drawSegment(controller, segment);
             }
         }
 
         for (Object elem : mapElems) {
-            if (elem instanceof XmlMapParser.Warehouse) {
-                XmlMapParser.Warehouse warehouse = (XmlMapParser.Warehouse) elem;
+            if (elem instanceof Warehouse) {
+                Warehouse warehouse = (Warehouse) elem;
                 drawWarehouse(controller, warehouse);
-            } else if (elem instanceof XmlMapParser.Intersection) {
-                XmlMapParser.Intersection intersection = (XmlMapParser.Intersection) elem;
+            } else if (elem instanceof Intersection) {
+                Intersection intersection = (Intersection) elem;
                 drawIntersection(controller, intersection);
             }
         }
     }
 
-    public static void redrawElementsOnMap(HelloController controller, List<Object> mapElems) {
+    public static void redrawElementsOnMap(HelloController controller, String pathFile) {
+        XmlMapDeserializer parser = new XmlMapDeserializer(pathFile);
+        List<Object> mapElems = parser.mapElements;
+
         // Clear existing elements on the mapPane
         controller.getMapPane().getChildren().clear();
 
         // Draw lines first
         for (Object elem : mapElems) {
-            if (elem instanceof XmlMapParser.Segment) {
-                XmlMapParser.Segment segment = (XmlMapParser.Segment) elem;
+            if (elem instanceof RoadSegment) {
+                RoadSegment segment = (RoadSegment) elem;
                 drawSegment(controller, segment);
             }
         }
 
         for (Object elem : mapElems) {
-            if (elem instanceof XmlMapParser.Warehouse) {
-                XmlMapParser.Warehouse warehouse = (XmlMapParser.Warehouse) elem;
+            if (elem instanceof Warehouse) {
+                Warehouse warehouse = (Warehouse) elem;
                 drawWarehouse(controller, warehouse);
-            } else if (elem instanceof XmlMapParser.Intersection) {
-                XmlMapParser.Intersection intersection = (XmlMapParser.Intersection) elem;
+            } else if (elem instanceof Intersection) {
+                Intersection intersection = (Intersection) elem;
                 drawIntersection(controller, intersection);
             }
         }

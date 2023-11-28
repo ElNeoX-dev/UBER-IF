@@ -1,9 +1,17 @@
 package com.malveillance.uberif.model;
 
 public class Warehouse {
-    String address;
+    public String address;
 
-    Warehouse(String address) {
+    public Warehouse(String address) {
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
         this.address = address;
     }
 

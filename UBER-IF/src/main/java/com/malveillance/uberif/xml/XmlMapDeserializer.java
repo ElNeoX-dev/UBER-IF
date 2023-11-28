@@ -2,6 +2,10 @@ package com.malveillance.uberif.xml;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+
+import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.model.RoadSegment;
+import com.malveillance.uberif.model.Warehouse;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -10,13 +14,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XmlMapParser {
+public class XmlMapDeserializer {
 
+    public List<Object> mapElements = new ArrayList<>();
 
-
-
-    public List<Object> parseXmlFile(String filePath) {
-        List<Object> mapElements = new ArrayList<>();
+    public XmlMapDeserializer(String filePath) {
         try {
             File xmlFile = new File(filePath);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -54,7 +56,7 @@ public class XmlMapParser {
                 Node node = segmentList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    mapElements.add(new Segment(
+                    mapElements.add(new RoadSegment(
                             element.getAttribute("origin"),
                             element.getAttribute("destination"),
                             Double.parseDouble(element.getAttribute("length")),
@@ -65,6 +67,5 @@ public class XmlMapParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return mapElements;
     }
 }

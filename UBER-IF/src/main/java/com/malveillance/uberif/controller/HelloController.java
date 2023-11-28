@@ -1,7 +1,9 @@
 package com.malveillance.uberif.controller;
 
 import com.malveillance.uberif.HelloApplication;
-import com.malveillance.uberif.xml.XmlMapParser;
+import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.model.service.Service;
+import com.malveillance.uberif.xml.XmlMapDeserializer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -20,7 +22,6 @@ import javafx.scene.shape.Circle;
 import java.util.List;
 
 public class HelloController {
-    private XmlMapParser parser = new XmlMapParser();
     int nbCouriers = 1;
 
     @FXML
@@ -97,7 +98,7 @@ public class HelloController {
         }
     }
 
-
+/*
     public void drawElementOnMap(String elementType, double x, double y) {
         switch (elementType) {
             case "Warehouse":
@@ -118,7 +119,9 @@ public class HelloController {
         Circle intersectionDot = new Circle(x, y, 3, Color.RED);
         mapPane.getChildren().add(intersectionDot);
     }
+    */
 
+/*
     private void loadMap(String mapName){
         HelloController controller = this;
         ListView<String> listView = new ListView<>();
@@ -128,8 +131,8 @@ public class HelloController {
         String fileName = words[0].toLowerCase();
 
         // Parse the XML file and add items to the ListView
-        List<Object> mapElements = parser.parseXmlFile("src/main/resources/com/malveillance/uberif/" + fileName + "Map.xml");
-        mapElements.forEach(element -> listView.getItems().add(element.toString()));
+        XmlMapDeserializer parser = new XmlMapDeserializer("src/main/resources/com/malveillance/uberif/" + fileName + "Map.xml");
+        parser.mapElements.forEach(element -> listView.getItems().add(element.toString()));
 
         // Clear existing data
         HelloApplication.intersectionMap.clear();
@@ -139,8 +142,8 @@ public class HelloController {
         HelloApplication.maxY = Double.MIN_VALUE;
 
         // Fill intersectionsMap (hashmap) while parsing
-        for (Object elem : mapElements){
-            if (elem instanceof XmlMapParser.Intersection inter){
+        for (Object elem : parser.mapElements){
+            if (elem instanceof Intersection inter){
                 HelloApplication.intersectionMap.put(inter.id, inter);
                 HelloApplication.minX = Math.min(HelloApplication.minX, inter.longitude);
                 HelloApplication.maxX = Math.max(HelloApplication.maxX, inter.longitude);
@@ -153,15 +156,17 @@ public class HelloController {
         HelloApplication.xRange = HelloApplication.maxX - HelloApplication.minX;
         HelloApplication.yRange = HelloApplication.maxY - HelloApplication.minY;
 
-        HelloApplication.redrawElementsOnMap(controller, mapElements);
+        HelloApplication.redrawElementsOnMap(controller, "src/main/resources/com/malveillance/uberif/" + fileName + "Map.xml");
     }
-
+*/
     private String getCurrentMapName(){
         return ((String) choiceMap.getSelectionModel().getSelectedItem()).toLowerCase().split("\\s+")[0] + "Map";
     }
 
 
     public void initialize() {
+        Service service = new Service(this) ;
+
         minusBtn.getStyleClass().add("grey-state");
 
         // Create a list of choices
@@ -180,22 +185,22 @@ public class HelloController {
                 System.out.println("Selected item changed from " + oldValue + " to " + newValue);
 
                 // Load corresponding map
-                loadMap(newValue);
+                service.loadMap(newValue);
             }
         });
 
         // Add a listener to the width property of mapPane
         mapPane.widthProperty().addListener((observable, oldValue, newValue) -> {
-            HelloApplication.redrawElementsOnMap(this, parser.parseXmlFile("src/main/resources/com/malveillance/uberif/" + getCurrentMapName() + ".xml"));
+            HelloApplication.redrawElementsOnMap(this, "src/main/resources/com/malveillance/uberif/" + getCurrentMapName() + ".xml");
         });
 
         // Add a listener to the height property of mapPane
         mapPane.heightProperty().addListener((observable, oldValue, newValue) -> {
-            HelloApplication.redrawElementsOnMap(this, parser.parseXmlFile("src/main/resources/com/malveillance/uberif/" + getCurrentMapName() + ".xml"));
+            HelloApplication.redrawElementsOnMap(this, "src/main/resources/com/malveillance/uberif/" + getCurrentMapName() + ".xml");
         });
 
 
         // Load initial map
-        loadMap((String) choiceMap.getSelectionModel().getSelectedItem());
+        service.loadMap((String) choiceMap.getSelectionModel().getSelectedItem());
     }
 }
