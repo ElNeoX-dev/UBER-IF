@@ -2,6 +2,7 @@ module com.malveillance.uberif {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.xml;
+    requires java.desktop;
 
 
     opens com.malveillance.uberif to javafx.fxml;
