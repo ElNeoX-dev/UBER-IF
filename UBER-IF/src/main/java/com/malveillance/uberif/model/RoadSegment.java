@@ -45,6 +45,10 @@ public class RoadSegment extends Shape {
         this.origin = origin;
     }
 
+    public void accept( ShapeVisitor v ){
+        v.visit(this);
+    }
+
     @Override
     public String toString() {
         return "RoadSegment{" +

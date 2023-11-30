@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javafx.util.Pair;
 
 public class CityMap  extends Observable {
-    private static final int INFINITE_LENGTH = Integer.MAX_VALUE;
+    private static final double INFINITE_LENGTH = Integer.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
     private final Warehouse warehouse;
 
@@ -35,15 +35,15 @@ public class CityMap  extends Observable {
         this.nodes.get(segment.getOrigin()).add(segment);
     }
 
-    public Map<Intersection,Pair<Intersection,Integer>> makeCompleteGraph() {
-        Map<Intersection,Pair<Intersection,Integer>> completeGraph = new HashMap<>();
+    public Map<Intersection,Pair<Intersection, Double>> makeCompleteGraph() {
+        Map<Intersection,Pair<Intersection, Double>> completeGraph = new HashMap<>();
         for (Intersection source : this.nodes.keySet()) {
             for (Intersection destination : this.nodes.keySet()) {
                 if (!source.equals(destination) && !hasRoadSegment(source, destination)) {
                     completeGraph.put(source,new Pair<>(destination,INFINITE_LENGTH));
                 } else if (hasRoadSegment(source,destination))
                 {
-                    completeGraph.put(source,new Pair<>(destination,GETDISTANCE(source,destination)));
+                    completeGraph.put(source,new Pair<>(destination,getDistance(source,destination)));
                 }
             }
         }
@@ -63,4 +63,14 @@ public class CityMap  extends Observable {
         return nodes;
     }
 
+    public Warehouse getWarehouse() { return warehouse; }
+
+    public double getDistance(Intersection source, Intersection destination) {
+        for (RoadSegment segment : this.nodes.get(source)) {
+            if (segment.getDestination().equals(destination)) {
+                return segment.getLength();
+            }
+        }
+        return INFINITE_LENGTH;
+    }
 }

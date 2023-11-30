@@ -1,6 +1,6 @@
 package com.malveillance.uberif.model;
 
-public class Warehouse {
+public class Warehouse extends Shape {
     public String address;
 
     public Warehouse(String address) {
@@ -13,6 +13,10 @@ public class Warehouse {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public void accept( ShapeVisitor v ){
+        v.visit(this);
     }
 
     @Override
