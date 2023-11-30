@@ -2,8 +2,15 @@ package com.malveillance.uberif.model.service;
 
 import com.malveillance.uberif.model.*;
 import com.malveillance.uberif.xml.XmlMapDeserializer;
+import com.malveillance.uberif.model.algo.CompleteGraph;
+import javafx.util.Pair;
 
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.List;
+import java.util.Comparator;
+import java.util.ArrayList;
 
 public class CityMapService {
 
@@ -57,29 +64,43 @@ public class CityMapService {
         return Double.MAX_VALUE; // Return maximum value if path not found
     }
 
-    public void calculateOptimalRoute(Warehouse warehouse , CityMap cityMap) {
+    public Map<Intersection, Pair<Intersection, Double>> makeCompleteGraph(CityMap cityMap) {
+        Map<Intersection,Pair<Intersection, Double>> completeGraph = new HashMap<>();
+        for (Intersection source : cityMap.getNodes().keySet()) {
+            for (Intersection destination : cityMap.getNodes().keySet()) {
+                if (!source.equals(destination) && !cityMap.hasRoadSegment(source, destination)) {
+                    completeGraph.put(source,new Pair<>(destination,CityMap.INFINITE_LENGTH));
+                } else if (cityMap.hasRoadSegment(source,destination))
+                {
+                    completeGraph.put(source,new Pair<>(destination,cityMap.getDistance(source,destination)));
+                }
+            }
+        }
+        return completeGraph;
+    }
+
+    public void calculateOptimalRoute(Warehouse warehouse , CityMap cityMap,Tour tour) {
         List<Intersection> allIntersections = new ArrayList<>();
         List<RoadSegment> allSegments = new ArrayList<>();
 
-        // Initialize the submap with only the intersections involved in deliveries
+        List<Delivery> deliveries = tour.getDeliveries();
+
         for (Delivery delivery : deliveries) {
             allIntersections.add(delivery.getIntersection());
         }
 
         CityMap optimalRouteMap = new CityMap(warehouse, allIntersections, null);
-        optimalRouteMap = optimalRouteMap.makeCompleteGraph();
+        optimalRouteMap = makeCompleteGraph();
 
-        // Calculate the shortest path for each pair of deliveries
         for (int i = 0; i < deliveries.size(); i++) {
             for (int j = i + 1; j < deliveries.size(); j++) {
                 Intersection start = deliveries.get(i).getIntersection();
                 Intersection end = deliveries.get(j).getIntersection();
                 double length;
                 if (cityMap.getSegmentLength(start, end) == CityMap.INFINITE_LENGTH) {
-                    // If length is infinite, use Dijkstra to find the shortest path
                     length = Dijkstra.findShortestPathLength(cityMap, start, end);
                 else{
-                        length = cityMap.getDistance(start, end)
+                        length = cityMap.getDistance(start, end);
                     }
                     optimalRouteMap.setDistance(start, end, length);
                 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javafx.util.Pair;
 
 public class CityMap  extends Observable {
-    private static final double INFINITE_LENGTH = Integer.MAX_VALUE;
+    public static final double INFINITE_LENGTH = Integer.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
     private final Warehouse warehouse;
 
@@ -33,21 +33,6 @@ public class CityMap  extends Observable {
 
     private void addRoadSegment(RoadSegment segment) {
         this.nodes.get(segment.getOrigin()).add(segment);
-    }
-
-    public Map<Intersection,Pair<Intersection, Double>> makeCompleteGraph() {
-        Map<Intersection,Pair<Intersection, Double>> completeGraph = new HashMap<>();
-        for (Intersection source : this.nodes.keySet()) {
-            for (Intersection destination : this.nodes.keySet()) {
-                if (!source.equals(destination) && !hasRoadSegment(source, destination)) {
-                    completeGraph.put(source,new Pair<>(destination,INFINITE_LENGTH));
-                } else if (hasRoadSegment(source,destination))
-                {
-                    completeGraph.put(source,new Pair<>(destination,getDistance(source,destination)));
-                }
-            }
-        }
-        return completeGraph;
     }
 
     public boolean hasRoadSegment(Intersection source, Intersection destination) {
