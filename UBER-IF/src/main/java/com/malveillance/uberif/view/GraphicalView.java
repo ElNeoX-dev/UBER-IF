@@ -110,9 +110,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     @FXML
     public void initialize() {
-        width = mapPane.getWidth();
-        height = mapPane.getHeight();
-
         // Initialize UI
         minusBtn.getStyleClass().add("grey-state");
 
@@ -126,7 +123,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         choiceMap.getSelectionModel().selectFirst();
 
         // Add a listener
-        choiceMap.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuListener(cityMapController, this));
+        choiceMap.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuListener(cityMapController, this, paneController));
 
         // Add a listener to the width property of mapPane
         mapPane.widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -142,6 +139,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Load initial map
         this.cityMap = cityMapController.loadNewCityMap((String) choiceMap.getSelectionModel().getSelectedItem());
         cityMap.addObserver(this);
+
+
     }
     
     public GraphicalView() {
@@ -161,6 +160,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     // These methods can be called by the controller to update the UI
     @Override
     public void update(Observable o, Object arg) {
+        width = mapPane.getWidth();
+        height = mapPane.getHeight();
         if (o instanceof CityMap newmap) {
             mapPane.getChildren().clear();
             // Draw lines first

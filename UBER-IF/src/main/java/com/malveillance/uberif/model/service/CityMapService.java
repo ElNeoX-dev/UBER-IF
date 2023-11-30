@@ -1,14 +1,9 @@
 package com.malveillance.uberif.model.service;
 
-import com.malveillance.uberif.model.CityMap;
-import com.malveillance.uberif.model.Intersection;
-import com.malveillance.uberif.model.RoadSegment;
+import com.malveillance.uberif.model.*;
 import com.malveillance.uberif.xml.XmlMapDeserializer;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class CityMapService {
 
@@ -60,5 +55,36 @@ public class CityMapService {
             }
         }
         return Double.MAX_VALUE; // Return maximum value if path not found
+    }
+
+    public void calculateOptimalRoute(Warehouse warehouse , CityMap cityMap) {
+        List<Intersection> allIntersections = new ArrayList<>();
+        List<RoadSegment> allSegments = new ArrayList<>();
+
+        // Initialize the submap with only the intersections involved in deliveries
+        for (Delivery delivery : deliveries) {
+            allIntersections.add(delivery.getIntersection());
+        }
+
+        CityMap optimalRouteMap = new CityMap(warehouse, allIntersections, null);
+        optimalRouteMap = optimalRouteMap.makeCompleteGraph();
+
+        // Calculate the shortest path for each pair of deliveries
+        for (int i = 0; i < deliveries.size(); i++) {
+            for (int j = i + 1; j < deliveries.size(); j++) {
+                Intersection start = deliveries.get(i).getIntersection();
+                Intersection end = deliveries.get(j).getIntersection();
+                double length;
+                if (cityMap.getSegmentLength(start, end) == CityMap.INFINITE_LENGTH) {
+                    // If length is infinite, use Dijkstra to find the shortest path
+                    length = Dijkstra.findShortestPathLength(cityMap, start, end);
+                else{
+                        length = cityMap.getDistance(start, end)
+                    }
+                    optimalRouteMap.setDistance(start, end, length);
+                }
+            }
+
+        }
     }
 }

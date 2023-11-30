@@ -51,19 +51,19 @@ public class CityMap  extends Observable {
     }
 
     public boolean hasRoadSegment(Intersection source, Intersection destination) {
-        return nodes.get(source).stream()
+        return this.nodes.get(source).stream()
                 .anyMatch(segment -> segment.getDestination().equals(destination));
     }
 
     public List<RoadSegment> getAdjacentRoads(Intersection intersection) {
-        return nodes.getOrDefault(intersection, new ArrayList<>());
+        return this.nodes.getOrDefault(intersection, new ArrayList<>());
     }
 
     public Map<Intersection, List<RoadSegment>> getNodes() {
-        return nodes;
+        return this.nodes;
     }
 
-    public Warehouse getWarehouse() { return warehouse; }
+    public Warehouse getWarehouse() { return this.warehouse; }
 
     public double getDistance(Intersection source, Intersection destination) {
         for (RoadSegment segment : this.nodes.get(source)) {
@@ -72,5 +72,14 @@ public class CityMap  extends Observable {
             }
         }
         return INFINITE_LENGTH;
+    }
+
+    public void setDistance(Intersection source, Intersection destination, double distance) {
+        for (RoadSegment segment : this.nodes.get(source)) {
+            if (segment.getDestination().equals(destination)) {
+                segment.setLength(distance);
+                return;
+            }
+        }
     }
 }

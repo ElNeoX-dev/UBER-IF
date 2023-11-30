@@ -37,6 +37,10 @@ public class Intersection extends Shape {
 
     public boolean equals (Intersection intersection) {return (this.getId().equals(intersection.getId()));}
 
+    public int hashCode() {
+        return this.getId().hashCode();
+    }
+
     @Override
     public String toString() {
         return "Intersection " + id + " [Lat: " + latitude + ", Long: " + longitude + "]";
