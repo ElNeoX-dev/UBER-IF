@@ -16,7 +16,13 @@ import java.util.List;
 
 public class XmlMapDeserializer {
 
+    // Inutile maintenant mais je laisse au cas où
     public List<Object> mapElements = new ArrayList<>();
+
+    private Warehouse warehouse ;
+    private List<Intersection> intersectionsElements = new ArrayList<>();
+    private List<RoadSegment> segmentElements = new ArrayList<>();
+
 
     public XmlMapDeserializer(String filePath) {
         try {
@@ -33,6 +39,7 @@ public class XmlMapDeserializer {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     mapElements.add(new Warehouse(element.getAttribute("address")));
+                    warehouse = new Warehouse(element.getAttribute("address"));
                 }
             }
 
@@ -47,6 +54,11 @@ public class XmlMapDeserializer {
                             Double.parseDouble(element.getAttribute("latitude")),
                             Double.parseDouble(element.getAttribute("longitude"))
                     ));
+                    intersectionsElements.add(new Intersection(
+                            element.getAttribute("id"),
+                            Double.parseDouble(element.getAttribute("latitude")),
+                            Double.parseDouble(element.getAttribute("longitude"))
+                    ));
                 }
             }
 
@@ -56,16 +68,67 @@ public class XmlMapDeserializer {
                 Node node = segmentList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    mapElements.add(new RoadSegment(
-                            element.getAttribute("origin"),
-                            element.getAttribute("destination"),
-                            Double.parseDouble(element.getAttribute("length")),
-                            element.getAttribute("name")
-                    ));
+                    String origin = element.getAttribute("origin");
+                    String destination = element.getAttribute("destination");
+                    Intersection originIntersection = null ;
+                    Intersection destinationIntersection = null ;
+
+
+                    // find intersection in mapElements in order to put Intersection in RoadSegment
+                    for (Intersection intersection : intersectionsElements) {
+                            if (intersection.getId().equals(origin)) {
+                                originIntersection = intersection;
+                            } else  if (intersection.getId().equals(destination)) {
+                                destinationIntersection = intersection;
+                            }
+                            if (originIntersection != null && destinationIntersection != null) {
+                                mapElements.add(new RoadSegment(
+                                        originIntersection,
+                                        destinationIntersection,
+                                        Double.parseDouble(element.getAttribute("length")),
+                                        element.getAttribute("name")
+                                ));
+                                segmentElements.add(new RoadSegment(
+                                        originIntersection,
+                                        destinationIntersection,
+                                        Double.parseDouble(element.getAttribute("length")),
+                                        element.getAttribute("name")
+                                ));
+                                break ;
+                            }
+
+                    }
+
+
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public List<Intersection> getIntersectionsElements() {
+        return intersectionsElements;
+    }
+
+    public List<RoadSegment> getSegmentElements() {
+        return segmentElements;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
+
+    public void setIntersectionsElements(List<Intersection> intersectionsElements) {
+        this.intersectionsElements = intersectionsElements;
+    }
+
+    public void setSegmentElements(List<RoadSegment> segmentElements) {
+        this.segmentElements = segmentElements;
     }
 }
