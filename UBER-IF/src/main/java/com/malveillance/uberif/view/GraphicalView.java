@@ -2,12 +2,17 @@ package com.malveillance.uberif.view;
 
 import com.malveillance.uberif.controller.HelloController;
 import com.malveillance.uberif.HelloApplication;
+import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.model.Warehouse;
+import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.model.RoadSegment;
+import com.malveillance.uberif.model.service.Service;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import com.malveillance.uberif.xml.XmlMapParser;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
 import java.util.List;
@@ -21,10 +26,15 @@ public class GraphicalView implements Observer {
 
     private HelloController controller;
     private Pane mapPane;
+    private Service service;
+    double width = Pane.getWidth();
+    double height = Pane.getHeight();
 
-    public GraphicalView(CityMap citymap) {
+
+    public GraphicalView() {
         // Constructor logic if needed
-        citymap.addObserver(this);
+        CityMap map = service.loadMap();
+        map.addObserver(this);
     }
 
     public void setController(HelloController controller) {
@@ -70,8 +80,8 @@ public class GraphicalView implements Observer {
 
     private void visit(Intersection intersection) {
         // Implementation to draw intersection
-        double intersectionX = getIntersectionX(controller, intersection.id);
-        double intersectionY = getIntersectionY(controller, intersection.id);
+        double intersectionX = service.getIntersectionX(intersection, width);
+        double intersectionY = service.getIntersectionY(intersection, height);
         Circle intersectionDot = new Circle(intersectionX, intersectionY, 3, Color.RED);
         mapPane.getChildren().add(intersectionDot);
     }
@@ -79,15 +89,15 @@ public class GraphicalView implements Observer {
     private void visit(RoadSegment segment) {
         // Implementation to draw segment
         Line road = new Line(
-                getIntersectionX(controller, seg.origin),
-                getIntersectionY(controller, seg.origin),
-                getIntersectionX(controller, seg.destination),
-                getIntersectionY(controller, seg.destination)
+                service.getIntersectionX(segment.getOrigin(), width),
+                service.getIntersectionY(segment.getOrigin(), height),
+                service.getIntersectionX(segment.getDestination(), width),
+                service.getIntersectionY(segment.getDestination(), height)
         );
 
         road.setStroke(Color.GREY);
         road.setStrokeWidth(1.0);
-        mapPane.getChildren().add(element);
+        mapPane.getChildren().add(road);
     }
 
     // Other methods...

@@ -1,23 +1,23 @@
 package com.malveillance.uberif.model;
 
 public class RoadSegment extends Shape {
-    private String destination;
+    private Intersection destination;
     private double length;
     private String name;
-    private String origin;
+    private Intersection origin;
 
-    public RoadSegment(String origin, String destination, double length, String name) {
+    public RoadSegment(Intersection origin, Intersection destination, double length, String name) {
         this.origin = origin;
         this.destination = destination;
         this.length = length;
         this.name = name;
     }
 
-    public String getDestination() {
+    public Intersection getDestination() {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(Intersection destination) {
         this.destination = destination;
     }
 
@@ -37,11 +37,11 @@ public class RoadSegment extends Shape {
         this.name = name;
     }
 
-    public String getOrigin() {
+    public Intersection getOrigin() {
         return origin;
     }
 
-    public void setOrigin(String origin) {
+    public void setOrigin(Intersection origin) {
         this.origin = origin;
     }
 

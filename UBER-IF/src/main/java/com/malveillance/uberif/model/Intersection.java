@@ -1,9 +1,9 @@
 package com.malveillance.uberif.model;
 
 public class Intersection extends Shape {
-    public String id;
-    public double latitude;
-    public double longitude;
+    private String id;
+    private double latitude;
+    private double longitude;
 
     public Intersection(String id, double latitude, double longitude) {
         this.id = id;
