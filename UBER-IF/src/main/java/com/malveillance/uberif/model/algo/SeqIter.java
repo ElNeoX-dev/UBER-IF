@@ -1,40 +1,46 @@
 package com.malveillance.uberif.model.algo;
 
+import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.model.Intersection;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class SeqIter implements Iterator<Integer> {
-	private Integer[] candidates;
-	private int nbCandidates;
+public class SeqIter implements Iterator<Intersection> {
+	private ArrayList<Intersection> candidates;
+	private int currentIndex;
 
 	/**
-	 * Create an iterator to traverse the set of vertices in <code>unvisited</code> 
+	 * Create an iterator to traverse the set of vertices in <code>unvisited</code>
 	 * which are successors of <code>currentVertex</code> in <code>g</code>
 	 * Vertices are traversed in the same order as in <code>unvisited</code>
 	 * @param unvisited
 	 * @param currentVertex
-	 * @param g
+	 * @param c
 	 */
-	public SeqIter(Collection<Integer> unvisited, int currentVertex, Graph g){
-		this.candidates = new Integer[unvisited.size()];
-		for (Integer s : unvisited){
-			if (g.isArc(currentVertex, s))
-				candidates[nbCandidates++] = s;
+	public SeqIter(Collection<Intersection> unvisited, Intersection currentVertex, CityMap c) {
+		this.candidates = new ArrayList<>();
+		for (Intersection s : unvisited) {
+			if (c.hasRoadSegment(currentVertex, s)) {
+				candidates.add(s);
+			}
 		}
+		this.currentIndex = candidates.size() - 1;
 	}
-	
+
 	@Override
 	public boolean hasNext() {
-		return nbCandidates > 0;
+		return currentIndex >= 0;
 	}
 
 	@Override
-	public Integer next() {
-		nbCandidates--;
-		return candidates[nbCandidates];
+	public Intersection next() {
+		return candidates.get(currentIndex--);
 	}
 
 	@Override
-	public void remove() {}
-
+	public void remove() {
+		throw new UnsupportedOperationException("Remove operation is not supported");
+	}
 }

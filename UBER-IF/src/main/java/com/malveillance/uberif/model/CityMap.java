@@ -12,6 +12,17 @@ public class CityMap  extends Observable {
     private final Map<Intersection, List<RoadSegment>> nodes;
     private final Warehouse warehouse;
 
+
+
+    public CityMap(Warehouse warehouse, List<Intersection> intersections) {
+        this.warehouse = warehouse;
+        this.nodes = new HashMap<>();
+
+        for (Intersection node : intersections) {
+            this.nodes.put(node,new ArrayList<>());
+        }
+    }
+
     public CityMap(Warehouse warehouse, List<Intersection> intersections, List<RoadSegment> segments) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
@@ -19,7 +30,6 @@ public class CityMap  extends Observable {
         for (Intersection node : intersections) {
             this.nodes.put(node,new ArrayList<>());
         }
-
         for (RoadSegment segment : segments) {
             this.nodes.get(segment.getOrigin()).add(segment);
         }
@@ -31,7 +41,7 @@ public class CityMap  extends Observable {
         }
     }
 
-    private void addRoadSegment(RoadSegment segment) {
+    public void addRoadSegment(RoadSegment segment) {
         this.nodes.get(segment.getOrigin()).add(segment);
     }
 
@@ -42,6 +52,10 @@ public class CityMap  extends Observable {
 
     public List<RoadSegment> getAdjacentRoads(Intersection intersection) {
         return this.nodes.getOrDefault(intersection, new ArrayList<>());
+    }
+
+    public void setAdjacentRoads(Intersection intersection,List<RoadSegment> roadSegments) {
+        this.nodes.get(intersection).addAll(roadSegments);
     }
 
     public Map<Intersection, List<RoadSegment>> getNodes() {
@@ -66,5 +80,9 @@ public class CityMap  extends Observable {
                 return;
             }
         }
+    }
+
+    public int getNbNodes(){
+        return nodes.size();
     }
 }

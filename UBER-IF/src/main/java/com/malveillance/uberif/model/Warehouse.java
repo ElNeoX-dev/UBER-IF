@@ -1,26 +1,28 @@
 package com.malveillance.uberif.model;
 
 public class Warehouse extends Shape {
-    public String address;
+    public Intersection intersection;
 
-    public Warehouse(String address) {
-        this.address = address;
+    public Warehouse(Intersection intersection) {
+        this.intersection = intersection;
     }
 
-    public String getAddress() {
-        return address;
+    public Intersection getIntersection() {
+        return intersection;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setIntersection(Intersection intersection) {
+        this.intersection = intersection;
     }
 
-    public void accept( ShapeVisitor v ){
+    public void accept(ShapeVisitor v ){
         v.visit(this);
     }
 
     @Override
     public String toString() {
-        return "Warehouse Address: " + address;
+        return "Warehouse{" +
+                "intersection=" + intersection +
+                '}';
     }
 }

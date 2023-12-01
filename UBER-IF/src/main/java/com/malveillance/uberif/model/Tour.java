@@ -6,6 +6,10 @@ import java.util.List;
 public class Tour {
     private List<Delivery> deliveries;
 
+    public Tour() {
+        deliveries = new ArrayList<>();
+    }
+
     public List<Delivery> getDeliveries() {
         return deliveries;
     }

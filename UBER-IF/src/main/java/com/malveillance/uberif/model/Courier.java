@@ -1,9 +1,10 @@
 package com.malveillance.uberif.model;
 
 public class Courier {
-    private Long id;
+    private static Long id;
 
     private Tour currentTour;
+
 
     public Long getId() {
         return id;
