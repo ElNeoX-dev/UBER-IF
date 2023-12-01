@@ -24,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -33,11 +34,16 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     private CityMapController cityMapController;
     private PaneController paneController;
 
+    private List<Intersection> selectedIntersections = new ArrayList<>();
+
     private int nbCouriers = 1;
+    /*
     @FXML
+
     protected void onImportDataBtnClick() {
         System.out.println("Import data click");
     }
+    */
 
     @FXML
     protected void onOptimizeBtnClick() {
@@ -95,6 +101,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     private Label nbCourierLb;
 
     @FXML
+    private Label lbInfos;
+
+    @FXML
     private Button minusBtn;
 
     @FXML
@@ -143,6 +152,14 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     }
 
+    public void setCityMapController(CityMapController cityMapController) {
+        this.cityMapController = cityMapController;
+    }
+
+    public void setPaneController(PaneController paneController) {
+        this.paneController = paneController;
+    }
+
     public GraphicalView() {
         CityMapService cityMapService = new CityMapService();
         PaneService paneService = new PaneService();
@@ -150,11 +167,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         paneController = new PaneController(paneService);
     }
 
-    public GraphicalView(CityMapController cityMapController, PaneController paneController) {
-        this.cityMapController = cityMapController;
-        this.paneController = paneController;
 
-    }
 
     // Methods to update the UI
     // These methods can be called by the controller to update the UI
@@ -211,6 +224,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         if ( (intersectionX != paneController.getIntersectionX(cityMap.getWarehouse().intersection, width)) && (intersectionY != paneController.getIntersectionY(cityMap.getWarehouse().intersection, height)))
             {
                 mapPane.getChildren().add(intersectionDot);
+                intersectionDot.addEventHandler(MouseEvent.MOUSE_CLICKED, new IntersectionClickHandler(intersectionDot, intersection, selectedIntersections));
+                intersectionDot.addEventHandler(MouseEvent.MOUSE_ENTERED, new IntersectionOverHandler(intersection, lbInfos));
+
             }
     }
 

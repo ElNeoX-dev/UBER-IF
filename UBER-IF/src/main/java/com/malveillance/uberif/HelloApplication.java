@@ -39,7 +39,10 @@ public class HelloApplication extends Application {
         PaneController paneController = new PaneController(paneService);
 
         // View
-        new GraphicalView(cityMapController, paneController);
+//        GraphicalView view = new GraphicalView();
+//        view.setCityMapController(cityMapController);
+//        view.setPaneController(paneController);
+
 
     }
 
