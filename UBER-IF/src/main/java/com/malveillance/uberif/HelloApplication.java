@@ -23,7 +23,7 @@ public class HelloApplication extends Application {
         Parent root = fxmlLoader.load();
 
         // Set up the scene and stage
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 800, 650);
         stage.setTitle("UBER'IF");
         stage.setScene(scene);
         stage.show();

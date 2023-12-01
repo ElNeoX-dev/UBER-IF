@@ -26,7 +26,7 @@ public class CityMapService {
         // Parse the XML file and add items to the ListView
         XmlMapDeserializer parser = new XmlMapDeserializer("src/main/resources/com/malveillance/uberif/" + fileName + "Map.xml");
         CityMap map;
-        map = new CityMap(parser.getWarehouse(), parser.getIntersectionsElements(), parser.getSegmentElements());
+        map = new CityMap(parser.getWarehouse(), parser.getIntersectionsElements(), parser.getSegmentElements(), fileName);
 
         return map;
     }

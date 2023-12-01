@@ -14,9 +14,10 @@ import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
-import javafx.scene.layout.Pane;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -125,24 +126,23 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Add a listener
         choiceMap.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuListener(cityMapController, this, paneController));
 
+
+        // Load initial map
+        this.cityMap = cityMapController.loadNewCityMap((String) choiceMap.getSelectionModel().getSelectedItem());
+        this.cityMap.addObserver(this);
+
         // Add a listener to the width property of mapPane
         mapPane.widthProperty().addListener((observable, oldValue, newValue) -> {
-            update(cityMap, cityMap.getNodes());
+            update(this.cityMap, this.cityMap.getNodes());
         });
 
         // Add a listener to the height property of mapPane
         mapPane.heightProperty().addListener((observable, oldValue, newValue) -> {
-            update(cityMap, cityMap.getNodes());
+            update(this.cityMap, this.cityMap.getNodes());
         });
 
-
-        // Load initial map
-        this.cityMap = cityMapController.loadNewCityMap((String) choiceMap.getSelectionModel().getSelectedItem());
-        cityMap.addObserver(this);
-
-
     }
-    
+
     public GraphicalView() {
         CityMapService cityMapService = new CityMapService();
         PaneService paneService = new PaneService();
@@ -174,19 +174,44 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                     elem.accept(this);
                 }
             }
+
+            this.cityMap = newmap;
+
+            BackgroundImage backgroundImage = new BackgroundImage(
+                    new Image("file:src/main/resources/com/malveillance/uberif/"+cityMap.getMapName()+"Map.png"),
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.CENTER,
+                    new BackgroundSize(width, height, false, false, false, false)
+            );
+
+            Background background = new Background(backgroundImage);
+            mapPane.setBackground(background);
+
+            // printMinMaxLatLong();
+
+            paneController.updateScale(newmap.getNodes().keySet());
         }
+
     }
 
     public void visit(Warehouse warehouse) {
         // Implementation to draw warehouse
+        double intersectionX = paneController.getIntersectionX(warehouse.intersection, width);
+        double intersectionY = paneController.getIntersectionY(warehouse.intersection, height);
+        Circle intersectionDot = new Circle(intersectionX, intersectionY, height/200, Color.GREEN);
+        mapPane.getChildren().add(intersectionDot);
     }
 
     public void visit(Intersection intersection) {
         // Implementation to draw intersection
         double intersectionX = paneController.getIntersectionX(intersection, width);
         double intersectionY = paneController.getIntersectionY(intersection, height);
-        Circle intersectionDot = new Circle(intersectionX, intersectionY, 3, Color.RED);
-        mapPane.getChildren().add(intersectionDot);
+        Circle intersectionDot = new Circle(intersectionX, intersectionY, height/250, Color.RED);
+        if ( (intersectionX != paneController.getIntersectionX(cityMap.getWarehouse().intersection, width)) && (intersectionY != paneController.getIntersectionY(cityMap.getWarehouse().intersection, height)))
+            {
+                mapPane.getChildren().add(intersectionDot);
+            }
     }
 
     public void visit(RoadSegment segment) {
@@ -205,5 +230,29 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     public CityMap getCityMap() {return this.cityMap; }
 
+    /*
+    public void printMinMaxLatLong() {
+        double minLat = Double.MAX_VALUE;
+        double maxLat = Double.MIN_VALUE;
+        double minLong = Double.MAX_VALUE;
+        double maxLong = Double.MIN_VALUE;
+
+
+        for (Intersection inter : this.cityMap.getNodes().keySet()) {
+            if (inter.getLatitude() < minLat) {
+                minLat = inter.getLatitude();
+            } else if (inter.getLatitude() > maxLat) {
+                maxLat = inter.getLatitude();
+            }
+
+            if (inter.getLongitude() < minLong) {
+                minLong = inter.getLongitude();
+            } else if (inter.getLongitude() > maxLong) {
+                maxLong = inter.getLongitude();
+            }
+        }
+
+        System.out.println("minLat : " + minLat + "\nmaxLat : " + maxLat + "\nminLong : " + minLong + "\nmaxLong : " + maxLong);
+    }*/
 
 }

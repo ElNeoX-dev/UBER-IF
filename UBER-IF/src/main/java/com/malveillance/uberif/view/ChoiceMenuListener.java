@@ -31,14 +31,15 @@ public class ChoiceMenuListener implements ChangeListener<String> {
         CityMap newCityMap = cityMapController.loadNewCityMap(newValue);
         paneController.updateScale(newCityMap.getNodes().keySet());
         /* test Dijkstra */
-        if (newValue.equals("Small Map")) {
-            Tour tour = new Tour();
-            for (Intersection i : newCityMap.getNodes().keySet()) {
-                tour.addDelivery(new Delivery(i, null, null));
-            }
-            AlgoService.calculateOptimalRoute(newCityMap,tour);
-        }
+//        if (newValue.equals("Small Map")) {
+//            Tour tour = new Tour();
+//            for (Intersection i : newCityMap.getNodes().keySet()) {
+//                tour.addDelivery(new Delivery(i, null, null));
+//            }
+//            AlgoService.calculateOptimalRoute(newCityMap,tour);
+//        }
         /* fin test */
+
 
         if (newCityMap != null) {
             graphicalView.update(newCityMap, newCityMap.getNodes());
