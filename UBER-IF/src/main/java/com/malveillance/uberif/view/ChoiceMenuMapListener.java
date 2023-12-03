@@ -3,22 +3,18 @@ package com.malveillance.uberif.view;
 import com.malveillance.uberif.controller.CityMapController;
 import com.malveillance.uberif.controller.PaneController;
 import com.malveillance.uberif.model.CityMap;
-import com.malveillance.uberif.model.Delivery;
-import com.malveillance.uberif.model.Intersection;
-import com.malveillance.uberif.model.Tour;
-import com.malveillance.uberif.model.service.AlgoService;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
 
 
-public class ChoiceMenuListener implements ChangeListener<String> {
+public class ChoiceMenuMapListener implements ChangeListener<String> {
 
     private GraphicalView graphicalView;
     private CityMapController cityMapController;
 
     private PaneController paneController;
 
-    public ChoiceMenuListener(CityMapController cityMapController, GraphicalView graphicalView, PaneController paneController) {
+    public ChoiceMenuMapListener(CityMapController cityMapController, GraphicalView graphicalView, PaneController paneController) {
         this.cityMapController = cityMapController;
         this.paneController = paneController;
         this.graphicalView = graphicalView;

@@ -2,41 +2,36 @@ package com.malveillance.uberif.view;
 
 import com.malveillance.uberif.controller.CityMapController;
 import com.malveillance.uberif.controller.PaneController;
-import com.malveillance.uberif.model.CityMap;
-import com.malveillance.uberif.model.Warehouse;
-import com.malveillance.uberif.model.Intersection;
-import com.malveillance.uberif.model.RoadSegment;
-import com.malveillance.uberif.model.Shape;
-import com.malveillance.uberif.model.ShapeVisitor;
+import com.malveillance.uberif.model.*;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 
 public class GraphicalView extends ShapeVisitor implements Observer {
     private CityMapController cityMapController;
     private PaneController paneController;
 
-    private List<Intersection> selectedIntersections = new ArrayList<>();
+    private List<Pair<Courier, List<Intersection>>> listCourierIntersec = new ArrayList<>();
 
-    private int nbCouriers = 1;
+    private List<Dot> dotList = new ArrayList<>();
+
+    private int nbCouriers = 0;
+
+    private IntersectionClickHandler interClickHandle ;
     /*
     @FXML
 
@@ -76,24 +71,93 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     @FXML
     protected void onPlusBtnClick() {
-        if (nbCouriers == 1) {
-            minusBtn.getStyleClass().remove("grey-state");
-            minusBtn.getStyleClass().add("blue-state");
-        }
+        String nameCourier = showDialogBoxInput() ;
+        if (nameCourier != null && !nameCourier.isEmpty()) {
+            Random randomInt = new Random() ;
+            Courier courier = new Courier(nameCourier, Color.rgb(randomInt.nextInt(255),randomInt.nextInt(255),randomInt.nextInt(255)));
+            Pair<Courier, List<Intersection>> pairCourierIntersec = new Pair<>(courier, new ArrayList<Intersection>());
+            listCourierIntersec.add(pairCourierIntersec) ;
 
-        nbCouriers++;
-        nbCourierLb.setText(String.valueOf(nbCouriers));
+            if (nbCouriers == 0) {
+                minusBtn.getStyleClass().remove("grey-state");
+                minusBtn.getStyleClass().add("blue-state");
+            }
+
+            nbCouriers++;
+            nbCourierLb.setText(String.valueOf(nbCouriers));
+            choiceCourier.getItems().add(courier.getName());
+
+
+
+        }
     }
+
+    public String showDialogBoxInput() {
+        final String[] res = {null};
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Enter the courier's name");
+        dialog.setHeaderText("Courier's name");
+        dialog.setContentText("Enter the courier's name : ");
+
+        dialog.showAndWait().ifPresent(result -> {
+            res[0] = result ;
+        });
+        return res[0];
+    }
+
 
     @FXML
     protected void onMinusBtnClick() {
-        if (nbCouriers > 1) {
+        if (nbCouriers > 0) {
             nbCouriers--;
             nbCourierLb.setText(String.valueOf(nbCouriers));
+
+            Pair<Courier, List<Intersection>> pairCourierRemoved = listCourierIntersec.get(listCourierIntersec.size()-1) ;
+
+            for (Dot intersectionDot: dotList) {
+
+                if (intersectionDot.getOwner() == pairCourierRemoved.getKey()) {
+                    intersectionDot.setOwner(null);
+                    intersectionDot.setFill(Color.RED);
+                    intersectionDot.setRadius(height/250);
+                }
+
+            }
+
+            listCourierIntersec.remove(listCourierIntersec.size()-1);
+
+            //If the last is selected
+            if (choiceCourier.getSelectionModel().isSelected(choiceCourier.getItems().size()-1)) {
+                choiceCourier.getSelectionModel().selectFirst();
+            }
+            choiceCourier.getItems().remove(choiceCourier.getItems().size()-1);
         }
-        if (nbCouriers == 1) {
+        if (nbCouriers == 0) {
             minusBtn.getStyleClass().remove("blue-state");
             minusBtn.getStyleClass().add("grey-state");
+        }
+    }
+
+    @FXML
+    private TextField searchBox ;
+
+    @FXML
+    protected void onSearchBoxTyped() {
+        for (Dot dot: dotList) {
+            if (!searchBox.getText().isEmpty() && dot.getIntersection().getId().contains(searchBox.getText())) {
+                dot.setRadius(height/100);
+                if (dot.getOwner() == null) {
+                    dot.setFill(Color.BLACK);
+                }
+            } else {
+                dot.setRadius(height/250);
+                if (dot.getOwner() != null) {
+                    dot.setFill(dot.getOwner().getColor());
+                } else {
+                    dot.setFill(Color.RED);
+                }
+            }
+
         }
     }
 
@@ -112,10 +176,16 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     @FXML
     private ChoiceBox choiceMap;
+
+    @FXML
+    private ChoiceBox choiceCourier;
+
     double width ;
     double height ;
 
     private CityMap cityMap;
+
+    private Pair<Courier, List<Intersection>> selectedCourier ;
 
 
     @FXML
@@ -133,7 +203,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         choiceMap.getSelectionModel().selectFirst();
 
         // Add a listener
-        choiceMap.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuListener(cityMapController, this, paneController));
+        choiceMap.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuMapListener(cityMapController, this, paneController));
+        choiceCourier.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuCourierListener(this));
 
 
         // Load initial map
@@ -149,6 +220,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         mapPane.heightProperty().addListener((observable, oldValue, newValue) -> {
             update(this.cityMap, this.cityMap.getNodes());
         });
+
+        Courier courier = new Courier("", Color.RED);
+        selectedCourier = new Pair<>(courier, new ArrayList<>()) ;
+        listCourierIntersec.add(selectedCourier);
 
     }
 
@@ -182,11 +257,13 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             for (Shape elem : newmap.getNodes().keySet()) {
                 elem.accept(this);
             }
+            /*
             for (List<RoadSegment> list : newmap.getNodes().values()) {
                 for (Shape elem : list) {
                     elem.accept(this);
                 }
             }
+             */
 
             this.cityMap = newmap;
 
@@ -220,13 +297,15 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Implementation to draw intersection
         double intersectionX = paneController.getIntersectionX(intersection, width);
         double intersectionY = paneController.getIntersectionY(intersection, height);
-        Circle intersectionDot = new Circle(intersectionX, intersectionY, height/250, Color.RED);
+        Dot intersectionDot = new Dot(null, intersection, intersectionX, intersectionY, height/250, Color.RED);
         if ( (intersectionX != paneController.getIntersectionX(cityMap.getWarehouse().intersection, width)) && (intersectionY != paneController.getIntersectionY(cityMap.getWarehouse().intersection, height)))
             {
+                dotList.add(intersectionDot);
                 mapPane.getChildren().add(intersectionDot);
-                intersectionDot.addEventHandler(MouseEvent.MOUSE_CLICKED, new IntersectionClickHandler(intersectionDot, intersection, selectedIntersections));
-                intersectionDot.addEventHandler(MouseEvent.MOUSE_ENTERED, new IntersectionOverHandler(intersection, lbInfos));
+                intersectionDot.addEventHandler(MouseEvent.MOUSE_ENTERED, new IntersectionHoverHandler(intersection, lbInfos));
 
+                interClickHandle = new IntersectionClickHandler(intersectionDot, intersection, this);
+                intersectionDot.addEventHandler(MouseEvent.MOUSE_CLICKED, interClickHandle);
             }
     }
 
@@ -245,6 +324,18 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     }
 
     public CityMap getCityMap() {return this.cityMap; }
+
+    public void setSelectedCourier(Pair<Courier, List<Intersection>> selectedCourier) {
+        this.selectedCourier = selectedCourier;
+    }
+
+    public Pair<Courier, List<Intersection>> getSelectedCourier() {
+        return selectedCourier;
+    }
+
+    public List<Pair<Courier, List<Intersection>>> getListCourierIntersec() {
+        return listCourierIntersec;
+    }
 
     /*
     public void printMinMaxLatLong() {
