@@ -1,0 +1,27 @@
+@startuml
+
+' View Package
+package "Views" {
+    class GraphicalView {
+        +displayCityMap(CityMap cityMap)
+        +displayTour(Tour tour)
+    }
+    
+    class Window {}
+    
+    class KeyboardListener{}
+    
+    class ButtonListener{}
+    
+    class MouseListener{}
+}
+
+' Relationships
+
+Window --> GraphicalView
+Window --> MouseListener
+Window --> KeyboardListener
+Window --> ButtonListener
+MouseListener --> GraphicalView
+
+@enduml
