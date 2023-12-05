@@ -1,0 +1,37 @@
+@startuml
+actor User
+participant Application
+participant CityMap
+participant Delivery
+participant Tour
+participant Courier
+
+User -> Application: startApplication()
+User -> Application: loadMap(xmlFile)
+activate Application
+Application -> CityMap: loadFromFile(xmlFile)
+activate CityMap
+CityMap --> Application: mapData
+deactivate CityMap
+
+User -> Application: inputDeliveryRequest(details)
+activate Application
+Application -> Delivery: createDelivery(details)
+activate Delivery
+Delivery --> Application: deliveryData
+deactivate Delivery
+
+Application -> Courier: selectCourier()
+activate Courier
+Courier --> Application: courierData
+deactivate Courier
+
+Application -> Tour: computeBestTour(courierData, deliveryData)
+activate Tour
+Tour --> Application: tourDetails
+deactivate Tour
+
+Application -> Application: displayTourOnMap(tourDetails)
+User <-- Application: showTourDetails()
+deactivate Application
+@enduml
