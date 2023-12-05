@@ -1,0 +1,57 @@
+@startuml
+
+' Model Package
+package "Models" {
+
+}
+
+class Observable {
+  +Observable
+  +addObserver()
+  +notifyObservers()
+}
+
+Models <|-- Observable
+
+interface Observer{
+  +update()
+}
+
+
+' View Package
+package "Views" {
+    
+}
+
+' Controller Package
+package "Controllers" {
+
+}
+
+' Utility Class Outside Packages
+class XMLMapParser {
+    +CityMap parseXML(String xmlData): CityMap
+}
+
+' Application Class Outside Packages
+class Application {
+    +startApplication()
+    +loadMap(String xmlFile)
+    +inputDeliveryRequest(DeliveryDetails details)
+    +selectCourier(): Courier
+    +computeBestTour(Courier courier, Delivery delivery): Tour
+    +displayTourOnMap(Tour tour)
+}
+
+' Relationships
+Views -[dotted]-> Observer
+Views -[dotted]-> Models
+
+Application -- Controllers
+Application -- Views
+
+Controllers -- XMLMapParser
+
+Controllers --> Models
+
+@enduml

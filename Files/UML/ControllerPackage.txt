@@ -1,0 +1,40 @@
+@startuml
+
+' Controller Package
+package "Controllers" {
+    class Controller {}
+    
+    class State {
+        }
+        
+    class InitialState{}
+    
+    class AdressState{}
+    
+    class DeleteState{}
+    
+    class ListOfCommands{}
+    
+    interface Command{}
+    
+    class AddCommand{}
+    
+    class ReverseCommand{}
+}
+
+' Relationships
+
+InitialState --> State
+DeleteState --> State
+AdressState --> State
+
+Controller --> State
+Controller --> InitialState
+Controller --> DeleteState
+Controller --> AdressState
+
+ListOfCommands --> Command
+Command <|-- AddCommand
+Command <|-- ReverseCommand
+
+@enduml
