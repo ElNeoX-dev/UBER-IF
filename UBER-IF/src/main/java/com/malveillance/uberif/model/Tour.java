@@ -6,8 +6,9 @@ import java.util.List;
 public class Tour {
     private List<Delivery> deliveries;
 
-    public Tour() {
+    public Tour(Delivery startingDelivery) {
         deliveries = new ArrayList<>();
+        deliveries.add(startingDelivery);
     }
 
     public List<Delivery> getDeliveries() {

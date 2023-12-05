@@ -123,7 +123,7 @@ public class AlgoService {
 
         Intersection firstIntersection = completeSubGraph.getWarehouse().getIntersection();
         Intersection prev = firstIntersection;
-        List<Pair<Intersection,Date>> finalTour = new LinkedList<>();
+        List<Pair<Intersection,Pair<Date,Date>>> finalTour = new LinkedList<>();
         finalTour.add(new Pair<>(firstIntersection,null));
 
         for (int i = 1; i < completeSubGraph.getNbNodes(); i++) {

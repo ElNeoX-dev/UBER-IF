@@ -28,14 +28,17 @@ public class ChoiceMenuMapListener implements ChangeListener<String> {
         CityMap newCityMap = cityMapController.loadNewCityMap(newValue);
         paneController.updateScale(newCityMap.getNodes().keySet());
         /* test Dijkstra */
-        if (newValue.equals("Medium Map")) {
-            Tour tour = new Tour();
-            CityMap tourTest = cityMapController.loadNewCityMap("test2");
-            CityMap tourMap = cityMapController.loadNewCityMap("test");
-
+        if (newValue.equals("Large Map")) {
             TimeWindow timeWindow = new TimeWindow(8,60);
+            Delivery baseDelivery = new Delivery(newCityMap.getWarehouse().getIntersection(),timeWindow);
+            Tour tour = new Tour(baseDelivery);
+            CityMap tourTest = cityMapController.loadNewCityMap("tour");
+            //CityMap tourMap = cityMapController.loadNewCityMap("test");
+
+
             tourTest.getNodes().keySet().forEach(i -> tour.addDelivery(new Delivery(i,timeWindow)));
-            AlgoService.calculateOptimalRoute(tourMap,tour);
+            AlgoService.calculateOptimalRoute(newCityMap,tour);
+            //AlgoService.calculateOptimalRoute(tourMap,tour);
         }
         /* fin test */
 
