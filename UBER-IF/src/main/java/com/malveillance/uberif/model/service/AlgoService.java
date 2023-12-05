@@ -47,7 +47,6 @@ public class AlgoService {
         }
         distances.put(start, 0.0);
         queue.add(start);
-
         while (!queue.isEmpty()) {
             Intersection current = queue.poll();
 
@@ -70,6 +69,7 @@ public class AlgoService {
     }
 
     public static void calculateOptimalRoute(CityMap cityMap, Tour tour) {
+        System.out.println("START");
         List<Intersection> allIntersections = new ArrayList<>();
         List<Delivery> deliveries = tour.getDeliveries();
 
@@ -80,16 +80,26 @@ public class AlgoService {
         CityMap subGraph = createSubGraph(cityMap, allIntersections);
         CityMap completeSubGraph = makeCompleteGraph(subGraph);
 
+        /*System.out.println("SUBGRAPH");
+        System.out.println(subGraph);
+
+        System.out.println("COMPLETESUBGRAPH");
+        System.out.println(completeSubGraph);*/
+
         for (Delivery deliveryA : deliveries) {
             for (Delivery deliveryB : deliveries) {
                 Intersection start = deliveryA.getIntersection();
                 Intersection end = deliveryB.getIntersection();
-                if (subGraph.hasRoadSegment(start, end) && subGraph.getDistance(start, end) == CityMap.INFINITE_LENGTH) {
+                if (completeSubGraph.hasRoadSegment(start, end) && completeSubGraph.getDistance(start, end) == CityMap.INFINITE_LENGTH) {
                     // TODO : Dijkstra also returns the list of used roadSegments between 2 points
-                    completeSubGraph.addRoadSegment(new RoadSegment(start, end, dijkstra(cityMap, start, end), ""));
+                    double val = dijkstra(cityMap, start, end);
+                    completeSubGraph.setDistance(start, end, val);
                 }
             }
         }
+
+        /*System.out.println("COMPLETESUBGRAPH AFTER DIJKSTRA");
+        System.out.println(completeSubGraph);*/
 
         TSP tsp = new TSP1();
         long startTime = System.currentTimeMillis();
@@ -99,6 +109,7 @@ public class AlgoService {
         for (int i = 0; i < completeSubGraph.getNbNodes(); i++)
             System.out.print(tsp.getSolution(i) + " ");
         System.out.println(completeSubGraph.getWarehouse().getIntersection());
+        System.out.println("END");
     }
 
 }

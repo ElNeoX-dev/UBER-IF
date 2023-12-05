@@ -16,5 +16,4 @@ public class TSP1 extends TemplateTSP {
 	protected Iterator<Intersection> iterator(Intersection currentVertex, Collection<Intersection> unvisited, CityMap g) {
 		return new SeqIter(unvisited, currentVertex, g);
 	}
-
 }

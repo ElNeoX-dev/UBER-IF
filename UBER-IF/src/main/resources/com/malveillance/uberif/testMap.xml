@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<map>
+    <warehouse address="1"/>
+    <intersection id="1" latitude="45.75406" longitude="4.857418"/>
+    <intersection id="2" latitude="45.750404" longitude="4.8744674"/>
+    <intersection id="3" latitude="45.75871" longitude="4.8704023"/>
+    <intersection id="4" latitude="45.75171" longitude="4.8718166"/>
+    <intersection id="5" latitude="45.750896" longitude="4.859119"/>
+
+    <segment destination="2" length="100.0" name="Road A" origin="1"/>
+    <segment destination="3" length="150.0" name="Road B" origin="2"/>
+    <segment destination="4" length="120.0" name="Road C" origin="3"/>
+    <segment destination="5" length="130.0" name="Road D" origin="4"/>
+    <segment destination="1" length="140.0" name="Road E" origin="5"/>
+</map>
