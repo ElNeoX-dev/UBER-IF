@@ -28,9 +28,11 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     //private Map<Courier, List<Intersection>> courierIntersectionMap = new HashMap<>();
 
     //private List<Dot> dotList = new ArrayList<>();
-    private Map<Courier, List<Dot>> courierDotMap = new HashMap<>() ;
+    //private Map<Courier, List<Dot>> courierDotMap = new HashMap<>() ;
 
     private int nbCouriers = 0;
+
+    private Courier noOne = new Courier("", Color.RED);
 
     private IntersectionClickHandler interClickHandle ;
 
@@ -77,8 +79,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         if (nameCourier != null && !nameCourier.isEmpty()) {
             Random randomInt = new Random() ;
             Courier courier = new Courier(nameCourier, Color.rgb(randomInt.nextInt(255),randomInt.nextInt(255),randomInt.nextInt(255)));
-            List<Dot> listDot = new ArrayList<Dot>();
-            courierDotMap.put(courier, listDot) ;
+            cityMap.addCourier(courier); ;
 
             if (nbCouriers == 0) {
                 minusBtn.getStyleClass().remove("grey-state");
@@ -114,17 +115,17 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             nbCouriers--;
             nbCourierLb.setText(String.valueOf(nbCouriers));
 
-            Courier courierRemoved = listI
+            Courier lastCourier = cityMap.getListCourier().remove(cityMap.getListCourier().size()-1);
 
             // clear the dots of the courier
-            List<Circle> listCircle = courierDotMap.get(pairCourierRemoved.getKey()) ;
-            for (Circle intersectionDot: listCircle) {
+            List<Intersection> selectedIntersectionList = lastCourier.getSelectedIntersectionList();
+            for (Intersection intersectionDot: selectedIntersectionList) {
                 intersectionDot.setFill(Color.RED);
                 intersectionDot.setRadius(height/250);
             }
-            listCircle.clear() ;
 
-            listCourierIntersec.remove(listCourierIntersec.size()-1);
+            selectedIntersectionList.clear();
+            cityMap.removeCourier(lastCourier);
 
             //If the last is selected
             if (choiceCourier.getSelectionModel().isSelected(choiceCourier.getItems().size()-1)) {
@@ -143,23 +144,26 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     @FXML
     protected void onSearchBoxTyped() {
-        for (Dot dot: dotList) {
-            if (!searchBox.getText().isEmpty() && dot.getIntersection().getId().contains(searchBox.getText())) {
-                dot.setRadius(height/100);
-                if (dot.getOwner() == null) {
-                    dot.setFill(Color.BLACK);
-                }
-            } else {
-                if (dot.getOwner() != null) {
-                    dot.setFill(dot.getOwner().getColor());
-                    dot.setRadius(height/220);
+
+        for (Courier courier : cityMap.getCourierDotMap().keySet()) {
+            for (Intersection intersection : cityMap.getSelectedIntersectionList(courier)) {
+                if (intersection.getId().contains(searchBox.getText())) {
+                    intersection.setRadius(height/100);
+                    if (courier != null && courier.getName().isEmpty()) {
+                        intersection.setFill(Color.BLACK);
+                    }
                 } else {
-                    dot.setFill(Color.RED);
-                    dot.setRadius(height/250);
+                    if (courier != null) {
+                        intersection.setFill(courier.getColor());
+                        intersection.setRadius(height/220);
+                    } else {
+                        intersection.setFill(Color.RED);
+                        intersection.setRadius(height/250);
+                    }
                 }
             }
-
         }
+
     }
 
     @FXML
@@ -186,7 +190,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     private CityMap cityMap;
 
-    private Pair<Courier, List<Dot>> selectedCourier ;
+    private Pair<Courier, List<Intersection>> selectedCourier ;
 
 
     @FXML
@@ -222,9 +226,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             update(this.cityMap, this.cityMap.getNodes());
         });
 
-        Courier courier = new Courier("", Color.RED);
-        selectedCourier = new Pair<>(courier, new ArrayList<>()) ;
-        listCourierIntersec.add(selectedCourier);
+        cityMap.addCourier(noOne);
 
     }
 
@@ -261,22 +263,16 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
 
 
-        dotList.removeIf(dot -> dot.getOwner()==null);
-
         if (o instanceof CityMap newmap) {
             mapPane.getChildren().clear();
             // Draw lines first
             newmap.getWarehouse().accept(this);
+            newmap.addCourier(noOne);
+
             for (Shape elem : newmap.getNodes().keySet()) {
                 elem.accept(this);
             }
-            /*
-            for (List<RoadSegment> list : newmap.getNodes().values()) {
-                for (Shape elem : list) {
-                    elem.accept(this);
-                }
-            }
-             */
+
 
             this.cityMap = newmap;
 
@@ -302,27 +298,28 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Implementation to draw warehouse
         double intersectionX = paneController.getIntersectionX(warehouse.intersection, width);
         double intersectionY = paneController.getIntersectionY(warehouse.intersection, height);
-        Circle intersectionDot = new Circle(intersectionX, intersectionY, height/200, Color.GREEN);
-        mapPane.getChildren().add(intersectionDot);
+        intersectionX = intersectionX - (width - mapPane.getWidth()) / 2;
+        intersectionY = intersectionY - (height - mapPane.getHeight()) / 2;
+        warehouse.getIntersection().setCircle(intersectionX, intersectionY, height/200, Color.GREEN);
+        mapPane.getChildren().add(warehouse.getIntersection().getCircle());
     }
 
     public void visit(Intersection intersection) {
         // Implementation to draw intersection
         double intersectionX = paneController.getIntersectionX(intersection, width);
         double intersectionY = paneController.getIntersectionY(intersection, height);
-        intersectionX = intersectionX + (width - mapPane.getWidth()) / 2;
-        intersectionY = intersectionY + (height - mapPane.getHeight()) / 2;
-        Dot intersectionDot = new Dot(null, intersection, intersectionX, intersectionY, height/250, Color.RED);
+        intersectionX = intersectionX - (width - mapPane.getWidth()) / 2;
+        intersectionY = intersectionY - (height - mapPane.getHeight()) / 2;
+        intersection.setCircle(intersectionX, intersectionY, height/220, Color.RED);
         if ( (intersectionX != paneController.getIntersectionX(cityMap.getWarehouse().intersection, width)) && (intersectionY != paneController.getIntersectionY(cityMap.getWarehouse().intersection, height)))
             {
-                if (!dotList.contains(intersectionDot)) {
-                    dotList.add(intersectionDot);
-                    mapPane.getChildren().add(intersectionDot);
-                    intersectionDot.addEventHandler(MouseEvent.MOUSE_ENTERED, new IntersectionHoverHandler(intersection, lbInfos));
+                cityMap.getSelectedIntersectionList(noOne).add(intersection);
+                mapPane.getChildren().add(intersection.getCircle());
+                intersection.getCircle().addEventHandler(MouseEvent.MOUSE_ENTERED, new IntersectionHoverHandler(intersection, lbInfos));
 
-                    interClickHandle = new IntersectionClickHandler(intersectionDot, intersection, this);
-                    intersectionDot.addEventHandler(MouseEvent.MOUSE_CLICKED, interClickHandle);
-                }
+                interClickHandle = new IntersectionClickHandler(intersection, this);
+                intersection.getCircle().addEventHandler(MouseEvent.MOUSE_CLICKED, interClickHandle);
+
             }
     }
 
@@ -342,13 +339,12 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     public CityMap getCityMap() {return this.cityMap; }
 
-    public void setSelectedCourier(Pair<Courier, List<Dot>> selectedCourier) {
+    public void setSelectedCourier(Pair<Courier, List<Intersection>> selectedCourier) {
         this.selectedCourier = selectedCourier;
     }
 
-
-    public Map<Courier, List<Dot>> getCourierDotMap() {
-        return courierDotMap;
+    public Pair<Courier, List<Intersection>> getSelectedCourier() {
+        return selectedCourier;
     }
 
     /*

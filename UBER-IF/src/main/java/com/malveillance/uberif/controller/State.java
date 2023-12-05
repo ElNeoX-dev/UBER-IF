@@ -1,7 +1,7 @@
 package com.malveillance.uberif.controller;
 
-import com.malveillance.uberif.controller.PaneController;
 import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.model.Intersection;
 
 public interface State {
 
@@ -11,7 +11,6 @@ public interface State {
     public default void delete(){};
     public default void save(CityMap cityMap){};
     public default void load(CityMap cityMap){};
-    public default void leftClick(PaneController paneController){};
-    public default void rightClick(PaneController paneController){};
+    public default void leftClick(PaneController paneController, Intersection intersection, CityMap cityMap){};
 
 }

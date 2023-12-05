@@ -1,8 +1,9 @@
 package com.malveillance.uberif.controller;
 
+import com.malveillance.uberif.model.CityMap;
 import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.model.Warehouse;
 import com.malveillance.uberif.model.service.PaneService;
-import com.malveillance.uberif.controller.State;
 
 import java.util.Set;
 
@@ -14,6 +15,9 @@ public class PaneController {
         this.paneService = paneService;
     }
 
+    public void leftClick(Intersection intersection){
+        currentState.leftClick(this, intersection,new CityMap(null, null));
+    }
     public double getIntersectionX(Intersection i, double paneWidth){
         return paneService.longitudeToX(i.getLongitude(), paneWidth);
     }

@@ -3,15 +3,26 @@ package com.malveillance.uberif.controller;
 import com.malveillance.uberif.controller.PaneController;
 import com.malveillance.uberif.model.CityMap;
 
-public class InitialState {
+public class InitialState implements State {
 
-    public default void delete(PaneController paneController){};
-    public default void undo(){};
-    public default void redo(){};
-    public default void delete(){};
-    public default void save(CityMap cityMap){};
-    public default void load(CityMap cityMap){};
-    public default void leftClick(PaneController paneController){};
-    public default void rightClick(PaneController paneController){};
+    public InitialState(){};
+
+    @Override
+    public void delete(PaneController paneController){};
+
+    @Override
+    public void undo(){};
+
+    @Override
+    public void redo(){};
+
+    @Override
+    public void delete(){};
+
+    @Override
+    public void save(CityMap cityMap){};
+
+    @Override
+    public void load(CityMap cityMap){};
 
 }
