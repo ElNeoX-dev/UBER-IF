@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+actor "Manager UberIF"
+actor Courier
+entity "Database/XML" as Data
+
+usecase "Create Delivery Request" as UC1
+usecase "Save Tours" as UC2
+usecase "Restore Tours" as UC3
+usecase "Load City Map" as UC4
+usecase "Modify Number of Couriers" as UC5
+
+
+"Manager UberIF" --> UC1
+"Manager UberIF" --> UC2
+"Manager UberIF" --> UC3
+"Manager UberIF" --> UC4
+"Manager UberIF" --> UC5
+UC2 .> Data : saves to
+UC3 .> Data : loads from
+@enduml
