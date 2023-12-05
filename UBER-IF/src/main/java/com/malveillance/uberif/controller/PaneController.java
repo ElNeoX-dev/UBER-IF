@@ -2,12 +2,14 @@ package com.malveillance.uberif.controller;
 
 import com.malveillance.uberif.model.Intersection;
 import com.malveillance.uberif.model.service.PaneService;
+import com.malveillance.uberif.controller.State;
 
 import java.util.Set;
 
 public class PaneController {
 
     private PaneService paneService;
+    private State currentState;
     public PaneController(PaneService paneService) {
         this.paneService = paneService;
     }

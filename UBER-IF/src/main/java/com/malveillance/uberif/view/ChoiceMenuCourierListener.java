@@ -10,6 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.util.Pair;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class ChoiceMenuCourierListener implements ChangeListener<String> {
@@ -22,9 +23,10 @@ public class ChoiceMenuCourierListener implements ChangeListener<String> {
 
     @Override
     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        System.out.println("Courier selected: " + newValue);
-        Pair<Courier, List<Intersection>> selectedCourier = null ;
-        for (Pair<Courier, List<Intersection>> pair:graphicalView.getListCourierIntersec()) {
+        //System.out.println("Courier selected: " + newValue);
+        Pair<Courier, List<Dot>> selectedCourier = null ;
+        Map<Courier, List<Dot>> couriersDotMap = graphicalView.getCourierDotMap();
+        for (Pair<Courier, List<Dot>> pair: {
             if (pair.getKey().getName().equals(newValue)) {
                 selectedCourier = pair ;
                 break;

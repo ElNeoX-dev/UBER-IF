@@ -8,9 +8,9 @@ import javafx.scene.shape.Circle;
 public class Dot extends Circle {
     private Courier owner ;
     private Intersection intersection ;
-    public Dot(Courier owner, Intersection intersection, double centerX, double centerY, double radius, Paint fill) {
+    public Dot(/*Courier owner, */Intersection intersection, double centerX, double centerY, double radius, Paint fill) {
         super(centerX, centerY, radius, fill);
-        this.owner = owner ;
+        //this.owner = owner ;
         this.intersection = intersection ;
 
     }
@@ -18,7 +18,7 @@ public class Dot extends Circle {
     public boolean isFree() {
         return (owner == null) ;
     }
-
+/*
     public Courier getOwner() {
         return owner;
     }
@@ -26,7 +26,7 @@ public class Dot extends Circle {
     public void setOwner(Courier owner) {
         this.owner = owner;
     }
-
+*/
     public Intersection getIntersection() {
         return intersection;
     }

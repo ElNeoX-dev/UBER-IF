@@ -25,7 +25,7 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
 
     @Override
     public void handle(MouseEvent event) {
-        System.out.println("Mouse clicked over intersection (" + intersection.getId() + ") at (" + intersection.getLatitude() + ", " + intersection.getLongitude() + ")");
+        //System.out.println("Mouse clicked over intersection (" + intersection.getId() + ") at (" + intersection.getLatitude() + ", " + intersection.getLongitude() + ")");
 
         Courier courier = graphicalView.getSelectedCourier().getKey();
         List<Intersection> selectedListIntersections = graphicalView.getSelectedCourier().getValue();
@@ -33,14 +33,13 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
         if (!courier.getName().isEmpty()) {
             if (selectedListIntersections.contains(intersection)) {
                 selectedListIntersections.remove(intersection);
-                intersectionDot.setOwner(null);
+                //intersectionDot.setOwner(null);
                 intersectionDot.setFill(Color.RED);
-                // est ce que les dots sont toujours responsive apres ?
             } else {
                 selectedListIntersections.add(intersection);
-                intersectionDot.setOwner(courier);
+                //intersectionDot.setOwner(courier);
                 intersectionDot.setFill(courier.getColor());
-                intersectionDot.setRadius(5);
+                intersectionDot.setRadius(graphicalView.height/220);
             }
         }
     }

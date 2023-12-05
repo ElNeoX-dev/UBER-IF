@@ -5,16 +5,19 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+
+import com.malveillance.uberif.view.Dot;
 import javafx.util.Pair;
 
 public class CityMap  extends Observable {
     public static final double INFINITE_LENGTH = Integer.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
+    private final Map<Courier, List<Dot>> courierDotMap;
     private final Warehouse warehouse;
 
     private String mapName ;
 
-
+/*
     public CityMap(Warehouse warehouse, List<Intersection> intersections) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
@@ -23,11 +26,12 @@ public class CityMap  extends Observable {
             this.nodes.put(node,new ArrayList<>());
         }
     }
-
+*/
     public CityMap(Warehouse warehouse, List<Intersection> intersections, List<RoadSegment> segments, String mapName) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
         this.mapName = mapName;
+        this.courierDotMap = new HashMap<>();
 
         for (Intersection node : intersections) {
             this.nodes.put(node,new ArrayList<>());
@@ -41,6 +45,19 @@ public class CityMap  extends Observable {
         if (!this.nodes.containsKey(intersection)) {
             this.nodes.put(intersection,new ArrayList<>());
         }
+    }
+
+    private void addCourier(Courier courier) {
+        this.courierDotMap.put(courier, new ArrayList<>());
+    }
+
+    private List<Dot> getListIntersection(Courier courier) {
+        return courierDotMap.get(courier);
+    }
+
+    private List<Courier> getListCourier() {
+        List<Courier> couriers = new ArrayList<>();
+        for (courierDotMap.)
     }
 
     public void addRoadSegment(RoadSegment segment) {

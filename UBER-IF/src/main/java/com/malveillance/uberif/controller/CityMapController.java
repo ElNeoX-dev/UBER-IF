@@ -3,7 +3,7 @@ package com.malveillance.uberif.controller;
 import com.malveillance.uberif.model.CityMap;
 import com.malveillance.uberif.model.service.CityMapService;
 
-public class CityMapController {
+public class  CityMapController {
 
     CityMapService cityMapService;
     public CityMapController(CityMapService cityMapService) {

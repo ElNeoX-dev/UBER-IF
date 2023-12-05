@@ -22,7 +22,7 @@ public class ChoiceMenuMapListener implements ChangeListener<String> {
 
     @Override
     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        System.out.println("New map: " + newValue);
+        //System.out.println("New map: " + newValue);
 
         CityMap newCityMap = cityMapController.loadNewCityMap(newValue);
         paneController.updateScale(newCityMap.getNodes().keySet());
@@ -36,9 +36,9 @@ public class ChoiceMenuMapListener implements ChangeListener<String> {
 //        }
         /* fin test */
 
-
         if (newCityMap != null) {
             graphicalView.update(newCityMap, newCityMap.getNodes());
+
         } else {
             // Handle the case where the city map is not found or invalid
             System.out.println("City map not found for: " + newValue);
