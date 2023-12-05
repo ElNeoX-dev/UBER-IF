@@ -1,14 +1,15 @@
 package com.malveillance.uberif.model.algo;
 
 import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.model.Delivery;
 import com.malveillance.uberif.model.Intersection;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class SeqIter implements Iterator<Intersection> {
-	private ArrayList<Intersection> candidates;
+public class SeqIter implements Iterator<Delivery> {
+	private ArrayList<Delivery> candidates;
 	private int currentIndex;
 
 	/**
@@ -19,11 +20,11 @@ public class SeqIter implements Iterator<Intersection> {
 	 * @param currentVertex
 	 * @param c
 	 */
-	public SeqIter(Collection<Intersection> unvisited, Intersection currentVertex, CityMap c) {
+	public SeqIter(Collection<Delivery> unvisited, Delivery currentVertex, CityMap c) {
 		this.candidates = new ArrayList<>();
-		for (Intersection s : unvisited) {
-			if (c.hasRoadSegment(currentVertex, s)) {
-				candidates.add(s);
+		for (Delivery tempDelivery : unvisited) {
+			if (c.hasRoadSegment(currentVertex.getIntersection(), tempDelivery.getIntersection())) {
+				candidates.add(tempDelivery);
 			}
 		}
 		this.currentIndex = candidates.size() - 1;
@@ -35,7 +36,7 @@ public class SeqIter implements Iterator<Intersection> {
 	}
 
 	@Override
-	public Intersection next() {
+	public Delivery next() {
 		return candidates.get(currentIndex--);
 	}
 

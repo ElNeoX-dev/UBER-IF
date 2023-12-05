@@ -2,7 +2,8 @@ package com.malveillance.uberif.view;
 
 import com.malveillance.uberif.controller.CityMapController;
 import com.malveillance.uberif.controller.PaneController;
-import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.model.*;
+import com.malveillance.uberif.model.service.AlgoService;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
 
@@ -26,6 +27,17 @@ public class ChoiceMenuMapListener implements ChangeListener<String> {
 
         CityMap newCityMap = cityMapController.loadNewCityMap(newValue);
         paneController.updateScale(newCityMap.getNodes().keySet());
+        /* test Dijkstra */
+        if (newValue.equals("Medium Map")) {
+            Tour tour = new Tour();
+            CityMap tourTest = cityMapController.loadNewCityMap("test2");
+            CityMap tourMap = cityMapController.loadNewCityMap("test");
+
+            TimeWindow timeWindow = new TimeWindow(8,60);
+            tourTest.getNodes().keySet().forEach(i -> tour.addDelivery(new Delivery(i,timeWindow)));
+            AlgoService.calculateOptimalRoute(tourMap,tour);
+        }
+        /* fin test */
 
         if (newCityMap != null) {
             graphicalView.update(newCityMap, newCityMap.getNodes());

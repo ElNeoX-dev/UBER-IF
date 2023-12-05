@@ -22,6 +22,10 @@ public class Tour {
         this.deliveries.add(delivery);
     }
 
+    public Delivery getStartingPoint() {
+        return this.deliveries.get(0);
+    }
+
     @Override
     public String toString() {
         return "Tour{" +

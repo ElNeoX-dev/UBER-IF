@@ -21,6 +21,20 @@ public class TimeWindow {
         this.endingTime = cl.getTime();
     }
 
+    public TimeWindow(int startingHour, int minutes) {
+        Date startingTime = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startingTime);
+
+        calendar.set(Calendar.HOUR_OF_DAY, startingHour);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        this.startingTime = calendar.getTime();
+
+        calendar.add(Calendar.MINUTE, minutes);
+        this.endingTime = calendar.getTime();
+    }
+
     public Date getStartingTime() {
         return startingTime;
     }
