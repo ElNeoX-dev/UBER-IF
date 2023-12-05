@@ -5,10 +5,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import javafx.util.Pair;
 
 public class CityMap  extends Observable {
-    public static final double INFINITE_LENGTH = Integer.MAX_VALUE;
+    public static final double INFINITE_LENGTH = Double.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
     private final Warehouse warehouse;
 
@@ -88,7 +87,16 @@ public class CityMap  extends Observable {
         return nodes.size();
     }
 
+
     public String getMapName() {
         return mapName;
+    }
+
+    @Override
+    public String toString() {
+        return "CityMap{" +
+                "nodes=" + nodes +
+                ", warehouse=" + warehouse +
+                '}';
     }
 }
