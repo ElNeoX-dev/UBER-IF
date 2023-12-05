@@ -35,9 +35,18 @@ public class Intersection extends Shape {
         this.longitude = longitude;
     }
 
+    public boolean equals (Intersection intersection) {return (this.getId().equals(intersection.getId()));}
+
+    public int hashCode() {
+        return this.getId().hashCode();
+    }
+
     @Override
     public String toString() {
         return "Intersection " + id + " [Lat: " + latitude + ", Long: " + longitude + "]";
     }
 
+    public void accept( ShapeVisitor v ){
+            v.visit(this);
+    }
 }

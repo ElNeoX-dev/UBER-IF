@@ -10,6 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,8 @@ public class XmlMapDeserializer {
     // Inutile maintenant mais je laisse au cas où
     public List<Object> mapElements = new ArrayList<>();
 
-    private Warehouse warehouse ;
+    private String warehouseId;
+    private Warehouse warehouse;
     private List<Intersection> intersectionsElements = new ArrayList<>();
     private List<RoadSegment> segmentElements = new ArrayList<>();
 
@@ -38,8 +40,7 @@ public class XmlMapDeserializer {
                 Node node = warehouseList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    mapElements.add(new Warehouse(element.getAttribute("address")));
-                    warehouse = new Warehouse(element.getAttribute("address"));
+                    warehouseId = element.getAttribute("address");
                 }
             }
 
@@ -49,16 +50,17 @@ public class XmlMapDeserializer {
                 Node node = intersectionList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
-                    mapElements.add(new Intersection(
+                    Intersection intersection = new Intersection(
                             element.getAttribute("id"),
                             Double.parseDouble(element.getAttribute("latitude")),
                             Double.parseDouble(element.getAttribute("longitude"))
-                    ));
-                    intersectionsElements.add(new Intersection(
-                            element.getAttribute("id"),
-                            Double.parseDouble(element.getAttribute("latitude")),
-                            Double.parseDouble(element.getAttribute("longitude"))
-                    ));
+                    );
+                    mapElements.add(intersection);
+                    intersectionsElements.add(intersection);
+                    if (element.getAttribute("id").equals(warehouseId)) {
+                        mapElements.add(new Warehouse(intersection));
+                        warehouse = new Warehouse(intersection);
+                    }
                 }
             }
 
@@ -70,32 +72,28 @@ public class XmlMapDeserializer {
                     Element element = (Element) node;
                     String origin = element.getAttribute("origin");
                     String destination = element.getAttribute("destination");
-                    Intersection originIntersection = null ;
-                    Intersection destinationIntersection = null ;
+                    Intersection originIntersection = null;
+                    Intersection destinationIntersection = null;
 
 
                     // find intersection in mapElements in order to put Intersection in RoadSegment
                     for (Intersection intersection : intersectionsElements) {
-                            if (intersection.getId().equals(origin)) {
-                                originIntersection = intersection;
-                            } else  if (intersection.getId().equals(destination)) {
-                                destinationIntersection = intersection;
-                            }
-                            if (originIntersection != null && destinationIntersection != null) {
-                                mapElements.add(new RoadSegment(
-                                        originIntersection,
-                                        destinationIntersection,
-                                        Double.parseDouble(element.getAttribute("length")),
-                                        element.getAttribute("name")
-                                ));
-                                segmentElements.add(new RoadSegment(
-                                        originIntersection,
-                                        destinationIntersection,
-                                        Double.parseDouble(element.getAttribute("length")),
-                                        element.getAttribute("name")
-                                ));
-                                break ;
-                            }
+                        if (intersection.getId().equals(origin)) {
+                            originIntersection = intersection;
+                        } else if (intersection.getId().equals(destination)) {
+                            destinationIntersection = intersection;
+                        }
+                        if (originIntersection != null && destinationIntersection != null) {
+                            RoadSegment roadSegment = new RoadSegment(
+                                    originIntersection,
+                                    destinationIntersection,
+                                    Double.parseDouble(element.getAttribute("length")),
+                                    element.getAttribute("name")
+                            );
+                            mapElements.add(roadSegment);
+                            segmentElements.add(roadSegment);
+                            break;
+                        }
 
                     }
 

@@ -7,6 +7,13 @@ public class Delivery {
 
     private Courier courier;
 
+
+    public Delivery(Intersection intersection, TimeWindow timeWindow, Courier courier) {
+        this.intersection = intersection;
+        this.timeWindow = timeWindow;
+        this.courier = courier;
+    }
+
     public Intersection getIntersection() {
         return intersection;
     }

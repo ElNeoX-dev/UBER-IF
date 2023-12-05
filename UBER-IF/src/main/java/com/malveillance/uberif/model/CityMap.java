@@ -8,18 +8,30 @@ import java.util.ArrayList;
 import javafx.util.Pair;
 
 public class CityMap  extends Observable {
-    private static final int INFINITE_LENGTH = Integer.MAX_VALUE;
+    public static final double INFINITE_LENGTH = Integer.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
     private final Warehouse warehouse;
 
-    public CityMap(Warehouse warehouse, List<Intersection> intersections, List<RoadSegment> segments) {
+    private String mapName ;
+
+
+    public CityMap(Warehouse warehouse, List<Intersection> intersections) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
 
         for (Intersection node : intersections) {
             this.nodes.put(node,new ArrayList<>());
         }
+    }
 
+    public CityMap(Warehouse warehouse, List<Intersection> intersections, List<RoadSegment> segments, String mapName) {
+        this.warehouse = warehouse;
+        this.nodes = new HashMap<>();
+        this.mapName = mapName;
+
+        for (Intersection node : intersections) {
+            this.nodes.put(node,new ArrayList<>());
+        }
         for (RoadSegment segment : segments) {
             this.nodes.get(segment.getOrigin()).add(segment);
         }
@@ -31,36 +43,52 @@ public class CityMap  extends Observable {
         }
     }
 
-    private void addRoadSegment(RoadSegment segment) {
+    public void addRoadSegment(RoadSegment segment) {
         this.nodes.get(segment.getOrigin()).add(segment);
     }
 
-    public Map<Intersection,Pair<Intersection,Integer>> makeCompleteGraph() {
-        Map<Intersection,Pair<Intersection,Integer>> completeGraph = new HashMap<>();
-        for (Intersection source : this.nodes.keySet()) {
-            for (Intersection destination : this.nodes.keySet()) {
-                if (!source.equals(destination) && !hasRoadSegment(source, destination)) {
-                    completeGraph.put(source,new Pair<>(destination,INFINITE_LENGTH));
-                } else if (hasRoadSegment(source,destination))
-                {
-                    completeGraph.put(source,new Pair<>(destination,GETDISTANCE(source,destination)));
-                }
-            }
-        }
-        return completeGraph;
-    }
-
     public boolean hasRoadSegment(Intersection source, Intersection destination) {
-        return nodes.get(source).stream()
+        return this.nodes.get(source).stream()
                 .anyMatch(segment -> segment.getDestination().equals(destination));
     }
 
     public List<RoadSegment> getAdjacentRoads(Intersection intersection) {
-        return nodes.getOrDefault(intersection, new ArrayList<>());
+        return this.nodes.getOrDefault(intersection, new ArrayList<>());
+    }
+
+    public void setAdjacentRoads(Intersection intersection,List<RoadSegment> roadSegments) {
+        this.nodes.get(intersection).addAll(roadSegments);
     }
 
     public Map<Intersection, List<RoadSegment>> getNodes() {
-        return nodes;
+        return this.nodes;
     }
 
+    public Warehouse getWarehouse() { return this.warehouse; }
+
+    public double getDistance(Intersection source, Intersection destination) {
+        for (RoadSegment segment : this.nodes.get(source)) {
+            if (segment.getDestination().equals(destination)) {
+                return segment.getLength();
+            }
+        }
+        return INFINITE_LENGTH;
+    }
+
+    public void setDistance(Intersection source, Intersection destination, double distance) {
+        for (RoadSegment segment : this.nodes.get(source)) {
+            if (segment.getDestination().equals(destination)) {
+                segment.setLength(distance);
+                return;
+            }
+        }
+    }
+
+    public int getNbNodes(){
+        return nodes.size();
+    }
+
+    public String getMapName() {
+        return mapName;
+    }
 }
