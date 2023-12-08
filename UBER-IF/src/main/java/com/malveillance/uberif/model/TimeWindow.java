@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TimeWindow {
+
+    public static final int startingHour = 8;
     private Date startingTime;
 
     private Date endingTime;
@@ -21,7 +23,7 @@ public class TimeWindow {
         this.endingTime = cl.getTime();
     }
 
-    public TimeWindow(int startingHour, int minutes) {
+    public TimeWindow(int minutes) {
         Date startingTime = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startingTime);

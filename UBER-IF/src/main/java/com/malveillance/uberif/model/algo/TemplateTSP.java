@@ -1,9 +1,8 @@
 package com.malveillance.uberif.model.algo;
 
-import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.model.*;
 import com.malveillance.uberif.model.Delivery;
-import com.malveillance.uberif.model.Tour;
-import com.malveillance.uberif.model.Delivery;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public abstract class TemplateTSP implements TSP {
-	private List<Delivery> bestSol;
+	private List<Pair<Intersection,Date>> bestSol;
 	protected CityMap g;
 	private double bestSolCost;
 	private int timeLimit;
@@ -22,7 +21,7 @@ public abstract class TemplateTSP implements TSP {
 	private static final int deliveryStartTime = 8;
 	private static final int secondsInHour = 3600;
 
-	public void searchSolution(int timeLimit, CityMap g,Tour t){
+	public void searchSolution(int timeLimit, CityMap g,Tour t,Date startingDate){
 		if (timeLimit <= 0) return;
 		startTime = System.currentTimeMillis();
 		this.timeLimit = timeLimit;
@@ -32,14 +31,14 @@ public abstract class TemplateTSP implements TSP {
 		unvisited.addAll(t.getDeliveries());
         unvisited.remove(t.getStartingPoint());
 
-		Collection<Delivery> visited = new ArrayList<>(g.getNbNodes());
-		visited.add(t.getStartingPoint());
+		Collection<Pair<Intersection,Date>> visited = new ArrayList<>(g.getNbNodes());
+		visited.add(new Pair<>(t.getStartingPoint().getIntersection(),startingDate));
 
 		bestSolCost = Integer.MAX_VALUE;
 		branchAndBound(t.getStartingPoint(), unvisited, visited, 0);
 	}
 
-	public Delivery getSolution(int i){
+	public Pair<Intersection,Date> getSolution(int i){
 		if (g != null && i>=0 && i<g.getNbNodes())
 			return bestSol.get(i);
 		return null;
@@ -77,7 +76,7 @@ public abstract class TemplateTSP implements TSP {
 	 * @param currentCost the cost of the path corresponding to <code>visited</code>
 	 */
 	private void branchAndBound(Delivery currentVertex, Collection<Delivery> unvisited,
-			Collection<Delivery> visited, double currentCost){
+			Collection<Pair<Intersection, Date>> visited, double currentCost){
 		if (System.currentTimeMillis() - startTime > timeLimit) return;
 	    if (unvisited.isEmpty()){
 	    	if (g.hasRoadSegment(currentVertex.getIntersection(),g.getWarehouse().getIntersection())){
@@ -105,16 +104,27 @@ public abstract class TemplateTSP implements TSP {
 				calendar.setTime(nextVertexStart);
 				int timeStart = (calendar.get(Calendar.HOUR_OF_DAY) - deliveryStartTime) * secondsInHour;
 
+				if (arrivalTime < timeStart) {
+					arrivalTime = timeStart;
+				}
+
 
 				if (arrivalTime >= timeStart && arrivalTime <= timeEnd) {
-					visited.add(nextVertex);
+					Calendar c = Calendar.getInstance();
+					calendar.set(Calendar.HOUR_OF_DAY, TimeWindow.startingHour);
+					calendar.set(Calendar.MINUTE, 0);
+					calendar.set(Calendar.SECOND, 0);
+					calendar.add(Calendar.SECOND, (int)arrivalTime);
+					Date timeDelivery = calendar.getTime();
+					Pair<Intersection,Date> deliveryDate = new Pair<>(nextVertex.getIntersection(),timeDelivery);
+					visited.add(deliveryDate);
 					unvisited.remove(nextVertex);
 					double previousTime = currentTime;
-					currentTime = arrivalTime;
+					currentTime = arrivalTime + 300;
 					branchAndBound(nextVertex, unvisited, visited,
 							currentCost + travelTime);
 					currentTime = previousTime;
-					visited.remove(nextVertex);
+					visited.remove(deliveryDate);
 					unvisited.add(nextVertex);
 				}
 	        }

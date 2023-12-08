@@ -29,7 +29,7 @@ public class ChoiceMenuMapListener implements ChangeListener<String> {
         paneController.updateScale(newCityMap.getNodes().keySet());
         /* test Dijkstra */
         if (newValue.equals("Large Map")) {
-            TimeWindow timeWindow = new TimeWindow(8,60);
+            TimeWindow timeWindow = new TimeWindow(60);
             Delivery baseDelivery = new Delivery(newCityMap.getWarehouse().getIntersection(),timeWindow);
             Tour tour = new Tour(baseDelivery);
             CityMap tourTest = cityMapController.loadNewCityMap("tour");

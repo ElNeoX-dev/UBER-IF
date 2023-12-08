@@ -4,6 +4,9 @@ import com.malveillance.uberif.model.CityMap;
 import com.malveillance.uberif.model.Delivery;
 import com.malveillance.uberif.model.Intersection;
 import com.malveillance.uberif.model.Tour;
+import javafx.util.Pair;
+
+import java.util.Date;
 
 public interface TSP {
 	/**
@@ -13,14 +16,14 @@ public interface TSP {
 	 * @param timeLimit
 	 * @param g
 	 */
-	public void searchSolution(int timeLimit, CityMap g, Tour t);
+	public void searchSolution(int timeLimit, CityMap g, Tour t,Date startingDate);
 	
 	/**
 	 * @param i
 	 * @return the ith visited vertex in the solution computed by <code>searchSolution</code> 
 	 * (-1 if <code>searcheSolution</code> has not been called yet, or if i < 0 or i >= g.getNbSommets())
 	 */
-	public Delivery getSolution(int i);
+	public Pair<Intersection, Date> getSolution(int i);
 	
 	/** 
 	 * @return the total cost of the solution computed by <code>searchSolution</code> 
