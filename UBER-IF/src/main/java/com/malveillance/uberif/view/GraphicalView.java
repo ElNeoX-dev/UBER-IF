@@ -3,6 +3,7 @@ package com.malveillance.uberif.view;
 import com.malveillance.uberif.controller.CityMapController;
 import com.malveillance.uberif.controller.PaneController;
 import com.malveillance.uberif.model.*;
+import com.malveillance.uberif.model.service.AlgoService;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
 import javafx.fxml.FXML;
@@ -33,54 +34,31 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     protected void onOptimizeBtnClick() {
         System.out.println("Optimize click");
         for(Courier couriers : cityMap.getCourierDotMap().keySet()) {
-            List<Pair<Intersection, Date>> computedTravel = new ArrayList<>();
-            computedTravel.add(new Pair<Intersection, Date>(cityMap.getWarehouse().getIntersection(), new Date()));
-            for(Intersection i: cityMap.getNodes().keySet())
-            {
-                if(i.getId().equals("25321689")) {
-                    computedTravel.add(new Pair<Intersection, Date>(i, new Date()));
-                }
-            }
-            for(Intersection i: cityMap.getNodes().keySet())
-            {
-                if(i.getId().equals("25321687")) {
-                    computedTravel.add(new Pair<Intersection, Date>(i, new Date()));
-                }
-            }
-            for(Intersection i: cityMap.getNodes().keySet())
-            {
-                if(i.getId().equals("25321447")) {
-                    computedTravel.add(new Pair<Intersection, Date>(i, new Date()));
-                }
-            }
-            for(Intersection i: cityMap.getNodes().keySet())
-            {
-                if(i.getId().equals("25336247")) {
-                    computedTravel.add(new Pair<Intersection, Date>(i, new Date()));
-                }
-            }
-            for(Intersection i: cityMap.getNodes().keySet())
-            {
-                if(i.getId().equals("2129259180")) {
-                    computedTravel.add(new Pair<Intersection, Date>(i, new Date()));
-                }
-            }
+            if(!couriers.getName().isEmpty()) {
+                List<Intersection> intersections = cityMap.getSelectedIntersectionList(couriers);
 
-            computedTravel.add(new Pair<Intersection, Date>(cityMap.getWarehouse().getIntersection(), new Date()));
-            for(Pair<Intersection, Date> p : computedTravel) {
-                if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || computedTravel.indexOf(p) == 0) {
-                    List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
-                    RoadSegment correctRoadSegment;
-                    for(RoadSegment r : roadSegments) {
-                        if(r.getDestination() == computedTravel.get(computedTravel.indexOf(p) + 1).getKey())
-                        {
-                            correctRoadSegment = r;
-                            visit(r);
-                            break;
+                Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(240)));
+                for(Intersection i : intersections) {
+                    tour.addDelivery(new Delivery(i, new TimeWindow(240)));
+                }
+//                tour.addDelivery(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(240)));
+                List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
+                for(Pair<Intersection, Date> p : computedTravel) {
+                    if(true) {
+                        List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
+                        RoadSegment correctRoadSegment;
+                        for(RoadSegment r : roadSegments) {
+                            if(r.getDestination() == computedTravel.get(computedTravel.indexOf(p) + 1).getKey())
+                            {
+                                correctRoadSegment = r;
+                                visit(r);
+                                break;
+                            }
                         }
                     }
                 }
             }
+
         }
     }
 
@@ -388,13 +366,13 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Implementation to draw segment
         Line road = new Line(
             paneController.getIntersectionX(segment.getOrigin(), width) - (width - mapPane.getWidth()) / 2,
-                paneController.getIntersectionY(segment.getOrigin(), height) - (height - mapPane.getHeight()) / 2,
-                paneController.getIntersectionX(segment.getDestination(), width) - (width - mapPane.getWidth()) / 2,
-                paneController.getIntersectionY(segment.getDestination(), height) - (height - mapPane.getHeight()) / 2
+            paneController.getIntersectionY(segment.getOrigin(), height) - (height - mapPane.getHeight()) / 2,
+            paneController.getIntersectionX(segment.getDestination(), width) - (width - mapPane.getWidth()) / 2,
+            paneController.getIntersectionY(segment.getDestination(), height) - (height - mapPane.getHeight()) / 2
         );
 
         road.setStroke(Color.GREY);
-        road.setStrokeWidth(1.0);
+        road.setStrokeWidth(3.0);
         mapPane.getChildren().add(road);
     }
 
