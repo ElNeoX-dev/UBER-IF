@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class CityMap  extends Observable {
-    public static final double INFINITE_LENGTH = Integer.MAX_VALUE;
+    public static final double INFINITE_LENGTH = Double.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
     private Map<Courier, List<Intersection>> courierDotMap;
     private final Warehouse warehouse;
@@ -122,11 +122,20 @@ public class CityMap  extends Observable {
         return nodes.size();
     }
 
+
     public String getMapName() {
         return mapName;
     }
 
     public boolean IntersectionInMap(Intersection intersection){
         return this.nodes.keySet().contains(intersection);
+    }
+  
+    @Override
+    public String toString() {
+        return "CityMap{" +
+                "nodes=" + nodes +
+                ", warehouse=" + warehouse +
+                '}';
     }
 }

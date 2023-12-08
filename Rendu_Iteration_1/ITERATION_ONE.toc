@@ -1,0 +1,17 @@
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {section}{\numberline {2}First Iteration Report}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Use Case Diagram}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Main Success Scenario Description}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Description of All Use Cases}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Class and Package Diagrams}{5}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}Description and Explanation of the Diagram:}{5}{subsubsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.5}Sprint Planning}{8}{subsection.2.5}%
+\contentsline {paragraph}{Session 1:}{8}{section*.3}%
+\contentsline {paragraph}{Session 2:}{8}{section*.4}%
+\contentsline {paragraph}{Session 3:}{9}{section*.5}%
+\contentsline {paragraph}{Session 4:}{9}{section*.6}%
+\contentsline {paragraph}{Outside Sessions work:}{9}{section*.7}%
+\contentsline {section}{\numberline {3}Important for Next Iterations}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Architecture Choice}{10}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Unit Testing with JUnit}{10}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Glossary}{12}{section.4}%
