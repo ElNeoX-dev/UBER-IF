@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class CityMap  extends Observable {
     public static final double INFINITE_LENGTH = Double.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
+    private Map<Courier, List<Intersection>> courierDotMap;
     private final Warehouse warehouse;
 
     private String mapName ;
@@ -17,6 +18,7 @@ public class CityMap  extends Observable {
     public CityMap(Warehouse warehouse, List<Intersection> intersections) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
+        this.courierDotMap = new HashMap<>();
 
         for (Intersection node : intersections) {
             this.nodes.put(node,new ArrayList<>());
@@ -27,6 +29,7 @@ public class CityMap  extends Observable {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
         this.mapName = mapName;
+        this.courierDotMap = new HashMap<>();
 
         for (Intersection node : intersections) {
             this.nodes.put(node,new ArrayList<>());
@@ -41,6 +44,38 @@ public class CityMap  extends Observable {
             this.nodes.put(intersection,new ArrayList<>());
         }
     }
+
+    public void addCourier(Courier courier) {
+        this.courierDotMap.put(courier, new ArrayList<>());
+    }
+
+    public void removeCourier(Courier courier) {
+        this.courierDotMap.remove(courier);
+    }
+
+    public List<Intersection> getSelectedIntersectionList(Courier courier) {
+        return courierDotMap.get(courier);
+    }
+
+    public List<Courier> getListCourier() {
+        List<Courier> couriers = new ArrayList<>();
+
+        for (Map.Entry<Courier, List<Intersection>> entry : courierDotMap.entrySet()) {
+            couriers.add(entry.getKey());
+        }
+
+        return couriers;
+    }
+
+    public Map<Courier, List<Intersection>> getCourierDotMap() {
+        return courierDotMap;
+    }
+
+    public void setCourierDotMap(Map<Courier, List<Intersection>> courierDotMap) {
+        this.courierDotMap = courierDotMap;
+    }
+
+
 
     public void addRoadSegment(RoadSegment segment) {
         this.nodes.get(segment.getOrigin()).add(segment);
@@ -92,6 +127,10 @@ public class CityMap  extends Observable {
         return mapName;
     }
 
+    public boolean IntersectionInMap(Intersection intersection){
+        return this.nodes.keySet().contains(intersection);
+    }
+  
     @Override
     public String toString() {
         return "CityMap{" +

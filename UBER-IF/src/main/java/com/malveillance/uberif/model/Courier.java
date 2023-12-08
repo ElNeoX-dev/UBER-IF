@@ -2,16 +2,25 @@ package com.malveillance.uberif.model;
 
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Courier {
     private static Long id;
     private Color color ;
     private String name ;
+
+    private List<Intersection> selectedDotList = new ArrayList<>();
 
     private Tour currentTour;
 
     public Courier(String name, Color color) {
         this.name = name ;
         this.color = color ;
+    }
+
+    public List<Intersection> getSelectedIntersectionList() {
+        return selectedDotList;
     }
 
     public Long getId() {
