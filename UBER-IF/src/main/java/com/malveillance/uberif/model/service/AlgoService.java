@@ -125,7 +125,7 @@ public class AlgoService {
         calendar.set(Calendar.SECOND, 0);
         Date startingTime = calendar.getTime();
         tsp.searchSolution(20000, completeSubTimeGraph, tour, startingTime);
-        System.out.println("Solution of cost " + tsp.getSolutionCost() + " found in " + (System.currentTimeMillis() - startTime) + "ms");
+        //System.out.println("Solution of cost " + tsp.getSolutionCost() + " found in " + (System.currentTimeMillis() - startTime) + "ms");
 
         Intersection firstIntersection = completeSubGraph.getWarehouse().getIntersection();
         Intersection prev = firstIntersection;
@@ -153,13 +153,13 @@ public class AlgoService {
         }
 
 
-        finalTour.forEach(obj -> {
+        /*finalTour.forEach(obj -> {
             System.out.print(obj.getKey().getId());
             Date date = obj.getValue();
             if (date != null)
                 System.out.print(" at " + date);
             System.out.print(" -> ");
-        });
+        });*/
         return finalTour;
     }
 
