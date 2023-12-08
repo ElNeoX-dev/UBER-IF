@@ -3,10 +3,12 @@ package com.malveillance.uberif.view;
 import com.malveillance.uberif.model.Courier;
 import com.malveillance.uberif.model.Intersection;
 import javafx.event.EventHandler;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.util.List;
+import java.util.Map;
 
 public class IntersectionClickHandler implements EventHandler<MouseEvent> {
     private Intersection intersection;
@@ -22,23 +24,33 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
     public void handle(MouseEvent event) {
         //System.out.println("Mouse clicked over intersection (" + intersection.getId() + ") at (" + intersection.getLatitude() + ", " + intersection.getLongitude() + ")");
 
-        Courier courier = graphicalView.getSelectedCourier().getKey();
-        List<Intersection> selectedListIntersections = courier.getSelectedIntersectionList();
+        Courier currentCourier = graphicalView.getSelectedCourier().getKey();
 
-
-
-
-        if (!courier.getName().isEmpty()) {
-            if (selectedListIntersections.contains(intersection)) {
-                selectedListIntersections.remove(intersection);
-                //intersectionDot.setOwner(null);
+        if (!currentCourier.getName().isEmpty()) {
+            if (graphicalView.getCityMap().getSelectedIntersectionList(currentCourier).contains(intersection)) {
+                graphicalView.getCityMap().getSelectedIntersectionList(currentCourier).remove(intersection);
+                intersection.setIsOwned(false);
                 intersection.setFill(Color.RED);
             } else {
-                selectedListIntersections.add(intersection);
-                //intersectionDot.setOwner(courier);
-                intersection.setFill(courier.getColor());
-                intersection.setRadius(graphicalView.height/220);
+                graphicalView.getCityMap().getSelectedIntersectionList(currentCourier).add(intersection);
+                intersection.setIsOwned(true);
+                intersection.setFill(currentCourier.getColor());
+                intersection.getCircle().setRadius(graphicalView.height/150);
+
             }
         }
+    }
+
+    public String showDialogBoxInput() {
+        final String[] res = {null};
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Enter a time window");
+        dialog.setHeaderText("Courier's name");
+        dialog.setContentText("Enter the courier's name : ");
+
+        dialog.showAndWait().ifPresent(result -> {
+            res[0] = result ;
+        });
+        return res[0];
     }
 }

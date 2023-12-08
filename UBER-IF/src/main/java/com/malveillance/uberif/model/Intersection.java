@@ -10,6 +10,8 @@ public class Intersection extends Shape {
 
     protected Circle circle;
 
+    protected boolean isOwned = false;
+
     public Intersection(String id, double latitude, double longitude) {
         this.id = id;
         this.latitude = latitude;
@@ -23,6 +25,14 @@ public class Intersection extends Shape {
 
     public void setCircle(double centerX, double centerY, double radius, Paint fill) {
         this.circle = new Circle(centerX, centerY, radius, fill);;
+    }
+
+    public void setIsOwned(boolean isOwned) {
+        this.isOwned = isOwned;
+    }
+
+    public boolean isOwned() {
+        return isOwned;
     }
 
     public void setFill(Paint fill) {

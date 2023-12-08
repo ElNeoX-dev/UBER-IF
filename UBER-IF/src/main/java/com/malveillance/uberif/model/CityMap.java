@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class CityMap  extends Observable {
     public static final double INFINITE_LENGTH = Integer.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
-    private final Map<Courier, List<Intersection>> courierDotMap;
+    private Map<Courier, List<Intersection>> courierDotMap;
     private final Warehouse warehouse;
 
     private String mapName ;
@@ -70,6 +70,12 @@ public class CityMap  extends Observable {
     public Map<Courier, List<Intersection>> getCourierDotMap() {
         return courierDotMap;
     }
+
+    public void setCourierDotMap(Map<Courier, List<Intersection>> courierDotMap) {
+        this.courierDotMap = courierDotMap;
+    }
+
+
 
     public void addRoadSegment(RoadSegment segment) {
         this.nodes.get(segment.getOrigin()).add(segment);
