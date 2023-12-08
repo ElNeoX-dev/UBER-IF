@@ -1,0 +1,148 @@
+@startuml
+
+' Model Package
+package "Models" {
+    class CityMap {
+        +List<Intersection> intersections
+        +List<RoadSegment> roadSegments
+    }
+
+    class Delivery {
+        +Intersection location
+        +TimeWindow timeWindow
+        +Courier assignedCourier
+    }
+
+    class Tour {
+        +List<Delivery> deliveries
+        +calculateOptimalRoute(): void
+    }
+
+    class Courier {
+        +String id
+        +Tour currentTour
+    }
+    
+    class Shape{}
+    
+    class Intersection{}
+    Shape <|-- Intersection
+    
+    class RoadSegment{}
+    Shape <|-- RoadSegment
+    
+    interface ShapeVisitor{
+      +visit(Intersection)
+      +visit(RoadSegment)
+    }
+}
+
+class Observable {
+  +Observable
+  +addObserver()
+  +notifyObservers()
+}
+Shape <|-- Observable
+CityMap <|-- Observable
+
+interface Observer{
+  +update()
+}
+
+
+' View Package
+package "Views" {
+    class GraphicalView {
+        +displayCityMap(CityMap cityMap)
+        +displayTour(Tour tour)
+    }
+    
+    class Window {}
+    
+    class KeyboardListener{}
+    
+    class ButtonListener{}
+    
+    class MouseListener{}
+}
+
+' Controller Package
+package "Controllers" {
+    class Controller {}
+    
+    class State {
+        }
+        
+    class InitialState{}
+    
+    class AdressState{}
+    
+    class DeleteState{}
+    
+    class ListOfCommands{}
+    
+    interface Command{}
+    
+    class AddCommand{}
+    
+    class ReverseCommand{}
+}
+
+' Utility Class Outside Packages
+class XMLMapParser {
+    +CityMap parseXML(String xmlData): CityMap
+}
+
+' Application Class Outside Packages
+class Application {
+    +startApplication()
+    +loadMap(String xmlFile)
+    +inputDeliveryRequest(DeliveryDetails details)
+    +selectCourier(): Courier
+    +computeBestTour(Courier courier, Delivery delivery): Tour
+    +displayTourOnMap(Tour tour)
+}
+
+' Relationships
+GraphicalView -[dotted]-> ShapeVisitor
+GraphicalView -[dotted]-> Observer
+
+Application -- Controller
+Application -- GraphicalView
+
+Controller -- XMLMapParser
+Controller --> CityMap
+Controller --> GraphicalView
+
+Controller --> Courier
+Controller --> Delivery
+Controller --> Tour
+
+CityMap "1" -- "n" Intersection
+CityMap "1" -- "n" RoadSegment
+
+Courier "n" -- "1" Tour
+
+InitialState --> State
+DeleteState --> State
+AdressState --> State
+
+Controller --> State
+Controller --> InitialState
+Controller --> DeleteState
+Controller --> AdressState
+
+ListOfCommands --> Command
+Command <|-- AddCommand
+Command <|-- ReverseCommand
+
+Window --> GraphicalView
+Window --> MouseListener
+Window --> KeyboardListener
+Window --> ButtonListener
+MouseListener --> Controller
+ButtonListener --> Controller
+KeyboardListener --> Controller
+MouseListener --> GraphicalView
+
+@enduml
