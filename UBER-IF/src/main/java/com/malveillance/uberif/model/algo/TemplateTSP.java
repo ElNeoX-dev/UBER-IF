@@ -111,7 +111,7 @@ public abstract class TemplateTSP implements TSP {
 
 				if (arrivalTime >= timeStart && arrivalTime <= timeEnd) {
 					Calendar c = Calendar.getInstance();
-					calendar.set(Calendar.HOUR_OF_DAY, TimeWindow.startingHour);
+					calendar.set(Calendar.HOUR_OF_DAY, TimeWindow.defaultStartingHour);
 					calendar.set(Calendar.MINUTE, 0);
 					calendar.set(Calendar.SECOND, 0);
 					calendar.add(Calendar.SECOND, (int)arrivalTime);

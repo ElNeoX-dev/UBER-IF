@@ -120,7 +120,7 @@ public class AlgoService {
         long startTime = System.currentTimeMillis();
         CityMap completeSubTimeGraph = convertToTimeGraph(completeSubGraph);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, TimeWindow.startingHour);
+        calendar.set(Calendar.HOUR_OF_DAY, TimeWindow.defaultStartingHour);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         Date startingTime = calendar.getTime();
@@ -146,7 +146,10 @@ public class AlgoService {
                 }
                 prev = next;
             }
-            finalTour.add(new Pair<>(firstIntersection, null));
+            List<Intersection> path = allPaths.getOrDefault(new Pair<>(prev, firstIntersection), Arrays.asList(prev, firstIntersection));
+            for (int j = 1; j < path.size(); j++) {
+                finalTour.add(new Pair<>(path.get(j),null));
+            }
         } catch (IndexOutOfBoundsException ex) {
             System.out.println("No possible solution");
             return null;
