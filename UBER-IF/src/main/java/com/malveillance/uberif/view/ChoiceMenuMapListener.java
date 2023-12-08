@@ -2,7 +2,8 @@ package com.malveillance.uberif.view;
 
 import com.malveillance.uberif.controller.CityMapController;
 import com.malveillance.uberif.controller.PaneController;
-import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.model.*;
+import com.malveillance.uberif.model.service.AlgoService;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ChangeListener;
 
