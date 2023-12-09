@@ -24,25 +24,24 @@ public class IntersectionHoverHandler implements EventHandler<MouseEvent> {
         //System.out.println("Mouse over intersection (" + intersection.getId() + ") at (" + intersection.getLatitude() + ", " + intersection.getLongitude() + ")");
         Intersection intersectionNearest = null;
         double distanceMin = Double.MAX_VALUE;
+
         for (Intersection intersection : graphicalView.getCityMap().getNodes().keySet()) {
+            if (intersection.isOwned()) {
+                intersection.setRadius((graphicalView.height / 150)*graphicalView.coef);
+            } else {
+                intersection.setRadius((graphicalView.height / 220)*graphicalView.coef);
+            }
+
             double distance = Math.sqrt(Math.pow(intersection.getCircle().getCenterX() - event.getX(), 2) + Math.pow(intersection.getCircle().getCenterY() - event.getY(), 2));
             if (distance < distanceMin) {
                 intersectionNearest = intersection;
                 distanceMin = distance;
             }
-
         }
 
-        intersectionLabel.setText("Intersection n°" + intersectionNearest.getId() + "\nLat: " + intersectionNearest.getLatitude() + "\nLong: " + intersectionNearest.getLongitude());
-
-        if (distanceMin < graphicalView.width / 24) {
+        if (intersectionNearest != null && distanceMin < graphicalView.width / 24) {
+            intersectionLabel.setText(/*"Intersection n°" + intersectionNearest.getId() + */"Lat: " + intersectionNearest.getLatitude() + "\nLong: " + intersectionNearest.getLongitude());
             intersectionNearest.setRadius((graphicalView.height / 125)*graphicalView.coef);
-        } else {
-            if (intersectionNearest.isOwned()) {
-                intersectionNearest.setRadius((graphicalView.height / 150)*graphicalView.coef);
-            } else {
-                intersectionNearest.setRadius((graphicalView.height / 220)*graphicalView.coef);
-            }
         }
 
     }

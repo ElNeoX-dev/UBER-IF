@@ -1,5 +1,7 @@
 package com.malveillance.uberif.model;
 
+import javafx.util.Pair;
+
 import java.util.Observable;
 import java.util.Map;
 import java.util.HashMap;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 public class CityMap  extends Observable {
     public static final double INFINITE_LENGTH = Integer.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
-    private Map<Courier, List<Intersection>> courierDotMap;
+    private Map<Courier, List<Pair<Intersection, TimeWindow>>> courierDotMap;
     private final Warehouse warehouse;
 
     private String mapName ;
@@ -53,25 +55,38 @@ public class CityMap  extends Observable {
         this.courierDotMap.remove(courier);
     }
 
-    public List<Intersection> getSelectedIntersectionList(Courier courier) {
+    public List<Pair<Intersection, TimeWindow>> getSelectedPairList(Courier courier) {
         return courierDotMap.get(courier);
     }
+
+    public List<Intersection> seeSelectedIntersectionList(Courier courier) {
+        List<Intersection> intersections = new ArrayList<>();
+
+        // Parcourir les paires et extraire les Intersections
+        for (Pair<Intersection, TimeWindow> pair : courierDotMap.get(courier)) {
+            intersections.add(pair.getKey());
+        }
+
+        return intersections;
+    }
+
+
 
     public List<Courier> getListCourier() {
         List<Courier> couriers = new ArrayList<>();
 
-        for (Map.Entry<Courier, List<Intersection>> entry : courierDotMap.entrySet()) {
+        for (Map.Entry<Courier, List<Pair<Intersection, TimeWindow>>> entry : courierDotMap.entrySet()) {
             couriers.add(entry.getKey());
         }
 
         return couriers;
     }
 
-    public Map<Courier, List<Intersection>> getCourierDotMap() {
+    public Map<Courier, List<Pair<Intersection, TimeWindow>>> getCourierDotMap() {
         return courierDotMap;
     }
 
-    public void setCourierDotMap(Map<Courier, List<Intersection>> courierDotMap) {
+    public void setCourierDotMap(Map<Courier, List<Pair<Intersection, TimeWindow>>> courierDotMap) {
         this.courierDotMap = courierDotMap;
     }
 

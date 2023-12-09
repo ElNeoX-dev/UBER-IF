@@ -49,17 +49,6 @@
                      <Font name="Uber Move Medium" size="13.0" />
                   </font>
                </Label>
-                        <Button id="restoreBtn" fx:id="restoreBtn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onRestoreBtnClick" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="btn" text="Restore previous tours" textAlignment="CENTER">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                            <padding>
-                                <Insets bottom="10.0" left="32.0" right="32.0" top="10.0" />
-                            </padding>
-                        <stylesheets>
-                           <URL value="@Theme.css" />
-                        </stylesheets>
-                        </Button>
                         <ChoiceBox id="choiceMap" fx:id="choiceMap" maxWidth="1.7976931348623157E308" styleClass="choice-box-popup" stylesheets="@Theme.css">
                             <padding>
                                 <Insets bottom="6.0" left="32.0" right="32.0" top="6.0" />
@@ -108,6 +97,17 @@
                             <padding>
                                 <Insets bottom="10.0" left="32.0" right="32.0" top="10.0" />
                             </padding>
+                        </Button>
+                        <Button id="restoreBtn" fx:id="restoreBtn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onRestoreBtnClick" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="btn" text="Restore previous tours" textAlignment="CENTER">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                            <padding>
+                                <Insets bottom="10.0" left="32.0" right="32.0" top="10.0" />
+                            </padding>
+                            <stylesheets>
+                                <URL value="@Theme.css" />
+                            </stylesheets>
                         </Button>
                         <Button id="saveBtn" fx:id="saveBtn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSaveBtnClick" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="btn" stylesheets="@Theme.css" text="Save tours" textFill="#00a3ff">
                             <font>

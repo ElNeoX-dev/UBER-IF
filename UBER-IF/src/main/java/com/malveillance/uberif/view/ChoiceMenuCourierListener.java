@@ -2,6 +2,7 @@ package com.malveillance.uberif.view;
 
 import com.malveillance.uberif.model.Courier;
 import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.model.TimeWindow;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.util.Pair;
@@ -21,8 +22,8 @@ public class ChoiceMenuCourierListener implements ChangeListener<String> {
     @Override
     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         //System.out.println("Courier selected: " + newValue);
-        Pair<Courier, List<Intersection>> selectedCourier = null ;
-        Map<Courier, List<Intersection>> couriersDotMap = graphicalView.getCityMap().getCourierDotMap();
+        Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier = null ;
+        Map<Courier, List<Pair<Intersection, TimeWindow>>> couriersDotMap = graphicalView.getCityMap().getCourierDotMap();
 
         for (Courier courier : graphicalView.getCityMap().getListCourier()) {
             if (courier.getName().equals(newValue)) {
