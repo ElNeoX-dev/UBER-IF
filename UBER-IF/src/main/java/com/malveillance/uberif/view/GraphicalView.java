@@ -33,13 +33,12 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         System.out.println("Optimize click");
         for(Courier couriers : cityMap.getCourierDotMap().keySet()) {
             if(!couriers.getName().isEmpty()) {
-                List<Intersection> intersections = cityMap.getSelectedIntersectionList(couriers);
+                List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(couriers);
 
-                Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(240)));
-                for(Intersection i : intersections) {
-                    tour.addDelivery(new Delivery(i, new TimeWindow(240)));
+                Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(0)));
+                for(Pair<Intersection, TimeWindow> d : deliveryPoints) {
+                    tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
                 }
-//                tour.addDelivery(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(240)));
                 List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
                 for(Pair<Intersection, Date> p : computedTravel) {
                     if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || computedTravel.indexOf(p) == 0) {

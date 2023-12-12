@@ -15,6 +15,13 @@ public class Tour {
         id = randomInt.nextInt(Integer.MAX_VALUE);
     }
 
+    public Tour(Delivery startingDelivery) {
+        deliveries = new ArrayList<>();
+        deliveries.add(startingDelivery);
+        Random randomInt = new Random();
+        id = randomInt.nextInt(Integer.MAX_VALUE);
+    }
+
     public int getId() {
         return id;
     }
