@@ -1,10 +1,14 @@
 package com.malveillance.uberif.model;
 
+import javafx.scene.shape.Line;
+
 public class RoadSegment extends Shape {
     private Intersection destination;
     private double length;
     private String name;
     private Intersection origin;
+
+    protected Line road ;
 
     public RoadSegment(Intersection origin, Intersection destination, double length, String name) {
         this.origin = origin;

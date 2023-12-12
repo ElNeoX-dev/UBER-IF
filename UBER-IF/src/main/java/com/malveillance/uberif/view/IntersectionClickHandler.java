@@ -2,46 +2,118 @@ package com.malveillance.uberif.view;
 
 import com.malveillance.uberif.model.Courier;
 import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.model.TimeWindow;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 
-import java.awt.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class IntersectionClickHandler implements EventHandler<MouseEvent> {
-    private final Intersection intersection;
-    private Dot intersectionDot;
+    private Intersection intersection;
 
     private GraphicalView graphicalView;
 
-    public IntersectionClickHandler(Dot intersectionDot, Intersection intersection, GraphicalView graphicalView) {
+    public IntersectionClickHandler(Intersection intersection, GraphicalView graphicalView) {
         this.intersection = intersection;
-        this.intersectionDot = intersectionDot;
         this.graphicalView = graphicalView;
     }
 
     @Override
     public void handle(MouseEvent event) {
-        System.out.println("Mouse clicked over intersection (" + intersection.getId() + ") at (" + intersection.getLatitude() + ", " + intersection.getLongitude() + ")");
+        // System.out.println("Mouse clicked over intersection (" + intersection.getId()
+        // + ") at (" + intersection.getLatitude() + ", " + intersection.getLongitude()
+        // + ")");
+        Courier currentCourier = graphicalView.getSelectedCourier().getKey();
 
-        Courier courier = graphicalView.getSelectedCourier().getKey();
-        List<Intersection> selectedListIntersections = graphicalView.getSelectedCourier().getValue();
+        if (!currentCourier.getName().isEmpty()) {
+            // To unselect a circle : press shift + click
+            if (event.isShiftDown()) {
+                intersection.setIsOwned(false);
+                intersection.setFill(Color.RED);
+                // Reinitialize the pair containing the intersection and the time window
+                for (Pair<Intersection, TimeWindow> intersectionPair : graphicalView.getCityMap()
+                        .getSelectedPairList(currentCourier)) {
+                    if (intersectionPair.getKey().equals(intersection)) {
+                        intersectionPair.getValue().setStartingTime(null);
+                        intersectionPair.getValue().setEndingTime(null);
+                        graphicalView.getCityMap().getSelectedPairList(currentCourier).remove(intersectionPair);
+                        break;
+                    }
+                }
 
-        if (!courier.getName().isEmpty()) {
-            if (selectedListIntersections.contains(intersection)) {
-                selectedListIntersections.remove(intersection);
-                intersectionDot.setOwner(null);
-                intersectionDot.setFill(Color.RED);
-                // est ce que les dots sont toujours responsive apres ?
+                graphicalView.getCityMap().getSelectedPairList(currentCourier)
+                        .removeIf(pair -> pair.getKey().equals(intersection));
+
             } else {
-                selectedListIntersections.add(intersection);
-                intersectionDot.setOwner(courier);
-                intersectionDot.setFill(courier.getColor());
-                intersectionDot.setRadius(5);
+                if (graphicalView.getCityMap().seeSelectedIntersectionList(currentCourier).contains(intersection)) {
+
+                } else {
+                    String result = showChoiceDialogTime();
+                    int startH = -1;
+                    try {
+                        startH = Integer.parseInt(result.replace("h", ""));
+                    } catch (NumberFormatException err) {
+                        System.out.println("Erreur lors du parseInt : " + err);
+                    }
+
+                    if (!result.isEmpty() && startH >= 8 && startH <= 12) {
+                        intersection.setIsOwned(true);
+                        intersection.setFill(currentCourier.getColor());
+                        intersection.getCircle().setRadius(graphicalView.height / 150);
+
+                        Calendar cal = Calendar.getInstance();
+                        cal.set(Calendar.HOUR_OF_DAY, startH);
+                        Date startingTime = cal.getTime();
+                        TimeWindow timeWindow = new TimeWindow(startingTime, 60);
+
+                        graphicalView.getCityMap().getSelectedPairList(currentCourier)
+                                .add(new Pair<>(intersection, timeWindow));
+                    }
+
+                }
             }
         }
+
+    }
+
+    public String showChoiceDialogTime() {
+        final String[] res = { "" };
+        ChoiceDialog dialog = new ChoiceDialog("8h");
+        dialog.setTitle("Enter a time window");
+        dialog.setHeaderText("Enter a time window");
+        dialog.setContentText("Please select the wanted delivery time : ");
+
+        ObservableList<String> list = dialog.getItems();
+        list.add("8h");
+        list.add("9h");
+        list.add("10h");
+        list.add("11h");
+        list.add("12h");
+
+        dialog.showAndWait().ifPresent(result -> res[0] = dialog.getResult().toString());
+
+        return res[0];
+    }
+
+    public String showDialogBoxInput() {
+        final String[] res = { null };
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Enter a time window");
+        dialog.setHeaderText("Courier's name");
+        dialog.setContentText("Enter the courier's name : ");
+
+        dialog.showAndWait().ifPresent(result -> {
+            res[0] = result;
+        });
+        return res[0];
     }
 }

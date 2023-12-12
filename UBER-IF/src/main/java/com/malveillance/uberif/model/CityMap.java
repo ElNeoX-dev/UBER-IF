@@ -1,25 +1,28 @@
 package com.malveillance.uberif.model;
 
+import javafx.util.Pair;
+
 import java.util.Observable;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
-public class CityMap  extends Observable {
+public class CityMap extends Observable {
     public static final double INFINITE_LENGTH = Double.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
+    private Map<Courier, List<Pair<Intersection, TimeWindow>>> courierDotMap;
     private final Warehouse warehouse;
 
-    private String mapName ;
-
+    private String mapName;
 
     public CityMap(Warehouse warehouse, List<Intersection> intersections) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
+        this.courierDotMap = new HashMap<>();
 
         for (Intersection node : intersections) {
-            this.nodes.put(node,new ArrayList<>());
+            this.nodes.put(node, new ArrayList<>());
         }
     }
 
@@ -27,9 +30,10 @@ public class CityMap  extends Observable {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
         this.mapName = mapName;
+        this.courierDotMap = new HashMap<>();
 
         for (Intersection node : intersections) {
-            this.nodes.put(node,new ArrayList<>());
+            this.nodes.put(node, new ArrayList<>());
         }
         for (RoadSegment segment : segments) {
             this.nodes.get(segment.getOrigin()).add(segment);
@@ -38,8 +42,49 @@ public class CityMap  extends Observable {
 
     private void addIntersection(Intersection intersection) {
         if (!this.nodes.containsKey(intersection)) {
-            this.nodes.put(intersection,new ArrayList<>());
+            this.nodes.put(intersection, new ArrayList<>());
         }
+    }
+
+    public void addCourier(Courier courier) {
+        this.courierDotMap.put(courier, new ArrayList<>());
+    }
+
+    public void removeCourier(Courier courier) {
+        this.courierDotMap.remove(courier);
+    }
+
+    public List<Pair<Intersection, TimeWindow>> getSelectedPairList(Courier courier) {
+        return courierDotMap.get(courier);
+    }
+
+    public List<Intersection> seeSelectedIntersectionList(Courier courier) {
+        List<Intersection> intersections = new ArrayList<>();
+
+        // Parcourir les paires et extraire les Intersections
+        for (Pair<Intersection, TimeWindow> pair : courierDotMap.get(courier)) {
+            intersections.add(pair.getKey());
+        }
+
+        return intersections;
+    }
+
+    public List<Courier> getListCourier() {
+        List<Courier> couriers = new ArrayList<>();
+
+        for (Map.Entry<Courier, List<Pair<Intersection, TimeWindow>>> entry : courierDotMap.entrySet()) {
+            couriers.add(entry.getKey());
+        }
+
+        return couriers;
+    }
+
+    public Map<Courier, List<Pair<Intersection, TimeWindow>>> getCourierDotMap() {
+        return courierDotMap;
+    }
+
+    public void setCourierDotMap(Map<Courier, List<Pair<Intersection, TimeWindow>>> courierDotMap) {
+        this.courierDotMap = courierDotMap;
     }
 
     public void addRoadSegment(RoadSegment segment) {
@@ -55,7 +100,7 @@ public class CityMap  extends Observable {
         return this.nodes.getOrDefault(intersection, new ArrayList<>());
     }
 
-    public void setAdjacentRoads(Intersection intersection,List<RoadSegment> roadSegments) {
+    public void setAdjacentRoads(Intersection intersection, List<RoadSegment> roadSegments) {
         this.nodes.get(intersection).addAll(roadSegments);
     }
 
@@ -63,7 +108,9 @@ public class CityMap  extends Observable {
         return this.nodes;
     }
 
-    public Warehouse getWarehouse() { return this.warehouse; }
+    public Warehouse getWarehouse() {
+        return this.warehouse;
+    }
 
     public double getDistance(Intersection source, Intersection destination) {
         for (RoadSegment segment : this.nodes.get(source)) {
@@ -83,20 +130,15 @@ public class CityMap  extends Observable {
         }
     }
 
-    public int getNbNodes(){
+    public int getNbNodes() {
         return nodes.size();
     }
-
 
     public String getMapName() {
         return mapName;
     }
 
-    @Override
-    public String toString() {
-        return "CityMap{" +
-                "nodes=" + nodes +
-                ", warehouse=" + warehouse +
-                '}';
+    public boolean IntersectionInMap(Intersection intersection) {
+        return this.nodes.keySet().contains(intersection);
     }
 }
