@@ -44,7 +44,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 //                tour.addDelivery(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(240)));
                 List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
                 for(Pair<Intersection, Date> p : computedTravel) {
-                    if(true) {
+                    if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || computedTravel.indexOf(p) == 0) {
                         List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
                         RoadSegment correctRoadSegment;
                         for(RoadSegment r : roadSegments) {
@@ -102,9 +102,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             nbCouriers++;
             nbCourierLb.setText(String.valueOf(nbCouriers));
             choiceCourier.getItems().add(courier.getName());
-
-
-
         }
     }
 
