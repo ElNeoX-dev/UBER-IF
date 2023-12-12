@@ -67,7 +67,13 @@ public class Intersection extends Shape {
         this.longitude = longitude;
     }
 
-    public boolean equals (Intersection intersection) {return (this.getId().equals(intersection.getId()));}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Intersection that = (Intersection) obj;
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
 
     public int hashCode() {
         return this.getId().hashCode();
@@ -78,7 +84,7 @@ public class Intersection extends Shape {
         return "Intersection " + id + " [Lat: " + latitude + ", Long: " + longitude + "]";
     }
 
-    public void accept( ShapeVisitor v ){
-            v.visit(this);
+    public void accept(ShapeVisitor v) {
+        v.visit(this);
     }
 }

@@ -7,11 +7,11 @@ import java.util.Random;
 public class Tour {
     private List<Delivery> deliveries;
 
-    private int id ;
+    private int id;
 
     public Tour() {
         deliveries = new ArrayList<>();
-        Random randomInt = new Random() ;
+        Random randomInt = new Random();
         id = randomInt.nextInt(Integer.MAX_VALUE);
     }
 
@@ -29,6 +29,10 @@ public class Tour {
 
     public void addDelivery(Delivery delivery) {
         this.deliveries.add(delivery);
+    }
+
+    public Delivery getStartingPoint() {
+        return this.deliveries.get(0);
     }
 
     @Override

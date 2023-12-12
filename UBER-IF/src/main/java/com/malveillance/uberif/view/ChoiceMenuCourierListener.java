@@ -10,20 +10,20 @@ import javafx.util.Pair;
 import java.util.List;
 import java.util.Map;
 
-
 public class ChoiceMenuCourierListener implements ChangeListener<String> {
 
-    private GraphicalView graphicalView ;
+    private GraphicalView graphicalView;
 
     public ChoiceMenuCourierListener(GraphicalView graphicalView) {
-        this.graphicalView = graphicalView ;
+        this.graphicalView = graphicalView;
     }
 
     @Override
     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-        //System.out.println("Courier selected: " + newValue);
-        Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier = null ;
-        Map<Courier, List<Pair<Intersection, TimeWindow>>> couriersDotMap = graphicalView.getCityMap().getCourierDotMap();
+        // System.out.println("Courier selected: " + newValue);
+        Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier = null;
+        Map<Courier, List<Pair<Intersection, TimeWindow>>> couriersDotMap = graphicalView.getCityMap()
+                .getCourierDotMap();
 
         for (Courier courier : graphicalView.getCityMap().getListCourier()) {
             if (courier.getName().equals(newValue)) {

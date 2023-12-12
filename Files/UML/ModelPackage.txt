@@ -1,0 +1,47 @@
+@startuml
+
+' Model Package
+package "Models" {
+    class CityMap {
+        +List<Intersection> intersections
+        +List<RoadSegment> roadSegments
+    }
+
+    class Delivery {
+        +Intersection location
+        +TimeWindow timeWindow
+        +Courier assignedCourier
+    }
+
+    class Tour {
+        +List<Delivery> deliveries
+        +calculateOptimalRoute(): void
+    }
+
+    class Courier {
+        +String id
+        +Tour currentTour
+    }
+    
+    class Shape{}
+    
+    class Intersection{}
+    Shape <|-- Intersection
+    
+    class RoadSegment{}
+    Shape <|-- RoadSegment
+    
+    interface ShapeVisitor{
+      +visit(Intersection)
+      +visit(RoadSegment)
+    }
+}
+
+' Relationships
+CityMap "1" -- "n" Intersection
+CityMap "1" -- "n" RoadSegment
+
+Courier "n" -- "1" Tour
+
+
+@enduml

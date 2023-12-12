@@ -1,0 +1,69 @@
+@startuml
+
+package MapPackage {
+    class CityMap {
+        - intersections: List<Intersection>
+        - roadSegments: List<RoadSegment>
+        - warehouseAddress: Address
+    }
+
+    class Intersection {
+        - latitude: double
+        - longitude: double
+    }
+
+    class RoadSegment {
+        - originIntersection: Intersection
+        - destinationIntersection: Intersection
+        - name: String
+        - lengthInMeters: double
+    }
+
+}
+
+package TourPackage {
+    class Courier {
+        - id: int
+        - currentTour: Tour
+    }
+
+    class Tour {
+        - startPoint: Intersection
+        - endPoint: Intersection
+        - deliveries: List<Delivery>
+        - timeInterval: TimeInterval
+    }
+
+    class Delivery {
+        - location: Intersection
+        - timeWindow: TimeInterval
+        - arrivalTime: DateTime
+        - departureTime: DateTime
+    }
+
+    class TimeInterval {
+        - startTime: DateTime
+        - endTime: DateTime
+    }
+}
+
+package ApplicationPackage {
+    class Application {
+        - cityMap: CityMap
+        - couriers: List<Courier>
+        + setNumberOfCourier(): void
+        + loadMap(): void
+        + createDeliveryRequest(): void
+        + computeTour(): void
+        + displayMap(): void
+        + saveTours(): void
+        + restoreTours(): void
+    }
+}
+
+CityMap "1" -- "0..*" Intersection
+CityMap "1" -- "0..*" RoadSegment
+Courier "1" -- "0..1" Tour
+Tour "1" -- "*" Delivery
+
+@enduml

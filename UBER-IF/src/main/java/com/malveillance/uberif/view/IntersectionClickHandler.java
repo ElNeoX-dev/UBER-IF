@@ -29,7 +29,9 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
 
     @Override
     public void handle(MouseEvent event) {
-        //System.out.println("Mouse clicked over intersection (" + intersection.getId() + ") at (" + intersection.getLatitude() + ", " + intersection.getLongitude() + ")");
+        // System.out.println("Mouse clicked over intersection (" + intersection.getId()
+        // + ") at (" + intersection.getLatitude() + ", " + intersection.getLongitude()
+        // + ")");
         Courier currentCourier = graphicalView.getSelectedCourier().getKey();
 
         if (!currentCourier.getName().isEmpty()) {
@@ -38,7 +40,8 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
                 intersection.setIsOwned(false);
                 intersection.setFill(Color.RED);
                 // Reinitialize the pair containing the intersection and the time window
-                for (Pair<Intersection, TimeWindow> intersectionPair: graphicalView.getCityMap().getSelectedPairList(currentCourier)) {
+                for (Pair<Intersection, TimeWindow> intersectionPair : graphicalView.getCityMap()
+                        .getSelectedPairList(currentCourier)) {
                     if (intersectionPair.getKey().equals(intersection)) {
                         intersectionPair.getValue().setStartingTime(null);
                         intersectionPair.getValue().setEndingTime(null);
@@ -47,17 +50,17 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
                     }
                 }
 
-                graphicalView.getCityMap().getSelectedPairList(currentCourier).removeIf(pair -> pair.getKey().equals(intersection));
+                graphicalView.getCityMap().getSelectedPairList(currentCourier)
+                        .removeIf(pair -> pair.getKey().equals(intersection));
 
             } else {
                 if (graphicalView.getCityMap().seeSelectedIntersectionList(currentCourier).contains(intersection)) {
 
-
                 } else {
-                    String result = showChoiceDialogTime() ;
+                    String result = showChoiceDialogTime();
                     int startH = -1;
                     try {
-                        startH = Integer.parseInt(result.replace("h",""));
+                        startH = Integer.parseInt(result.replace("h", ""));
                     } catch (NumberFormatException err) {
                         System.out.println("Erreur lors du parseInt : " + err);
                     }
@@ -65,25 +68,25 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
                     if (!result.isEmpty() && startH >= 8 && startH <= 12) {
                         intersection.setIsOwned(true);
                         intersection.setFill(currentCourier.getColor());
-                        intersection.getCircle().setRadius(graphicalView.height/150);
+                        intersection.getCircle().setRadius(graphicalView.height / 150);
 
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.HOUR_OF_DAY, startH);
                         Date startingTime = cal.getTime();
                         TimeWindow timeWindow = new TimeWindow(startingTime, 60);
 
-                        graphicalView.getCityMap().getSelectedPairList(currentCourier).add(new Pair<>(intersection, timeWindow));
+                        graphicalView.getCityMap().getSelectedPairList(currentCourier)
+                                .add(new Pair<>(intersection, timeWindow));
                     }
 
                 }
             }
         }
 
-
     }
 
     public String showChoiceDialogTime() {
-        final String[] res = {""};
+        final String[] res = { "" };
         ChoiceDialog dialog = new ChoiceDialog("8h");
         dialog.setTitle("Enter a time window");
         dialog.setHeaderText("Enter a time window");
@@ -96,10 +99,21 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
         list.add("11h");
         list.add("12h");
 
-
         dialog.showAndWait().ifPresent(result -> res[0] = dialog.getResult().toString());
 
+        return res[0];
+    }
 
+    public String showDialogBoxInput() {
+        final String[] res = { null };
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Enter a time window");
+        dialog.setHeaderText("Courier's name");
+        dialog.setContentText("Enter the courier's name : ");
+
+        dialog.showAndWait().ifPresent(result -> {
+            res[0] = result;
+        });
         return res[0];
     }
 }
