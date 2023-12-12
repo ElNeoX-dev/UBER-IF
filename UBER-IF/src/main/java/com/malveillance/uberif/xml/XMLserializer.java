@@ -71,8 +71,9 @@ public class XMLserializer /*implements Visitor */ {// Singleton
                 createAttribute(intersectionElement, "latitude", String.valueOf(intersection.getLatitude()));
                 createAttribute(intersectionElement, "longitude", String.valueOf(intersection.getLongitude()));
                 createAttribute(intersectionElement, "timeWindow", String.valueOf(delivery.getTimeWindow()));
-                createAttribute(intersectionElement, "courier", String.valueOf(delivery.getCourier().getName()));
-                createAttribute(intersectionElement, "color", String.valueOf(delivery.getCourier().getColor()));
+//                On verra plus tard apparemment
+//                createAttribute(intersectionElement, "courier", String.valueOf(delivery.getCourier().getName()));
+//                createAttribute(intersectionElement, "color", String.valueOf(delivery.getCourier().getColor()));
                 createAttribute(intersectionElement, "order", String.valueOf(i));
                 i++;
             }
