@@ -55,14 +55,19 @@ public class XMLserializer /*implements Visitor */ {// Singleton
 
         int i = 1 ;
         for (Tour tour : tourList) {
+            // tour element
+            Element tourElement = document.createElement("tour");
+            root.appendChild(tourElement);
+
+            createAttribute(tourElement, "tourId", String.valueOf(tour.getId()));
+
             for (Delivery delivery : tour.getDeliveries()) {
                 Intersection intersection = delivery.getIntersection();
                 // intersection element
                 Element intersectionElement = document.createElement("intersection");
-                root.appendChild(intersectionElement);
+                tourElement.appendChild(intersectionElement);
 
                 createAttribute(intersectionElement, "id", intersection.getId());
-                createAttribute(intersectionElement, "tourId", String.valueOf(tour.getId()));
                 createAttribute(intersectionElement, "latitude", String.valueOf(intersection.getLatitude()));
                 createAttribute(intersectionElement, "longitude", String.valueOf(intersection.getLongitude()));
                 createAttribute(intersectionElement, "timeWindow", String.valueOf(delivery.getTimeWindow()));
