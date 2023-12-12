@@ -1,7 +1,10 @@
 package com.malveillance.uberif.xml;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -12,76 +15,89 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.malveillance.uberif.model.*;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class XMLserializer /*implements Visitor */ {// Singleton
 
-	/*
-	private Element shapeRoot;
-	private Document document;
-	private static XMLserializer instance = null;
-	private XMLserializer(){}
-	public static XMLserializer getInstance(){
-		if (instance == null)
-			instance = new XMLserializer();
-		return instance;
-	}*/
- 
-	/**
-	 * Open an XML file and write an XML description of the plan in it 
-	 * @param plan the plan to serialise
-	 * @throws ParserConfigurationException
-	 * @throws TransformerFactoryConfigurationError
-	 * @throws TransformerException
-	 * @throws ExceptionXML
-	 */
-	/*
-	public void save(Plan plan) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException, ExceptionXML{
-		File xml = XMLfileOpener.getInstance().open(false);
-  		StreamResult result = new StreamResult(xml);
-       	document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-       	document.appendChild(createPlanElt(plan));
-        DOMSource source = new DOMSource(document);
-        Transformer xformer = TransformerFactory.newInstance().newTransformer();
-        xformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        xformer.transform(source, result);
-	}
+    private Document document;
 
-	private Element createPlanElt(Plan plan) {
-		Element racine = document.createElement("plan");
-		createAttribute(racine,"height",Integer.toString(plan.getHeight()));
-		createAttribute(racine,"width",Integer.toString(plan.getWidth())); 
-		Iterator<Shape> it = plan.getShapeIterator();
-		while (it.hasNext()){
-			it.next().display(this);
-			racine.appendChild(shapeRoot);
-		}
-		return racine;
-	}
-	
-    private void createAttribute(Element root, String name, String value){
-    	Attr attribut = document.createAttribute(name);
-    	root.setAttributeNode(attribut);
-    	attribut.setValue(value);
+    private Map<Intersection, List<RoadSegment>> segmentUsed;
+
+    private static XMLserializer instance = null;
+    private XMLserializer(){}
+    public static XMLserializer getInstance(){
+        if (instance == null)
+            instance = new XMLserializer();
+        return instance;
     }
-   
-	@Override
-	public void display(Circle c) {
-        shapeRoot = document.createElement("circle");
-        createAttribute(shapeRoot,"x",Integer.toString(c.getCenter().getX()));
-        createAttribute(shapeRoot,"y",Integer.toString(c.getCenter().getY()));
-        createAttribute(shapeRoot,"radius",Integer.toString(c.getRadius()));
-	}
 
-	@Override
-	public void display(Rectangle r) {
-        shapeRoot = document.createElement("rectangle");
-        createAttribute(shapeRoot,"x",Integer.toString(r.getCorner().getX()));
-        createAttribute(shapeRoot,"y",Integer.toString(r.getCorner().getY()));
-        createAttribute(shapeRoot,"width",Integer.toString(r.getWidth()));
-        createAttribute(shapeRoot,"height",Integer.toString(r.getHeight()));
-	}
-	*/
+
+    public void serialize(List<Tour> tourList, /*NECESSAIRE ??? Map<Intersection, List<RoadSegment>> segmentUsed,*/ Warehouse warehouse, String  name) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+        DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+        document = documentBuilder.newDocument();
+
+        // root element
+        Element root = document.createElement("map");
+        document.appendChild(root);
+
+        // warehouse element
+        Element warehouseElement = document.createElement("warehouse");
+        root.appendChild(warehouseElement);
+
+        // set an attribute to warehouse element
+        Attr warehouseAttr = document.createAttribute("address");
+        warehouseAttr.setValue(warehouse.getIntersection().getId());
+        warehouseElement.setAttributeNode(warehouseAttr);
+
+        int i = 1 ;
+        for (Tour tour : tourList) {
+            // tour element
+            Element tourElement = document.createElement("tour");
+            root.appendChild(tourElement);
+
+            createAttribute(tourElement, "tourId", String.valueOf(tour.getId()));
+
+            for (Delivery delivery : tour.getDeliveries()) {
+                Intersection intersection = delivery.getIntersection();
+                // intersection element
+                Element intersectionElement = document.createElement("intersection");
+                tourElement.appendChild(intersectionElement);
+
+                createAttribute(intersectionElement, "id", intersection.getId());
+                createAttribute(intersectionElement, "latitude", String.valueOf(intersection.getLatitude()));
+                createAttribute(intersectionElement, "longitude", String.valueOf(intersection.getLongitude()));
+                createAttribute(intersectionElement, "timeWindow", String.valueOf(delivery.getTimeWindow()));
+                createAttribute(intersectionElement, "courier", String.valueOf(delivery.getCourier().getName()));
+                createAttribute(intersectionElement, "color", String.valueOf(delivery.getCourier().getColor()));
+                createAttribute(intersectionElement, "order", String.valueOf(i));
+                i++;
+            }
+            i = 1 ;
+        }
+
+        // save the xml file
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        // for pretty print
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        DOMSource domSource = new DOMSource(document);
+        StreamResult streamResult = new StreamResult(new File("src/main/resources/output/" + name + ".xml"));
+        transformer.transform(domSource, streamResult);
+
+
+
+    }
+
+    private void createAttribute(Element root, String name, String value){
+        Attr attribute = document.createAttribute(name);
+        root.setAttributeNode(attribute);
+        attribute.setValue(value);
+    }
+
+
+
 }
