@@ -66,7 +66,7 @@ public abstract class TemplateTSP implements TSP {
 	 * @param g
 	 * @return an iterator for visiting all vertices in <code>unvisited</code> which are successors of <code>currentVertex</code>
 	 */
-	protected abstract Iterator<Delivery> iterator(Delivery currentVertex, Collection<Delivery> unvisited, CityMap g);
+	protected abstract Iterator<Delivery> iterator(Delivery currentVertex, Collection<Delivery> unvisited, CityMap g, double currentTime);
 
 	/**
 	 * Template method of a branch and bound algorithm for solving the TSP in <code>g</code>.
@@ -87,7 +87,7 @@ public abstract class TemplateTSP implements TSP {
 	    		}
 	    	}
 	    } else if (currentCost+bound(currentVertex,unvisited) < bestSolCost){
-	        Iterator<Delivery> it = iterator(currentVertex, unvisited, g);
+	        Iterator<Delivery> it = iterator(currentVertex, unvisited, g, currentTime);
 	        while (it.hasNext()){
 				Delivery nextVertex = it.next();
 				double travelTime = g.getDistance(currentVertex.getIntersection(), nextVertex.getIntersection());
