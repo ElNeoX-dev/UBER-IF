@@ -16,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -24,6 +25,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     private CityMapController cityMapController;
     private PaneController paneController;
 
+    private List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas;
     private int nbCouriers = 0;
 
     private Courier noOne = new Courier("", Color.RED);
@@ -31,31 +33,40 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     @FXML
     protected void onOptimizeBtnClick() {
         System.out.println("Optimize click");
-        for(Courier couriers : cityMap.getCourierDotMap().keySet()) {
-            if(!couriers.getName().isEmpty()) {
-                List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(couriers);
-
+        courierTourDatas = new ArrayList<>();
+        for(Courier courier : cityMap.getCourierDotMap().keySet()) {
+            if(!courier.getName().isEmpty()) {
+                List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(courier);
                 Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(0)));
                 for(Pair<Intersection, TimeWindow> d : deliveryPoints) {
                     tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
                 }
                 List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
-                int j = 0;
-                for(Pair<Intersection, Date> p : computedTravel) {
-                    if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {
-                        List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
-                        for(RoadSegment r : roadSegments) {
-                            if(r.getDestination() == computedTravel.get(j + 1).getKey())
-                            {
-                                visit(r);
-                                j++;
-                                break;
+                if(computedTravel == null)
+                {
+                    showDialogBoxError(courier);
+                }
+                else
+                {
+                    int j = 0;
+                    List<Pair<RoadSegment, Date>> travel = new ArrayList<>();
+                    for(Pair<Intersection, Date> p : computedTravel) {
+                        if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {
+                            List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
+                            for(RoadSegment r : roadSegments) {
+                                if(r.getDestination() == computedTravel.get(j + 1).getKey())
+                                {
+                                    visit(r);
+                                    travel.add(new Pair<RoadSegment, Date>(r, computedTravel.get(j + 1).getValue()));
+                                    j++;
+                                    break;
+                                }
                             }
                         }
                     }
+                    courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
                 }
             }
-
         }
     }
 
@@ -115,6 +126,15 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             res[0] = result;
         });
         return res[0];
+    }
+
+    public void showDialogBoxError(Courier courier) {
+        TextInputDialog dialog = new TextInputDialog("");
+        dialog.setTitle("Error");
+        dialog.setHeaderText("There's no suitable tour for this Courier");
+        dialog.setContentText("Courier : " + courier.getName());
+
+        dialog.showAndWait();
     }
 
     @FXML
@@ -269,7 +289,12 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             width = mapPane.getWidth();
             height = width;
         }
-
+        Rectangle clip = new Rectangle(
+                width, height
+        );
+        clip.setLayoutX(-(width - mapPane.getWidth()) / 2);
+        clip.setLayoutY(-(height - mapPane.getHeight()) / 2);
+        mapPane.setClip(clip);
         if (o instanceof CityMap newmap) {
             switch (newmap.getMapName()) {
                 case "Small" -> coef = 1.0;
@@ -285,6 +310,15 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
             for (Shape elem : newmap.getNodes().keySet()) {
                 elem.accept(this);
+            }
+
+            if(courierTourDatas != null)
+            {
+                for(Pair<Courier, List<Pair<RoadSegment, Date>>> c : courierTourDatas) {
+                    for(Pair<RoadSegment, Date> p : c.getValue()) {
+                        visit(p.getKey());
+                    }
+                }
             }
 
             this.cityMap = newmap;
