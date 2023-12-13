@@ -41,6 +41,10 @@ public class TimeWindow {
         this(defaultStartingHour,minutes);
     }
 
+    public TimeWindow(TimeWindow other) {
+        this.startingTime = (Date) other.startingTime.clone();
+        this.endingTime = (Date) other.endingTime.clone();
+    }
     public Date getStartingTime() {
         return startingTime;
     }

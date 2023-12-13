@@ -85,12 +85,31 @@
                             </HBox>
 
                         </VBox>
-                        <ChoiceBox id="choiceCourier" fx:id="choiceCourier" maxWidth="1.7976931348623157E308" styleClass="choice-box-popup" stylesheets="@Theme.css">
-                            <padding>
-                                <Insets bottom="6.0" left="32.0" right="32.0" top="6.0" />
-                            </padding>
-                        </ChoiceBox>
+                        <VBox maxWidth="1.7976931348623157E308" spacing="2.0">
+                            <Label alignment="TOP_LEFT" text="Choose courier" textFill="#00a3ff">
+                                <font>
+                                    <Font name="Uber Move Medium" size="10.0" />
+                                </font>
+                            </Label>
+                            <ChoiceBox id="choiceCourier" fx:id="choiceCourier" maxWidth="1.7976931348623157E308" styleClass="choice-box-popup" stylesheets="@Theme.css">
+                                <padding>
+                                    <Insets bottom="6.0" left="32.0" right="32.0" top="6.0" />
+                                </padding>
+                            </ChoiceBox>
+                        </VBox>
+
+
+
+
                         <Button id="validateBtn" fx:id="validateBtn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onOptimizeBtnClick" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="btn-opti" stylesheets="@Theme.css" text="Validate" textFill="#ffffff">
+                            <font>
+                                <Font name="Uber Move Medium" size="14.0" />
+                            </font>
+                            <padding>
+                                <Insets bottom="10.0" left="32.0" right="32.0" top="10.0" />
+                            </padding>
+                        </Button>
+                        <Button id="saveBtn" fx:id="saveBtn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSaveBtnClick" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="btn" stylesheets="@Theme.css" text="Save tours" textFill="#00a3ff">
                             <font>
                                 <Font name="Uber Move Medium" size="14.0" />
                             </font>
@@ -109,14 +128,7 @@
                                 <URL value="@Theme.css" />
                             </stylesheets>
                         </Button>
-                        <Button id="saveBtn" fx:id="saveBtn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSaveBtnClick" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="btn" stylesheets="@Theme.css" text="Save tours" textFill="#00a3ff">
-                            <font>
-                                <Font name="Uber Move Medium" size="14.0" />
-                            </font>
-                            <padding>
-                                <Insets bottom="10.0" left="32.0" right="32.0" top="10.0" />
-                            </padding>
-                        </Button>
+
             
                         <padding>
                             <Insets left="35.0" right="35.0" />

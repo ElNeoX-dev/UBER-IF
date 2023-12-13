@@ -1,8 +1,12 @@
 package com.malveillance.uberif.xml;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,16 +30,10 @@ public class XMLserializer /*implements Visitor */ {// Singleton
 
     private Map<Intersection, List<RoadSegment>> segmentUsed;
 
-    private static XMLserializer instance = null;
-    private XMLserializer(){}
-    public static XMLserializer getInstance(){
-        if (instance == null)
-            instance = new XMLserializer();
-        return instance;
-    }
+    public XMLserializer(){}
 
 
-    public void serialize(List<Tour> tourList, /*NECESSAIRE ??? Map<Intersection, List<RoadSegment>> segmentUsed,*/ Warehouse warehouse, String  name) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    public void serialize(Set<Courier> couriersList, /*NECESSAIRE ??? Map<Intersection, List<RoadSegment>> segmentUsed,*/ Warehouse warehouse, String  name) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         document = documentBuilder.newDocument();
@@ -54,12 +52,19 @@ public class XMLserializer /*implements Visitor */ {// Singleton
         warehouseElement.setAttributeNode(warehouseAttr);
 
         int i = 1 ;
-        for (Tour tour : tourList) {
+        for (Courier courier : couriersList) {
+            if (courier.getCurrentTour() == null) {
+                continue;
+            }
+            Tour tour = courier.getCurrentTour();
             // tour element
             Element tourElement = document.createElement("tour");
             root.appendChild(tourElement);
 
             createAttribute(tourElement, "tourId", String.valueOf(tour.getId()));
+            createAttribute(tourElement, "courier", String.valueOf(courier.getName()));
+            createAttribute(tourElement, "color", String.valueOf(courier.getColor().toString()));
+
 
             for (Delivery delivery : tour.getDeliveries()) {
                 Intersection intersection = delivery.getIntersection();
@@ -70,15 +75,23 @@ public class XMLserializer /*implements Visitor */ {// Singleton
                 createAttribute(intersectionElement, "id", intersection.getId());
                 createAttribute(intersectionElement, "latitude", String.valueOf(intersection.getLatitude()));
                 createAttribute(intersectionElement, "longitude", String.valueOf(intersection.getLongitude()));
-                createAttribute(intersectionElement, "timeWindow", String.valueOf(delivery.getTimeWindow()));
-//                On verra plus tard apparemment
-//                createAttribute(intersectionElement, "courier", String.valueOf(delivery.getCourier().getName()));
-//                createAttribute(intersectionElement, "color", String.valueOf(delivery.getCourier().getColor()));
+
+                Date startingTime = delivery.getTimeWindow().getStartingTime();
+                LocalDateTime startingTimeLDT = LocalDateTime.ofInstant(startingTime.toInstant(), ZoneId.systemDefault());
+                createAttribute(intersectionElement, "timeWindowStart", String.valueOf(startingTimeLDT.getHour()));
+
+                Date endingTime = delivery.getTimeWindow().getEndingTime();
+                LocalDateTime endingTimeLDT = LocalDateTime.ofInstant(endingTime.toInstant(), ZoneId.systemDefault());
+                createAttribute(intersectionElement, "timeWindowEnd", String.valueOf(endingTimeLDT.getHour()));
+
                 createAttribute(intersectionElement, "order", String.valueOf(i));
                 i++;
             }
             i = 1 ;
         }
+
+        File outputFile = new File("src/main/resources/output/" + name + ".uberif.xml");
+        outputFile.getParentFile().mkdirs();new StreamResult(outputFile);
 
         // save the xml file
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -86,7 +99,7 @@ public class XMLserializer /*implements Visitor */ {// Singleton
         // for pretty print
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         DOMSource domSource = new DOMSource(document);
-        StreamResult streamResult = new StreamResult(new File("src/main/resources/output/" + name + ".xml"));
+        StreamResult streamResult = new StreamResult(outputFile);
         transformer.transform(domSource, streamResult);
 
 

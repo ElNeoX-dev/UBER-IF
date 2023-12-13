@@ -16,7 +16,7 @@ public class PaneController {
     }
 
     public void leftClick(Intersection intersection){
-        currentState.leftClick(this, intersection,new CityMap(null, null));
+        //currentState.leftClick(this, intersection,new CityMap(null, null));
     }
     public double getIntersectionX(Intersection i, double paneWidth){
         return paneService.longitudeToX(i.getLongitude(), paneWidth);

@@ -7,12 +7,14 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CityMap extends Observable {
     public static final double INFINITE_LENGTH = Double.MAX_VALUE;
     private final Map<Intersection, List<RoadSegment>> nodes;
     private Map<Courier, List<Pair<Intersection, TimeWindow>>> courierDotMap;
     private final Warehouse warehouse;
+    private Map<Courier, List<Pair<Intersection, Date>>> travelList;
 
     private String mapName;
 
@@ -24,6 +26,7 @@ public class CityMap extends Observable {
         for (Intersection node : intersections) {
             this.nodes.put(node, new ArrayList<>());
         }
+        this.travelList = new HashMap<>();
     }
 
     public CityMap(Warehouse warehouse, List<Intersection> intersections, List<RoadSegment> segments, String mapName) {
@@ -87,6 +90,22 @@ public class CityMap extends Observable {
         this.courierDotMap = courierDotMap;
     }
 
+    public void addTravelPlan(Courier courier, List<Pair<Intersection, Date>> plan) {
+        travelList.put(courier, plan);
+    }
+
+    public List<Pair<Intersection, Date>> getTravelPlan(Courier courier) {
+        return travelList.getOrDefault(courier, new ArrayList<>());
+    }
+
+    public void removeTravelPlan(Courier courier) {
+        travelList.remove(courier);
+    }
+
+    public Map<Courier, List<Pair<Intersection, Date>>> getTravelList() {
+        return travelList;
+    }
+
     public void addRoadSegment(RoadSegment segment) {
         this.nodes.get(segment.getOrigin()).add(segment);
     }
@@ -140,5 +159,35 @@ public class CityMap extends Observable {
 
     public boolean IntersectionInMap(Intersection intersection) {
         return this.nodes.keySet().contains(intersection);
+    }
+
+    public CityMap deepCopy() {
+        Warehouse copiedWarehouse = new Warehouse(this.warehouse);
+        List<Intersection> copiedIntersections = new ArrayList<>();
+        for (Intersection intersection : this.nodes.keySet()) {
+            copiedIntersections.add(new Intersection(intersection));
+        }
+
+        List<RoadSegment> copiedSegments = new ArrayList<>();
+        for (List<RoadSegment> segments : this.nodes.values()) {
+            for (RoadSegment segment : segments) {
+                copiedSegments.add(new RoadSegment(segment));
+            }
+        }
+
+        CityMap copiedCityMap = new CityMap(copiedWarehouse, copiedIntersections, copiedSegments, this.mapName);
+
+        for (Map.Entry<Courier, List<Pair<Intersection, TimeWindow>>> entry : this.courierDotMap.entrySet()) {
+            Courier copiedCourier = new Courier(entry.getKey());
+            List<Pair<Intersection, TimeWindow>> copiedPairs = new ArrayList<>();
+            for (Pair<Intersection, TimeWindow> pair : entry.getValue()) {
+                Intersection copiedIntersection = new Intersection(pair.getKey());
+                TimeWindow copiedTimeWindow = new TimeWindow(pair.getValue());
+                copiedPairs.add(new Pair<>(copiedIntersection, copiedTimeWindow));
+            }
+            copiedCityMap.getCourierDotMap().put(copiedCourier, copiedPairs);
+        }
+
+        return copiedCityMap;
     }
 }
