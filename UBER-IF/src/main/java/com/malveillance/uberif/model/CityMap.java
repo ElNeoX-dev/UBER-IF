@@ -41,6 +41,7 @@ public class CityMap extends Observable {
         for (RoadSegment segment : segments) {
             this.nodes.get(segment.getOrigin()).add(segment);
         }
+        this.travelList = new HashMap<>();
     }
 
     private void addIntersection(Intersection intersection) {

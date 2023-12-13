@@ -1,13 +1,15 @@
 package com.malveillance.uberif.controller;
 
+import com.malveillance.uberif.model.CityMap;
+
 import java.util.Stack;
 
 public class Context {
     private State currentState;
     private Stack<State> previousStates;
 
-    public Context() {
-        this.currentState = new InitialState();
+    public Context(CityMap cityMap) {
+        this.currentState = new InitialState(cityMap);
         this.previousStates = null;// Default state
     }
 

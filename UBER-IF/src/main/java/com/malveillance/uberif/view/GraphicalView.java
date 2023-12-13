@@ -44,14 +44,14 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Create and execute the OptimizeRouteCommand
         OptimizeRouteCommand optimizeCommand;
         optimizeCommand = new OptimizeRouteCommand(cityMap);
+        optimizeCommand.execute();
+        //this.cityMap = optimizeCommand.getCityMap();
         for(Courier courier : cityMap.getTravelList().keySet()) {
             for (Pair<Intersection, Date> p : cityMap.getTravelPlan(courier)) {
-                List<Pair<Intersection, Date>> computedTravel;
-                if (!(p.getKey() == cityMap.getWarehouse().getIntersection()) || computedTravel.indexOf(p) == 0) {
+                if (!(p.getKey() == cityMap.getWarehouse().getIntersection()) || cityMap.getTravelPlan(courier).indexOf(p) == 0) {
                     List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
                     for (RoadSegment r : roadSegments) {
-                        computedTravel = cityMap.getTravelPlan(courier);
-                        if (r.getDestination() == cityMap.getTravelPlan(courier).get(computedTravel.indexOf(p) + 1).getKey()) {
+                        if (r.getDestination() == cityMap.getTravelPlan(courier).get(cityMap.getTravelPlan(courier).indexOf(p) + 1).getKey()) {
                             drawLine(r, courier.getColor());
                             break;
                         }
@@ -241,9 +241,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     @FXML
     public void initialize() {
 
-        this.context = new Context(); // Assuming you have a default state
-        this.invoker = new Invoker();
-
         this.xmlSerializer = new XMLserializer();
 
         // Initialize UI
@@ -282,6 +279,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
         mapPane.addEventHandler(MouseEvent.MOUSE_MOVED, new IntersectionHoverHandler(this, lbInfos));
 
+        this.context = new Context(this.cityMap); // Assuming you have a default state
+        this.invoker = new Invoker();
     }
 
     public void setCityMapController(CityMapController cityMapController) {

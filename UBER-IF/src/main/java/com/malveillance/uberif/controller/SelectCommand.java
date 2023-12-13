@@ -1,6 +1,6 @@
 package com.malveillance.uberif.controller;
 
-class AddAddressCommand implements Command {
+class SelectCommand implements Command {
     // Variables to store command state
 
     @Override

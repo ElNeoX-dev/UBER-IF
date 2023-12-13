@@ -21,7 +21,7 @@ public class OptimizeRouteCommand implements Command {
     @Override
     public void execute() {
         // Backup the current state
-        previousState = cityMap.deepCopy(); // Assuming deepCopy() method exists
+        // previousState = cityMap.deepCopy(); // Assuming deepCopy() method exists
 
         System.out.println("Optimize click");
         for(Courier courier : cityMap.getCourierDotMap().keySet()) {
@@ -38,6 +38,10 @@ public class OptimizeRouteCommand implements Command {
                 }
             }
         }
+
+    public CityMap getCityMap() {
+        return cityMap;
+    }
 
     @Override
     public void undo() {

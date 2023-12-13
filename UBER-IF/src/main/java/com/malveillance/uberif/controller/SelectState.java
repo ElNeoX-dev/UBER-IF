@@ -3,6 +3,7 @@ package com.malveillance.uberif.controller;
 import com.malveillance.uberif.model.CityMap;
 
 class SelectState implements State {
+    private CityMap cityMap = null;
     public SelectState(CityMap cityMap){
         this.cityMap = cityMap;
     }

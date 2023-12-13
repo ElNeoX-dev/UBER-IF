@@ -87,8 +87,8 @@ public class XmlMapDeserializer {
                         String timeWindowEnd = element.getAttribute("timeWindowEnd");
                         String tourId = ((Element) element.getParentNode()).getAttribute("tourId");
 
-                        Delivery delivery = new Delivery(intersection, new TimeWindow(Integer.parseInt(timeWindowStart), Integer.parseInt(timeWindowEnd))));
-                        tours.get(tourId).addDelivery(delivery);
+                        Delivery delivery = new Delivery(intersection, new TimeWindow(Integer.parseInt(timeWindowStart), Integer.parseInt(timeWindowEnd)));
+                        tours.get(tourId).getKey().addDelivery(delivery);
                     }
 
                     mapElements.add(intersection);

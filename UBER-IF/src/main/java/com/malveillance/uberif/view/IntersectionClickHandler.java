@@ -70,6 +70,7 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
                         intersection.setFill(currentCourier.getColor());
                         intersection.getCircle().setRadius(graphicalView.height / 150);
 
+
                         TimeWindow timeWindow = new TimeWindow(startH, 60);
 
                         System.out.println(timeWindow.getStartingTime() + " " + timeWindow.getEndingTime());
