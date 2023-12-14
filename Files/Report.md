@@ -8,10 +8,13 @@
 2. [Description of the main success scenario of all identified use cases](#description-of-the-main-success-scenario-of-all-identified-use-cases)
 3. [Description of all use cases](#description-of-all-use-cases)
 4. [Class and Package Diagrams](#class-and-package-diagrams)
-5. [Planning of the first iteration](#planning-the-first)
-6. [Why MVC ?](#Why-MVC-?)
-7. [Why JUNIT ?](#Why-JUNIT-?)
-8. [Glossary](#glossary)
+5. [State-Transition Diagram](#5-state-transition-diagram)
+6. [Plannings of the different iterations](#6-plannings-of-the-different-iterations)
+7. [Architectural and Design Patterns choices](#7-architectural-and-design-patterns-choices)
+8. [Why JUNIT?](#8-why-junit-)
+9. [Discussion on Social and Environmental Issues related to the application](#9-discussion-on-social-and-environmental-issues-related-to-the-application)
+10. [Technical and Human Review](#10-technical-and-human-review)
+11. [Glossary](#11-glossary)
 
 ## 1. Use Case Diagram
 
@@ -21,29 +24,34 @@ Here's the use case diagram for our application:
 
 ## 2. Description of the main success scenario of all identified use cases
 
-| USE CASE                  | Main Success Scenario                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Create Delivery Request   | 1. Manager logs into the system<br>2. Manager selects the option to create a new delivery request<br>3. System displays the form to enter necessary details (courier, time window, destination address)<br>4. Manager fills in the form and submits it<br>5. System checks and validates data<br>6. System creates the delivery request<br>7. System initiates the process of finding an available courier and computing the best tour |
-| Load City Map             | 1. Manager logs into the system<br>2. Manager selects the option to load the city map<br>3. System gets all the necessary information from an XML file<br>4. System confirms successful loading of the map                                                                                                                                                                                                                             |
-| Modify Number of Couriers | 1. Manager logs into the system<br>2. Manager clicks on “+” or “-” to modify the number of available couriers<br>3. System adjusts the number of couriers                                                                                                                                                                                                                                                                              |
-| Save Tours                | 1. Manager logs into the system<br>2. Manager clicks on saving the tours running at the moment<br>3. System saves tour details to an XML file<br>4. System acknowledges successful saving of the tour                                                                                                                                                                                                                                  |
-| Restore Tours             | 1. Manager logs into the system<br>2. Manager clicks on restoring the tours<br>3. Manager chooses the tours they want to restore<br>4. System retrieves and displays the selected tour details                                                                                                                                                                                                                                         |
+| USE CASE                  | Main Success Scenario                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Create Delivery Request   | 1. Manager chooses a courier<br>2. Manager selects an intersection and enters a time window<br>3. System checks and validates data<br>4. System creates the delivery request<br>5. System initiates the process of finding the best tour for the chosen courier. If the tour is feasible, the directions are printed in a PDF document for the courier. |
+| Load City Map             | 1. Manager selects another city map to load in the dropdown list. By default, the small map is loaded. <br>2. System gets all the necessary information from an XML file<br>3. System display successfully the map                                                                                                                                      |
+| Modify Number of Couriers | 1. Manager clicks on “+” or “-” to modify the number of available couriers. If they click on "+", they enter the name of the new courier. If they click on "-", the last courier added is removed. <br>2. System adjusts the number of couriers                                                                                                         |
+| Save Tours                | 1. Manager clicks on saving the tours running at the moment<br>2. System saves tour details to an XML file<br>3. System acknowledges successful saving of the tour                                                                                                                                                                                      |
+| Restore Tours             | 1. Manager clicks on restoring the tours<br>2. Manager chooses the tours they want to restore<br>3. System retrieves and displays the selected tour details                                                                                                                                                                                             |
 
-## 3. Description of all use cases
+## 3. Description of the use cases implemented in the application (à enlever???)
 
-| USE CASE                  | DESCRIPTION                                                                                                                                                                                                                                                                                                            |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Create Delivery Request   | Allows the manager to create a new request and input details of the delivery. The manager has to select a courier, a 1-hour time window, and the destination intersection. This will enable the computing of the best tour by the computer. Then, the departure and arrival times, as well as the tour, are displayed. |
-| Load City Map             | Display the map of the chosen city on the screen, with the name of the road.                                                                                                                                                                                                                                           |
-| Modify Number of Couriers | Modify the number of active couriers in the system.                                                                                                                                                                                                                                                                    |
-| Save Tours                | Store in a file all the tours in the city, as well as the departure and arrival time, corresponding courier, and destination address.                                                                                                                                                                                  |
-| Restore Tours             | Retrieve and load from file old tours and corresponding information, departure and arrival times as well as destination address, and display them.                                                                                                                                                                     |
+| USE CASE                  | DESCRIPTION                                                                                                                                                                                                                                                                                                                              |
+| ------------------------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Create Delivery Request   | Allows the manager to create a new request and chose details of the delivery. The manager first has to select a courier, then the destination intersection and finally a 1-hour time window. This will enable the computing of the best tour by the computer. Then, the departure and arrival times, as well as the tour, are displayed. |
+| Load City Map             | Display the map of the chosen city on the screen, with the name of the roads.                                                                                                                                                                                                                                                            |
+| Modify Number of Couriers | Modify the number of active couriers in the system.                                                                                                                                                                                                                                                                                      |
+| Save Tours                | Store in a file all the tours in the city, as well as the departure and arrival time, corresponding courier, and destination address.                                                                                                                                                                                                    |
+| Restore Tours             | Retrieve and load from file old tours and corresponding information, departure and arrival times as well as destination address, and display them.                                                                                                                                                                                       |
 
 ## 4. Class and Package Diagrams
 
-## 5. Planning of the first iteration
+## 5. State-Transition diagram
+
+## 6. Plannings of the different iterations
 
 ### a. Sprint 1
+#### Initial Planning
+
+#### Actual Planning
 
 - Being able to load the map of intersections with the file given at the beginning
 - Being able to display the best route
@@ -51,35 +59,42 @@ Here's the use case diagram for our application:
 - Entering and managing delivery requests within the right time window
 
 ### b. Sprint 2
+#### Initial Planning
+#### Actual Planning
 
 - Add new features: being able to add manually a delivery at an intersection that's not in the XML file given initially
 - Telling the courier a road is not cyclable and he can't go deliver by this road
 
-## 6. **Why MVC ?**
+### c. Sprint 3
+#### Initial Planning
+#### Actual Planning
 
-**Séparation des préoccupations :** MVC divise l'application en trois composantes principales, ce qui facilite la maintenance et l'évolution du code. Le modèle gère les données et la logique métier, la vue s'occupe de l'affichage des données, et le contrôleur fait le lien entre le modèle et la vue.
 
-**Facilité de maintenance :** Cette séparation permet aux développeurs de travailler sur des composantes individuelles sans affecter les autres. Par exemple, le design de l'interface utilisateur peut être modifié sans toucher à la logique métier.
+## 7. Architectural and Design Patterns choices
+The application employs the Model-View-Controller (MVC) architecture, pro- viding several advantages:
 
-**Développement parallèle :** Comme les composantes sont déconnectées, différentes équipes peuvent travailler en parallèle sur le modèle, les vues, et les contrôleurs, ce qui peut accélérer le processus de développement.
 
-**Réutilisabilité du code :** Les modèles peuvent souvent être réutilisés à travers différentes vues, et les vues peuvent être réutilisées avec différents contrôleurs.
+**Separation of Concerns:** MVC divides the application into three main components—Model, View, and Controller—facilitating ease of mainte- nance and code evolution.
 
-**Facilité de test :** La séparation claire entre la logique métier et l'interface utilisateur facilite le test unitaire et le débogage. Les modèles, vues, et contrôleurs peuvent être testés séparément.
+**Ease of Maintenance:** Developers can work on individual components without affecting others. For example, UI design changes do not impact business logic.
 
-**Flexibilité dans la présentation des données :** Comme la vue est séparée du modèle, la même donnée peut être présentée de différentes manières. C'est particulièrement utile pour les applications qui nécessitent différentes interfaces utilisateur.
+**Parallel Development:** Teams can work simultaneously on different components, accelerating development.
 
-**Adaptabilité et évolutivité :** Le modèle MVC permet une plus grande flexibilité pour évoluer et adapter l'application aux besoins changeants, sans nécessiter une refonte complète.
+**Code Reusability:** Models can often be reused across different views, and views with different controllers.
 
-**Support des interactions complexes :** MVC peut gérer efficacement les interactions complexes entre l'interface utilisateur et la logique métier, ce qui est crucial pour les applications web modernes.
+**Ease of Testing:** Clear separation simplifies unit testing and debugging. Components can be tested independently.
 
-## 7. **Why JUNIT ?**
+**Data Presentation Flexibility:** The separation allows the same data to be presented in different ways, useful for applications requiring diverse UIs.
 
-Pour les test unitaires, nous allons utiliser JUnit, ainsi que les librairies Mockito et JFixture.
+**Adaptability and Scalability:** MVC provides flexibility to evolve and adapt the application to changing needs without a complete overhaul.
 
-Bien sûr, je vais vous fournir un exemple simple de test unitaire en Java qui utilise JFixture pour générer des données de test et Mockito pour mocker des dépendances. Imaginons que nous avons une classe UserService qui dépend d'un UserRepository pour accéder aux données des utilisateurs.
+**Complex Interaction Handling:** Efficient management of complex in- teractions between UI and business logic, crucial for modern web applica- tions.
 
-Voici un exemple de ces classes :
+## 8. Why JUNIT?
+
+For unit testing, we will use JUnit, Mockito, and JFixture. Here is a simplified example of a unit test in Java using JFixture for test data generation and Mockito for mocking dependencies:
+
+**Example for the classes:**
 
 ```java
 
@@ -106,7 +121,7 @@ public class User {
 }
 ```
 
-Voici un exemple de test unitaire.
+**Example of Unitary Tests:**
 
 ```java
     import static org.mockito.Mockito.*;
@@ -125,45 +140,57 @@ public class UserServiceTest {
 
     @Before
     public void setUp() {
-        // Création d'un mock pour UserRepository
+        // Creation of a mock for UserRepository
         userRepositoryMock = mock(UserRepository.class);
 
-        // Initialisation de UserService avec le mock
+        // Initialisation of UserService with the mock
         userService = new UserService(userRepositoryMock);
 
-        // Initialisation de JFixture pour la génération de données
+        // Initialisation of JFixture for the data generation
         fixture = new JFixture();
 
-        // Création d'un ID utilisateur et d'un objet User
+        // Creation of a user ID and of a User object
         userId = fixture.create(String.class);
         expectedUser = fixture.create(User.class);
 
-        // Configuration du comportement du mock
+        // Configuration of the behaviour of the mock
         when(userRepositoryMock.findById(userId)).thenReturn(expectedUser);
     }
 
     @Test
     public void getUserById_ShouldReturnUser() {
-        // Action: Appel de la méthode à tester
+        // Action: Calling of the method to test
         User result = userService.getUserById(userId);
 
-        // Vérification: Le résultat doit correspondre à l'objet User attendu
+        // Checking: Result must correspond to expected User Object
         assertEquals(expectedUser, result);
 
-        // Vérification que le mock a été appelé comme prévu
+        // Checking that the mock has been called as expected
         verify(userRepositoryMock).findById(userId);
     }
 }
 ```
+In this example, JFixture is used for automatic instance creation, and Mock- ito for mocking UserRepository and configuring its behavior. The test verifies that userService.getUserById returns the expected User object and that the mock repository is called correctly.
 
-Dans cet exemple :
+## 9. Discussion on social and environmental issues related to the application
 
-JFixture est utilisé pour créer automatiquement des instances de String et User. Cela simplifie la création des données de test.
-Mockito est utilisé pour créer un mock de UserRepository et configurer son comportement avec when(...).thenReturn(...).
-Le test vérifie que userService.getUserById renvoie l'objet User attendu et que le mock userRepository est appelé correctement.
-Cet exemple illustre la combinaison de JFixture pour la génération de données de test et de Mockito pour le mocking dans un contexte de test unitaire Java.
+Using bicycles for urban delivery services is a great step towards addressing both social and environmental issues. Indeed, it can not only reduce urban congestion, but also contribute to reduced delivery times, which makes it more efficient overall. However, it's also important to take a look at negative impacts it could have.
 
-## 8. Glossary
+Let's start with the positive sides of using our application. Firstly, it creates employment opportunities for people who know how to bike. As talked about just above, it promotes a greener and cleaner urban environment. In fact, it promotes an eco-friendly mode of transport, which prompts cities to improve their cycling infrastructure. This will then lead to a more environmentally friendly urban landscape, and a fight against both climate change and air pollution.
+
+Another key point of the application is that it's open sourec, which allows everybody to correct it and improve it if needed, for instance to make it more accessible and ergonomic. This would also help to spread the concept in other cities.
+
+Finally, this could help people that can't do their groceries, whether it's because of a lack of time, or a lack of means, to have their products delivered directly at their home.
+
+Nonetheless, our application could raise some important questions about the working conditions and rights of the couriers. Fair treatment and compensation should be at the heart of the discussions. What's more, even though accessibility should be considered in the app's design, for now, it excludes individuals with disabilities such as bad vision for instance. And the application can't be used by people who don't have credit cards or smartphones.
+
+Sadly, this application brings the problem of increased consumption of single-use plastic, which is obviously not a good thing for our planet.
+
+Lastly, one could say that this concept will definitely increase the price of products, making them less accessible for poor people.
+
+## 10. Technical and Human Review
+
+## 11. Glossary
 
 - **_Application_**: The software system designed for optimizing delivery tours in cities using bicycles.
 - **_City Map_**: A digital representation of a city's layout, including intersections and road segments, used for planning delivery tours.

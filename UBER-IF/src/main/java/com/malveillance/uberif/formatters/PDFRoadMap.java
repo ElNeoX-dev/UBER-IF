@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class PDFRoadMap {
     private static String formatArrivalTime(Date arrivalTime) {
@@ -88,6 +87,7 @@ public class PDFRoadMap {
                         if (i > 0) {
                             RoadSegment previousSegment = roadSegments.get(i - 1).getKey();
                             String turnDirection = segment.getTurnDirection(previousSegment);
+                            System.out.println(turnDirection);
                             if (!turnDirection.equals("zero")) {
                                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName() + " id: " + segment.getOrigin().getId());
