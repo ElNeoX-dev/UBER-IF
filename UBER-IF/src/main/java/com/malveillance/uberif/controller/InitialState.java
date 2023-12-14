@@ -7,7 +7,7 @@ class InitialState implements State {
     @Override
     public void handleInput(Context context, String input) {
         if (input.equals("selectCourier")) {
-            context.setState(new SelectState());
+            //context.setState(new SelectState());
         }
         // Other input handling for InitialState
     }

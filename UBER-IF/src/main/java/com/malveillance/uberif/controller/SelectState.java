@@ -4,7 +4,7 @@ import com.malveillance.uberif.model.CityMap;
 
 class SelectState implements State {
     public SelectState(CityMap cityMap){
-        this.cityMap = cityMap;
+       // this.cityMap = cityMap;
     }
     @Override
     public void handleInput(Context context, String input) {

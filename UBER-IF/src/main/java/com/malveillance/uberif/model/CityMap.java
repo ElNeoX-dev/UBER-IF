@@ -43,6 +43,61 @@ public class CityMap extends Observable {
         }
     }
 
+    public CityMap(Warehouse warehouse, List<Pair<Tour, Courier>> tourCourierPairList, List<Intersection> intersections, String mapName, boolean isSavedMap) {
+        this.warehouse = warehouse;
+        this.nodes = new HashMap<>();
+        this.mapName = mapName;
+        this.courierDotMap = new HashMap<>();
+
+        for (Intersection node : intersections) {
+            this.nodes.put(node, new ArrayList<>());
+        }
+
+        for (Pair<Tour, Courier> pair : tourCourierPairList) {
+            Tour tour = pair.getKey();
+            Courier courier = pair.getValue();
+            List<Pair<Intersection, TimeWindow>> pairs = new ArrayList<>();
+            for (Delivery delivery : tour.getDeliveries()) {
+                // if the intersection is not the warehouse
+                if (!delivery.getIntersection().getId().equals(warehouse.getIntersection().getId())) {
+                    pairs.add(new Pair<>(delivery.getIntersection(), delivery.getTimeWindow()));
+                }
+            }
+            //courier.setCurrentTour(tour);
+
+            this.courierDotMap.put(courier, pairs);
+        }
+    }
+
+    public void merge(CityMap newCityMap) {
+
+        // merge intersections
+        for (Intersection intersection : newCityMap.getNodes().keySet()) {
+            for (Intersection intersectionInMap : this.nodes.keySet()) {
+                if (intersectionInMap.getId().equals(intersection.getId())) {
+                    intersectionInMap.setIsOwned(intersection.isOwned());
+                    break;
+                }
+            }
+        }
+
+        for (Courier courier : newCityMap.getListCourier()) {
+            if (!courier.getName().isEmpty()) {
+                // if courier's name already exists
+                for (Courier courierInMap : this.getListCourier()) {
+                    if (courierInMap.getName().equals(courier.getName())) {
+                        this.courierDotMap.get(courierInMap).addAll(newCityMap.getCourierDotMap().get(courier));
+                        break;
+                    } else {
+                        this.courierDotMap.put(courier, newCityMap.getCourierDotMap().get(courier));
+                    }
+                }
+            }
+        }
+
+
+    }
+
     private void addIntersection(Intersection intersection) {
         if (!this.nodes.containsKey(intersection)) {
             this.nodes.put(intersection, new ArrayList<>());

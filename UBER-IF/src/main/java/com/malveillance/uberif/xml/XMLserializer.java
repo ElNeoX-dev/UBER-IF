@@ -59,32 +59,37 @@ public class XMLserializer /*implements Visitor */ {// Singleton
             Tour tour = courier.getCurrentTour();
             // tour element
             Element tourElement = document.createElement("tour");
-            root.appendChild(tourElement);
-
             createAttribute(tourElement, "tourId", String.valueOf(tour.getId()));
             createAttribute(tourElement, "courier", String.valueOf(courier.getName()));
             createAttribute(tourElement, "color", String.valueOf(courier.getColor().toString()));
+            root.appendChild(tourElement);
+
 
 
             for (Delivery delivery : tour.getDeliveries()) {
                 Intersection intersection = delivery.getIntersection();
                 // intersection element
                 Element intersectionElement = document.createElement("intersection");
-                tourElement.appendChild(intersectionElement);
+                root.appendChild(intersectionElement);
 
                 createAttribute(intersectionElement, "id", intersection.getId());
                 createAttribute(intersectionElement, "latitude", String.valueOf(intersection.getLatitude()));
                 createAttribute(intersectionElement, "longitude", String.valueOf(intersection.getLongitude()));
 
+                Element deliveryElement = document.createElement("delivery");
+                tourElement.appendChild(deliveryElement);
+
+                createAttribute(deliveryElement, "intersectionId", intersection.getId());
+
                 Date startingTime = delivery.getTimeWindow().getStartingTime();
                 LocalDateTime startingTimeLDT = LocalDateTime.ofInstant(startingTime.toInstant(), ZoneId.systemDefault());
-                createAttribute(intersectionElement, "timeWindowStart", String.valueOf(startingTimeLDT.getHour()));
+                createAttribute(deliveryElement, "timeWindowStart", String.valueOf(startingTimeLDT.getHour()));
 
                 Date endingTime = delivery.getTimeWindow().getEndingTime();
                 LocalDateTime endingTimeLDT = LocalDateTime.ofInstant(endingTime.toInstant(), ZoneId.systemDefault());
-                createAttribute(intersectionElement, "timeWindowEnd", String.valueOf(endingTimeLDT.getHour()));
+                createAttribute(deliveryElement, "timeWindowEnd", String.valueOf(endingTimeLDT.getHour()));
 
-                createAttribute(intersectionElement, "order", String.valueOf(i));
+                createAttribute(deliveryElement, "order", String.valueOf(i));
                 i++;
             }
             i = 1 ;

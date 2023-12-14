@@ -25,7 +25,7 @@ public class ChoiceMenuMapListener implements ChangeListener<String> {
     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         // System.out.println("New map: " + newValue);
 
-        CityMap newCityMap = cityMapController.loadNewCityMap(newValue);
+        CityMap newCityMap = cityMapController.loadNewCityMap(newValue, false);
         paneController.updateScale(newCityMap.getNodes().keySet());
         /* test Dijkstra */
         // if (newValue.equals("Small Map")) {
