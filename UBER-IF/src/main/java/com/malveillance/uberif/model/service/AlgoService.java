@@ -138,12 +138,11 @@ public class AlgoService {
                 Date arrivalDate = delivery.getValue();
                 List<Intersection> path = allPaths.getOrDefault(new Pair<>(prev, next), Arrays.asList(prev, next));
 
-                Intersection intersection = path.get(1);
-                finalTour.add(new Pair<>(intersection, arrivalDate));
-                for (int j = 2; j < path.size(); j++) {
-                    intersection = path.get(j);
+                for (int j = 1; j < path.size() - 1; j++) {
+                    Intersection intersection = path.get(j);
                     finalTour.add(new Pair<>(intersection, null));
                 }
+                finalTour.add(new Pair<>(path.get(path.size() - 1), arrivalDate));
                 prev = next;
             }
             List<Intersection> path = allPaths.getOrDefault(new Pair<>(prev, firstIntersection), Arrays.asList(prev, firstIntersection));
