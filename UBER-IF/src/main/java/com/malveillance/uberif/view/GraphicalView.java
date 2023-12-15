@@ -393,7 +393,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             {
                 for(Pair<Courier, List<Pair<RoadSegment, Date>>> c : courierTourDatas) {
                     for(Pair<RoadSegment, Date> p : c.getValue()) {
-                        visit(p.getKey());
+                        drawLine(p.getKey(), c.getKey().getColor());
                     }
                 }
             }
