@@ -11,8 +11,5 @@ public class Invoker {
         command.execute();
     }
 
-    public void undoCommand() {
-        command.undo();
-    }
 }
 

@@ -12,6 +12,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
@@ -40,32 +42,20 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     @FXML
     protected void onOptimizeBtnClick() {
         System.out.println("Optimize click");
-
         // Create and execute the OptimizeRouteCommand
         OptimizeRouteCommand optimizeCommand;
-        optimizeCommand = new OptimizeRouteCommand(cityMap);
-        optimizeCommand.execute();
-        //this.cityMap = optimizeCommand.getCityMap();
-        for(Courier courier : cityMap.getTravelList().keySet()) {
-            for (Pair<Intersection, Date> p : cityMap.getTravelPlan(courier)) {
-                if (!(p.getKey() == cityMap.getWarehouse().getIntersection()) || cityMap.getTravelPlan(courier).indexOf(p) == 0) {
-                    List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
-                    for (RoadSegment r : roadSegments) {
-                        if (r.getDestination() == cityMap.getTravelPlan(courier).get(cityMap.getTravelPlan(courier).indexOf(p) + 1).getKey()) {
-                            drawLine(r, courier.getColor());
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        optimizeCommand = new OptimizeRouteCommand(this, context);
         invoker.setCommand(optimizeCommand);
         invoker.executeCommand();
+        //optimizeCommand.execute();
+        //this.cityMap = optimizeCommand.getCityMap();
+        update(this.cityMap, this.cityMap.getNodes());
     }
 
     @FXML
     protected void onSaveBtnClick() {
         System.out.println("Save click");
+
         String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
 
         if (!nameOutput.isEmpty()) {
@@ -182,6 +172,57 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
     }
 
+    public Label getLbInfos() {
+        return lbInfos;
+    }
+
+    private String formatMapName(String mapName) {
+        switch (mapName.toLowerCase()) {
+            case "small":
+                return "Small Map";
+            case "medium":
+                return "Medium Map";
+            case "large":
+                return "Large Map";
+            default:
+                return "";
+        }
+    }
+
+    protected void undo() {
+        this.context.undo();
+        this.cityMap = this.context.getState().getCityMap();
+        this.cityMap.addObserver(this);
+
+        // Clear the items in the choice box
+        choiceCourier.getItems().clear();
+
+        update(this.cityMap, this.cityMap.getNodes());
+
+        // Repopulate the choice box
+        if (cityMap.getCourierDotMap() != null) {
+            for (Courier courier : cityMap.getCourierDotMap().keySet()) {
+                if (!courier.getName().isEmpty())
+                choiceCourier.getItems().add(courier.getName());
+            }
+        }
+        this.lbInfos = context.getState().getlbInfos();
+        String selectedCourierName = context.getState().getSelectedCourier().getName();
+        // Reselect the previously selected courier, if it exists
+        if (selectedCourierName != null) {
+            choiceCourier.getSelectionModel().select(selectedCourierName);
+            for (Courier courier : cityMap.getCourierDotMap().keySet()) {
+                if (courier.getName().equals(selectedCourierName)) {
+                    selectedCourier = new Pair<>(courier, cityMap.getCourierDotMap().get(courier));
+                    break;
+                }
+            }
+        }
+
+        choiceMap.getSelectionModel().select(formatMapName(cityMap.getMapName()));
+    }
+
+
     @FXML
     private TextField searchBox;
 
@@ -279,7 +320,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
         mapPane.addEventHandler(MouseEvent.MOUSE_MOVED, new IntersectionHoverHandler(this, lbInfos));
 
-        this.context = new Context(this.cityMap); // Assuming you have a default state
+        //KeyboardHandler keyboardListener = new KeyboardHandler(this);
+        //mapPane.addEventHandler(KeyEvent.KEY_PRESSED, keyboardListener);
+
+        this.context = new Context(this); // Assuming you have a default state
         this.invoker = new Invoker();
     }
 
@@ -342,6 +386,21 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             // printMinMaxLatLong();
 
             paneController.updateScale(newmap.getNodes().keySet());
+            if (cityMap.getTravelList() != null) {
+                for (Courier courier : cityMap.getTravelList().keySet()) {
+                    for (Pair<Intersection, Date> p : cityMap.getTravelPlan(courier)) {
+                        if (!(p.getKey() == cityMap.getWarehouse().getIntersection()) || cityMap.getTravelPlan(courier).indexOf(p) == 0) {
+                            List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
+                            for (RoadSegment r : roadSegments) {
+                                if (r.getDestination() == cityMap.getTravelPlan(courier).get(cityMap.getTravelPlan(courier).indexOf(p) + 1).getKey()) {
+                                    drawLine(r, courier.getColor());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }
@@ -381,8 +440,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                     }
                 }
             }
-
-            cityMap.getSelectedPairList(noOne).add(new Pair<>(intersection, new TimeWindow(null, null)));
+            if (cityMap.getSelectedPairList(noOne) != null) {
+                cityMap.getSelectedPairList(noOne).add(new Pair<>(intersection, new TimeWindow(null, null)));
+            }
             mapPane.getChildren().add(intersection.getCircle());
             intersection.getCircle().addEventHandler(MouseEvent.MOUSE_CLICKED,
                     new IntersectionClickHandler(intersection, this));
@@ -424,6 +484,49 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource("output/"+resourceName);
         return resource != null;
+    }
+
+    public void onKeyPressedHandler(KeyEvent event) {
+        KeyboardHandler keyboardHandler = new KeyboardHandler(this);
+        keyboardHandler.handle(event); // Assuming handleKeyEvent is a method in KeyboardHandler
+    }
+
+    public Context getContext() {
+        return this.context;
+    }
+
+    public Invoker getInvoker() {
+        return this.invoker;
+    }
+
+    public GraphicalView deepCopy() {
+        GraphicalView copy = new GraphicalView();
+
+        // Deep copy of cityMap
+        copy.cityMap = this.cityMap.deepCopy();
+
+        // Copying primitive and immutable fields
+        copy.nbCouriers = this.nbCouriers;
+
+        // Assuming Courier has a proper copy constructor or clone method
+        copy.noOne = new Courier(this.noOne);
+        copy.selectedCourier = this.selectedCourier;
+        copy.lbInfos = this.lbInfos;
+
+        // Copying context and invoker if necessary
+        // This depends on how these should be treated in a deep copy (shared, independent, etc.)
+        // copy.context = new Context(copy.cityMap); // Example, if a new context is needed
+        // copy.invoker = new Invoker(); // Example, if a new invoker is needed
+
+        // XMLSerializer, controllers, and other services might be shared or reinitialized
+        copy.xmlSerializer = this.xmlSerializer; // Shared instance, or create a new one if independent
+        copy.cityMapController = this.cityMapController; // Shared instance, or create new
+        copy.paneController = this.paneController; // Shared instance, or create new
+
+        // UI elements (Buttons, Labels, etc.) are typically not deep-copied
+        // Instead, set up the UI state based on the copied data model
+
+        return copy;
     }
 
     /*
