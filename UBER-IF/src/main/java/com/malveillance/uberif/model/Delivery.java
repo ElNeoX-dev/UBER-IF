@@ -10,6 +10,12 @@ public class Delivery {
         this.timeWindow = timeWindow;
     }
 
+    // Copy constructor
+    public Delivery(Delivery other) {
+        this.intersection = new Intersection(other.intersection);
+        this.timeWindow = new TimeWindow(other.timeWindow);
+    }
+
     public Intersection getIntersection() {
         return intersection;
     }

@@ -70,10 +70,9 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
                         intersection.setFill(currentCourier.getColor());
                         intersection.getCircle().setRadius(graphicalView.height / 150);
 
-                        Calendar cal = Calendar.getInstance();
-                        cal.set(Calendar.HOUR_OF_DAY, startH);
-                        Date startingTime = cal.getTime();
-                        TimeWindow timeWindow = new TimeWindow(startingTime, 60);
+                        TimeWindow timeWindow = new TimeWindow(startH, 60);
+
+                        System.out.println(timeWindow.getStartingTime() + " " + timeWindow.getEndingTime());
 
                         graphicalView.getCityMap().getSelectedPairList(currentCourier)
                                 .add(new Pair<>(intersection, timeWindow));

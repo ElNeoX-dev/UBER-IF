@@ -7,6 +7,10 @@ public class Warehouse extends Shape {
         this.intersection = intersection;
     }
 
+    //Copy Constructor
+    public Warehouse(Warehouse other) {
+        this.intersection = new Intersection(other.intersection);
+    }
     public Intersection getIntersection() {
         return intersection;
     }

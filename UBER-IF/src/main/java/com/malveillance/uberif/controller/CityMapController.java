@@ -10,8 +10,8 @@ public class  CityMapController {
         this.cityMapService = cityMapService;
     }
 
-    public CityMap loadNewCityMap(String mapName) {
+    public CityMap loadNewCityMap(String mapName, boolean isSavedMap) {
         // Load corresponding map
-        return cityMapService.loadMap(mapName);
+        return cityMapService.loadMap(mapName, isSavedMap);
     }
 }
