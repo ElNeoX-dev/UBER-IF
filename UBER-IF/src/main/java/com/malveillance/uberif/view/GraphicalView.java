@@ -58,7 +58,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                 List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
                 if(computedTravel == null)
                 {
-                    showDialogBoxError(courier);
+                    showDialogWarningError("Error", "There's no suitable tour for this Courier", "Courier : " + courier.getName());
                 }
                 else
                 {
@@ -99,6 +99,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                 System.out.println("TransformerException : " + e);
                 throw new RuntimeException(e);
             }
+        } else {
+            showDialogWarningError("Error", "The file name is empty", "");
         }
 
     }
@@ -133,6 +135,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
             update(this.cityMap, this.cityMap.getNodes());
 
+        } else {
+            showDialogWarningError("Error", "No output file found", "File : " + nameInput + ".uberif.xml");
         }
     }
 
@@ -164,20 +168,28 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     }
 
     public void addCourier(String nameCourier) {
-        Random randomInt = new Random();
-        Courier courier = new Courier(nameCourier,
-                Color.rgb(randomInt.nextInt(255), randomInt.nextInt(255), randomInt.nextInt(255)));
-        cityMap.addCourier(courier);
+        if (!choiceCourier.getItems().contains(nameCourier)) {
+            Random randomInt = new Random();
+            Courier courier = new Courier(nameCourier,
+                    Color.rgb(randomInt.nextInt(255), randomInt.nextInt(255), randomInt.nextInt(255)));
+            cityMap.addCourier(courier);
 
-        if (nbCouriers == 0) {
-            minusBtn.getStyleClass().remove("grey-state");
-            minusBtn.getStyleClass().add("blue-state");
+            if (nbCouriers == 0) {
+                minusBtn.getStyleClass().remove("grey-state");
+                minusBtn.getStyleClass().add("blue-state");
+            }
+
+            nbCouriers++;
+            nbCourierLb.setText(String.valueOf(nbCouriers));
+            choiceCourier.getItems().add(courier.getName());
+            choiceCourier.getSelectionModel().select(courier.getName());
+            selectedCourier = new Pair<>(courier, cityMap.getCourierDotMap().get(courier));
+            choiceCourier.getItems().sort(Comparator.comparing(Object::toString));
+
+        } else {
+            showDialogWarningError("Error", "This courier already exists", "Courier : " + nameCourier);
         }
 
-        nbCouriers++;
-        nbCourierLb.setText(String.valueOf(nbCouriers));
-        choiceCourier.getItems().add(courier.getName());
-        choiceCourier.getItems().sort(Comparator.comparing(Object::toString));
 
     }
 
@@ -194,14 +206,15 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         return res[0];
     }
 
-    public void showDialogBoxError(Courier courier) {
-        TextInputDialog dialog = new TextInputDialog("");
-        dialog.setTitle("Error");
-        dialog.setHeaderText("There's no suitable tour for this Courier");
-        dialog.setContentText("Courier : " + courier.getName());
+    public void showDialogWarningError(String title, String header, String content) {
+        Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
 
         dialog.showAndWait();
     }
+
 
     @FXML
     protected void onMinusBtnClick() {
@@ -334,7 +347,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         });
 
         cityMap.addCourier(noOne);
-        selectedCourier = new Pair<>(noOne, cityMap.getCourierDotMap().get(noOne));
+        //selectedCourier = new Pair<>(noOne, cityMap.getCourierDotMap().get(noOne));
 
         mapPane.addEventHandler(MouseEvent.MOUSE_MOVED, new IntersectionHoverHandler(this, lbInfos));
 
