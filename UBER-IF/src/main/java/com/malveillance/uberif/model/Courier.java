@@ -19,6 +19,19 @@ public class Courier {
         this.color = color ;
     }
 
+    public Courier(Courier other) {
+        this.name = other.name;
+        this.color = other.color;
+
+        // Deep copy of selectedDotList
+        this.selectedDotList = new ArrayList<>();
+        for (Intersection intersection : other.selectedDotList) {
+            this.selectedDotList.add(new Intersection(intersection));
+        }
+
+        this.currentTour = other.currentTour != null ? new Tour(other.currentTour) : null;
+    }
+
     public List<Intersection> getSelectedIntersectionList() {
         return selectedDotList;
     }

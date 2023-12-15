@@ -19,6 +19,20 @@ public class Intersection extends Shape {
         this.circle = new Circle();
     }
 
+    // Copy constructor
+    public Intersection(Intersection other) {
+        this.id = other.id;
+        this.latitude = other.latitude;
+        this.longitude = other.longitude;
+        this.isOwned = other.isOwned;
+
+        if (other.circle != null) {
+            this.circle = new Circle(other.circle.getCenterX(), other.circle.getCenterY(), other.circle.getRadius(), other.circle.getFill());
+        } else {
+            this.circle = null;
+        }
+    }
+
     public Circle getCircle() {
         return circle;
     }

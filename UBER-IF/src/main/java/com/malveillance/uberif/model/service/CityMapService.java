@@ -18,15 +18,24 @@ public class CityMapService {
 
     }
 
-    public CityMap loadMap(String mapName){
-        // Split the mapName and take the first word
-        String[] words = mapName.split("\\s+");
-        String fileName = words[0].toLowerCase();
+    public CityMap loadMap(String mapName, boolean isSavedMap ){
 
-        // Parse the XML file and add items to the ListView
-        XmlMapDeserializer parser = new XmlMapDeserializer("src/main/resources/com/malveillance/uberif/" + fileName + "Map.xml");
         CityMap map;
-        map = new CityMap(parser.getWarehouse(), parser.getIntersectionsElements(), parser.getSegmentElements(), fileName);
+        String fileName = mapName;
+        XmlMapDeserializer parser = new XmlMapDeserializer();
+
+        if (isSavedMap) {
+            parser.deserialize("src/main/resources/output/" + fileName);
+            map = new CityMap(parser.getWarehouse(), parser.getTourCourierPairList(), parser.getIntersectionsElements(), fileName, true);
+        }else {
+            // Split the mapName and take the first word
+            String[] words = mapName.split("\\s+");
+            fileName = words[0].toLowerCase();
+
+            // Parse the XML file and add items to the ListView
+            parser.deserialize("src/main/resources/com/malveillance/uberif/" + fileName + "Map.xml");
+            map = new CityMap(parser.getWarehouse(), parser.getIntersectionsElements(), parser.getSegmentElements(), fileName);
+        }
 
         return map;
     }

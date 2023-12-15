@@ -8,13 +8,21 @@ public class RoadSegment extends Shape {
     private String name;
     private Intersection origin;
 
-    protected Line road ;
+    //protected Line road ;
 
     public RoadSegment(Intersection origin, Intersection destination, double length, String name) {
         this.origin = origin;
         this.destination = destination;
         this.length = length;
         this.name = name;
+    }
+
+    public RoadSegment(RoadSegment other) {
+        this.origin = new Intersection(other.origin);
+        this.destination = new Intersection(other.destination);
+
+        this.length = other.length;
+        this.name = other.name;
     }
 
     public Intersection getDestination() {
