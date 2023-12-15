@@ -54,7 +54,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                 for (Pair<Intersection, TimeWindow> d : deliveryPoints) {
                     tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
                 }
-                couriers.setCurrentTour(tour);
+                courier.setCurrentTour(tour);
                 List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
                 if(computedTravel == null)
                 {
@@ -70,7 +70,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                             for(RoadSegment r : roadSegments) {
                                 if(r.getDestination() == computedTravel.get(j + 1).getKey())
                                 {
-                                    visit(r);
+                                    drawLine(r, courier.getColor());
                                     travel.add(new Pair<RoadSegment, Date>(r, computedTravel.get(j + 1).getValue()));
                                     j++;
                                     break;
