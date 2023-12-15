@@ -69,6 +69,7 @@ public class CityMap extends Observable {
         }
     }
 
+    /*
     public void merge(CityMap newCityMap) {
 
         // merge intersections
@@ -96,6 +97,47 @@ public class CityMap extends Observable {
         }
 
 
+    }*/
+
+    public void merge(CityMap newCityMap) {
+        // Mettre à jour les intersections dans la carte actuelle
+        for (Intersection newIntersection : newCityMap.getNodes().keySet()) {
+            Intersection existingIntersection = this.nodes.keySet().stream()
+                    .filter(i -> i.getId().equals(newIntersection.getId()))
+                    .findFirst()
+                    .orElse(newIntersection);
+
+            existingIntersection.setIsOwned(true);
+            this.nodes.put(existingIntersection, newCityMap.getNodes().get(newIntersection));
+        }
+
+        // Mettre à jour les données de courierDotMap en utilisant les intersections de la carte actuelle
+        for (Map.Entry<Courier, List<Pair<Intersection, TimeWindow>>> entry : newCityMap.getCourierDotMap().entrySet()) {
+            List<Pair<Intersection, TimeWindow>> updatedPairs = new ArrayList<>();
+            for (Pair<Intersection, TimeWindow> pair : entry.getValue()) {
+                Intersection updatedIntersection = this.nodes.keySet().stream()
+                        .filter(i -> i.getId().equals(pair.getKey().getId()))
+                        .findFirst()
+                        .orElse(pair.getKey());
+
+                updatedPairs.add(new Pair<>(updatedIntersection, pair.getValue()));
+            }
+
+            // Fusionner les données des courriers en se basant sur le nom du courrier
+            Courier existingCourier = this.courierDotMap.keySet().stream()
+                    .filter(c -> c.getName().equals(entry.getKey().getName()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (existingCourier != null) {
+                // Si un courrier avec le même nom existe, fusionner les données
+                List<Pair<Intersection, TimeWindow>> existingCourierData = this.courierDotMap.get(existingCourier);
+                existingCourierData.addAll(updatedPairs);
+            } else {
+                // Si aucun courrier correspondant n'est trouvé, ajouter les nouvelles données
+                this.courierDotMap.put(entry.getKey(), updatedPairs);
+            }
+        }
     }
 
     private void addIntersection(Intersection intersection) {

@@ -158,22 +158,28 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
         if (nameCourier != null && !nameCourier.isEmpty()) {
 
-            Random randomInt = new Random();
-            Courier courier = new Courier(nameCourier,
-                    Color.rgb(randomInt.nextInt(255), randomInt.nextInt(255), randomInt.nextInt(255)));
-            cityMap.addCourier(courier);
-
-            if (nbCouriers == 0) {
-                minusBtn.getStyleClass().remove("grey-state");
-                minusBtn.getStyleClass().add("blue-state");
-            }
-
-            nbCouriers++;
-            nbCourierLb.setText(String.valueOf(nbCouriers));
-            choiceCourier.getItems().add(courier.getName());
+            addCourier(nameCourier);
 
         }
 
+
+    }
+
+    public void addCourier(String nameCourier) {
+        Random randomInt = new Random();
+        Courier courier = new Courier(nameCourier,
+                Color.rgb(randomInt.nextInt(255), randomInt.nextInt(255), randomInt.nextInt(255)));
+        cityMap.addCourier(courier);
+
+        if (nbCouriers == 0) {
+            minusBtn.getStyleClass().remove("grey-state");
+            minusBtn.getStyleClass().add("blue-state");
+        }
+
+        nbCouriers++;
+        nbCourierLb.setText(String.valueOf(nbCouriers));
+        choiceCourier.getItems().add(courier.getName());
+        choiceCourier.getItems().sort(Comparator.comparing(Object::toString));
 
     }
 
@@ -196,28 +202,29 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             nbCouriers--;
             nbCourierLb.setText(String.valueOf(nbCouriers));
 
-            Courier lastCourier = cityMap.getListCourier().get(nbCouriers);
+            Courier lastCourier = selectedCourier.getKey();
+            if (!lastCourier.getName().isEmpty()) {
+                // clear the dots of the courier
+                for (Pair<Intersection, TimeWindow> intersectionPair : cityMap.getSelectedPairList(lastCourier)) {
+                    intersectionPair.getKey().setFill(Color.RED);
+                    intersectionPair.getKey().setRadius((height / 220) * coef);
+                    intersectionPair.getKey().setIsOwned(false);
 
-            // clear the dots of the courier
-            for (Pair<Intersection, TimeWindow> intersectionPair : cityMap.getSelectedPairList(lastCourier)) {
-                intersectionPair.getKey().setFill(Color.RED);
-                intersectionPair.getKey().setRadius((height / 220) * coef);
-                intersectionPair.getKey().setIsOwned(false);
+                    // cityMap.getCourierDotMap().get(noOne).add(intersectionPair);
+                }
+                cityMap.removeCourier(lastCourier);
 
-                // cityMap.getCourierDotMap().get(noOne).add(intersectionPair);
-            }
-            cityMap.removeCourier(lastCourier);
-
-            // If the last is selected
-            if (choiceCourier.getSelectionModel().isSelected(choiceCourier.getItems().size() - 1)) {
+                // If the last is selected
+                if (choiceCourier.getItems().size() == 1) {
+                    selectedCourier = new Pair<>(noOne, cityMap.getCourierDotMap().get(noOne));
+                }
+                choiceCourier.getItems().remove(lastCourier.getName());
                 choiceCourier.getSelectionModel().selectFirst();
-                selectedCourier = new Pair<>(noOne, cityMap.getCourierDotMap().get(noOne));
             }
-            choiceCourier.getItems().remove(choiceCourier.getItems().size() - 1);
-        }
-        if (nbCouriers == 0) {
-            minusBtn.getStyleClass().remove("blue-state");
-            minusBtn.getStyleClass().add("grey-state");
+            if (nbCouriers == 0) {
+                minusBtn.getStyleClass().remove("blue-state");
+                minusBtn.getStyleClass().add("grey-state");
+            }
         }
     }
 
@@ -300,11 +307,14 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Add a listener
         choiceMap.getSelectionModel().selectedItemProperty()
                 .addListener(new ChoiceMenuMapListener(cityMapController, this, paneController));
-        choiceCourier.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuCourierListener(this));
 
         // Load initial map
         this.cityMap = cityMapController.loadNewCityMap((String) choiceMap.getSelectionModel().getSelectedItem(), false);
         this.cityMap.addObserver(this);
+
+        addCourier("John");
+
+        choiceCourier.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuCourierListener(this));
 
         // Add a listener to the width property of mapPane
         mapPane.widthProperty().addListener((observable, oldValue, newValue) -> {

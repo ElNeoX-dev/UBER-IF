@@ -37,9 +37,6 @@ public class CityMapService {
             map = new CityMap(parser.getWarehouse(), parser.getIntersectionsElements(), parser.getSegmentElements(), fileName);
         }
 
-
-
-
         return map;
     }
 
