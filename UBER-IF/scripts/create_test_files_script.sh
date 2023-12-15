@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Base directory for the main source files
-BASE_SRC_DIR="src/main/java/com/malveillance/uberif"
+BASE_SRC_DIR="../src/main/java/com/malveillance/uberif"
 
 # Base directory for the test source files
-TEST_SRC_DIR="src/test/java/com/malveillance/uberif"
+TEST_SRC_DIR="../src/test/java/com/malveillance/uberif"
 
 # Create the test source directory if it doesn't exist
 mkdir -p "$TEST_SRC_DIR"
