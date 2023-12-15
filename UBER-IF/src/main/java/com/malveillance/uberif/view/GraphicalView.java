@@ -1,5 +1,6 @@
 package com.malveillance.uberif.view;
 
+import com.malveillance.uberif.formatters.PDFRoadMap;
 import com.malveillance.uberif.controller.*;
 import com.malveillance.uberif.model.*;
 import com.malveillance.uberif.model.service.AlgoService;
@@ -16,9 +17,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
-
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.paint.Color;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.net.URL;
@@ -47,6 +51,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         System.out.println("Optimize click");
 
         courierTourDatas = new ArrayList<>();
+        mapPane.getChildren().clear();
+        update(this.cityMap, this.cityMap.getNodes());
         for(Courier courier : cityMap.getCourierDotMap().keySet()) {
             if(!courier.getName().isEmpty()) {
                 List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(courier);
@@ -79,6 +85,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                         }
                     }
                     courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
+                    PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
                 }
             }
         }
@@ -205,6 +212,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         });
         return res[0];
     }
+
 
     public void showDialogWarningError(String title, String header, String content) {
         Alert dialog = new Alert(Alert.AlertType.INFORMATION);
@@ -479,18 +487,47 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         drawLine(segment, Color.GREY);
     }
 
-    public void drawLine(RoadSegment segment, Color color) {
-        Line road = new Line(
-                paneController.getIntersectionX(segment.getOrigin(), width) - (width - mapPane.getWidth()) / 2,
-                paneController.getIntersectionY(segment.getOrigin(), height) - (height - mapPane.getHeight()) / 2,
-                paneController.getIntersectionX(segment.getDestination(), width) - (width - mapPane.getWidth()) / 2,
-                paneController.getIntersectionY(segment.getDestination(), height) - (height - mapPane.getHeight()) / 2
-        );
 
+
+
+
+    public void drawLine(RoadSegment segment, Color color) {
+        double startX = paneController.getIntersectionX(segment.getOrigin(), width) - (width - mapPane.getWidth()) / 2;
+        double startY = paneController.getIntersectionY(segment.getOrigin(), height) - (height - mapPane.getHeight()) / 2;
+        double endX = paneController.getIntersectionX(segment.getDestination(), width) - (width - mapPane.getWidth()) / 2;
+        double endY = paneController.getIntersectionY(segment.getDestination(), height) - (height - mapPane.getHeight()) / 2;
+
+        Line road = new Line(startX, startY, endX, endY);
         road.setStroke(color);
         road.setStrokeWidth(3.0);
-        mapPane.getChildren().add(road);
+
+        // Create the arrowhead
+        Polygon arrowHead = new Polygon();
+        double arrowLength = 10; // The length of the arrowhead
+        double arrowWidth = 5; // The width of the arrowhead at its base
+
+        // Points for the arrowhead polygon
+        arrowHead.getPoints().addAll(new Double[]{
+                -arrowLength, -arrowWidth,
+                -arrowLength, arrowWidth,
+                0.0, 0.0
+        });
+
+        // Translate the arrowhead to the end of the line
+        arrowHead.setTranslateX(endX);
+        arrowHead.setTranslateY(endY);
+
+        // Rotate the arrowhead to align with the line direction
+        double angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+        arrowHead.setRotate(angle);
+
+        // Set the arrowhead color
+        arrowHead.setFill(Color.BLACK);
+
+        // Add the line and arrowhead to the map pane
+        mapPane.getChildren().addAll(road, arrowHead);
     }
+
 
     public CityMap getCityMap() {
         return this.cityMap;
