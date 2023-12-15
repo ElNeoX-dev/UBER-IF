@@ -49,6 +49,7 @@ public class PDFRoadMap {
 
             // Parsing of the information of couriers
             for (Pair<Courier, List<Pair<RoadSegment, Date>>> courierTourData : courierTourDatas) {
+                int countLines = 0;
                 page = new PDPage();
                 document.addPage(page);
 
@@ -93,21 +94,25 @@ public class PDFRoadMap {
                         if (i > 0) {
                             RoadSegment previousSegment = roadSegments.get(i - 1).getKey();
                             String turnDirection = segment.getTurnDirection(previousSegment);
-                            System.out.println(turnDirection);
 
                             if (!turnDirection.equals("zero")) {
                                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
-                                contentStream.showText("Turn " + turnDirection + " on " + segment.getName() + " id: " + segment.getOrigin().getId());
+                                contentStream.showText("Turn " + turnDirection + " on " + segment.getName());
+                                countLines += 2;
+
                             }
                         } else {
                             contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                             contentStream.showText("Go on " + segment.getName() + " id: " + segment.getOrigin().getId());
-                        }
+                            countLines += 2;                      }
 
                         if (arrivalTime != null) {
                             contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                             contentStream.showText("You will reach your destination at " + formatArrivalTime(arrivalTime));
                             contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                            countLines += 3;
+
+
                         }
                     }
                     /*else {
@@ -119,7 +124,14 @@ public class PDFRoadMap {
 
                 contentStream.newLineAtOffset(0, -30); // Adjust the vertical offset as needed
                 contentStream.showText("You're back to the Warehouse. Your tour is finished!");
-                contentStream.newLineAtOffset(0, -50); // Adjust the vertical offset as needed
+                countLines += 3;
+                if (countLines >= 35){
+                    countLines = 0;
+                    page = new PDPage();
+                    document.addPage(page);
+
+                    contentStream = new PDPageContentStream(document, page);
+                }
 
                 // Finish the current page and start a new one
                 if (contentStream != null) {

@@ -106,8 +106,6 @@ public class RoadSegment extends Shape {
         double angleDeg = Math.toDegrees(angleRad);
         angleDeg = (angleDeg + 360) % 360;
 
-        System.out.println(angleDeg);
-
         return angleDeg;
     }
 
