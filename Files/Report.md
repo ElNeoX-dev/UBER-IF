@@ -4,17 +4,16 @@
 
 ### Table of Contents
 
-1. [Use Case Diagram](#use-case-diagram)
-2. [Description of the main success scenario of all identified use cases](#description-of-the-main-success-scenario-of-all-identified-use-cases)
-3. [Description of all use cases](#description-of-all-use-cases)
-4. [Class and Package Diagrams](#class-and-package-diagrams)
-5. [State-Transition Diagram](#5-state-transition-diagram)
-6. [Plannings of the different iterations](#6-plannings-of-the-different-iterations)
-7. [Architectural and Design Patterns choices](#7-architectural-and-design-patterns-choices)
-8. [Why JUNIT?](#8-why-junit-)
-9. [Discussion on Social and Environmental Issues related to the application](#9-discussion-on-social-and-environmental-issues-related-to-the-application)
-10. [Technical and Human Review](#10-technical-and-human-review)
-11. [Glossary](#11-glossary)
+1. [Use Case Diagram](#1-use-case-diagram)
+2. [Description of the main success scenario of all identified use cases](#2-description-of-the-main-success-scenario-of-all-identified-use-cases)
+3. [Class and Package Diagrams](#3-class-and-package-diagrams)
+4. [State-Transition Diagram](#4-state-transition-diagram)
+5. [Plannings of the different iterations](#5-plannings-of-the-different-iterations)
+6. [Architectural and Design Patterns choices](#6-architectural-and-design-patterns-choices)
+7. [Why JUNIT?](#7-why-junit)
+8. [Discussion on Social and Environmental Issues related to the application](#8-discussion-on-social-and-environmental-issues-related-to-the-application)
+9. [Technical and Human Review](#9-technical-and-human-review)
+10. [Glossary](#10-glossary)
 
 ## 1. Use Case Diagram
 
@@ -32,23 +31,13 @@ Here's the use case diagram for our application:
 | Save Tours                | 1. Manager clicks on saving the tours running at the moment<br>2. System saves tour details to an XML file<br>3. System acknowledges successful saving of the tour                                                                                                                                                                                      |
 | Restore Tours             | 1. Manager clicks on restoring the tours<br>2. Manager chooses the tours they want to restore<br>3. System retrieves and displays the selected tour details                                                                                                                                                                                             |
 
-## 3. Description of the use cases implemented in the application (à enlever???)
+## 3. Class and Package Diagrams
 
-| USE CASE                  | DESCRIPTION                                                                                                                                                                                                                                                                                                                              |
-| ------------------------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Create Delivery Request   | Allows the manager to create a new request and chose details of the delivery. The manager first has to select a courier, then the destination intersection and finally a 1-hour time window. This will enable the computing of the best tour by the computer. Then, the departure and arrival times, as well as the tour, are displayed. |
-| Load City Map             | Display the map of the chosen city on the screen, with the name of the roads.                                                                                                                                                                                                                                                            |
-| Modify Number of Couriers | Modify the number of active couriers in the system.                                                                                                                                                                                                                                                                                      |
-| Save Tours                | Store in a file all the tours in the city, as well as the departure and arrival time, corresponding courier, and destination address.                                                                                                                                                                                                    |
-| Restore Tours             | Retrieve and load from file old tours and corresponding information, departure and arrival times as well as destination address, and display them.                                                                                                                                                                                       |
+## 4. State-Transition diagram
 
-## 4. Class and Package Diagrams
+## 5. Plannings of the different iterations
 
-## 5. State-Transition diagram
-
-## 6. Plannings of the different iterations
-
-### a. Sprint 1
+### a. Sprint 1 Review
 #### Initial Planning
 
 #### Actual Planning
@@ -58,19 +47,19 @@ Here's the use case diagram for our application:
 - Change the number of couriers
 - Entering and managing delivery requests within the right time window
 
-### b. Sprint 2
+### b. Sprint 2 Review
 #### Initial Planning
 #### Actual Planning
 
 - Add new features: being able to add manually a delivery at an intersection that's not in the XML file given initially
 - Telling the courier a road is not cyclable and he can't go deliver by this road
 
-### c. Sprint 3
+### c. Sprint 3 Review
 #### Initial Planning
 #### Actual Planning
 
 
-## 7. Architectural and Design Patterns choices
+## 6. Architectural and Design Patterns choices
 The application employs the Model-View-Controller (MVC) architecture, pro- viding several advantages:
 
 
@@ -90,7 +79,7 @@ The application employs the Model-View-Controller (MVC) architecture, pro- vidin
 
 **Complex Interaction Handling:** Efficient management of complex in- teractions between UI and business logic, crucial for modern web applica- tions.
 
-## 8. Why JUNIT?
+## 7. Why JUNIT?
 
 For unit testing, we will use JUnit, Mockito, and JFixture. Here is a simplified example of a unit test in Java using JFixture for test data generation and Mockito for mocking dependencies:
 
@@ -172,7 +161,7 @@ public class UserServiceTest {
 ```
 In this example, JFixture is used for automatic instance creation, and Mock- ito for mocking UserRepository and configuring its behavior. The test verifies that userService.getUserById returns the expected User object and that the mock repository is called correctly.
 
-## 9. Discussion on social and environmental issues related to the application
+## 8. Discussion on social and environmental issues related to the application
 
 Using bicycles for urban delivery services is a great step towards addressing both social and environmental issues. Indeed, it can not only reduce urban congestion, but also contribute to reduced delivery times, which makes it more efficient overall. However, it's also important to take a look at negative impacts it could have.
 
@@ -188,9 +177,29 @@ Sadly, this application brings the problem of increased consumption of single-us
 
 Lastly, one could say that this concept will definitely increase the price of products, making them less accessible for poor people.
 
-## 10. Technical and Human Review
+## 9. Technical and Human Review
+### Technical Review
 
-## 11. Glossary
+Technically speaking, we haven't encountered a lot of problems in the three sprints we have made.
+
+There are some features that we would have loved to implement, but that were too complicated. For instance, we would have liked to do more deliveries at the same time, or assign the courier to a delivery by computing who's the best one for this delivery, instead of choosing manually a courier before computing the road map.
+
+Regarding the back-end language, we used Java. We think that this was a good language to use for the algorithms.
+
+However, concerning the front-end language, we used JavaFX and it brought some problems such as the fact that it was harder to manipulate than HTML.
+
+What's more, we separated the work into two teams: back-end and front-end team. This worked very well and we managed to work efficiently.
+
+Nonetheless, we think that we could have worked differently regarding the management of the sprints. For instance, we should have implemented the use cases from the beginning to the end, and then improve it later on. Instead, we implemented multiple use cases at the same time, which isn't really Agile-like.
+
+### Human Review
+
+Regarding the human review, we loved working together. It was a great team and the mood was always good. 
+
+Everybody was always motivated to work, even at 8 AM. The task repartition was also great and we worked evenly outside of class.
+
+
+## 10. Glossary
 
 - **_Application_**: The software system designed for optimizing delivery tours in cities using bicycles.
 - **_City Map_**: A digital representation of a city's layout, including intersections and road segments, used for planning delivery tours.

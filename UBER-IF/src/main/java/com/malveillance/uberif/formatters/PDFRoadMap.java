@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class PDFRoadMap {
     private static String formatArrivalTime(Date arrivalTime) {
@@ -42,28 +43,33 @@ public class PDFRoadMap {
             Path outputPath = Paths.get(outputFilePath);
 
             PDDocument document = new PDDocument();
-            PDPage page = new PDPage();
-            document.addPage(page);
+            PDPage page = null;
+            PDPageContentStream contentStream = null;
 
-            PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 20);
-
-            // Get the road map infos
-            // Calculate the center of the page
-            float pageWidth = page.getMediaBox().getWidth();
-            float centerX = pageWidth / 2;
-
-            // Calculate the position for the title
-            float titleWidth = PDType1Font.HELVETICA_BOLD.getStringWidth("Road Map") / 1000 * 20;
-            float titleX = centerX - titleWidth / 2;
-
-            contentStream.beginText();
-            contentStream.newLineAtOffset(titleX, 700);
-            contentStream.showText("Road Map");
-            contentStream.newLineAtOffset(-titleX+100, -30);
-
+            // Parsing of the information of couriers
             for (Pair<Courier, List<Pair<RoadSegment, Date>>> courierTourData : courierTourDatas) {
+                page = new PDPage();
+                document.addPage(page);
+
+                contentStream = new PDPageContentStream(document, page);
+
+                contentStream.setFont(PDType1Font.HELVETICA_BOLD, 20);
+
+                // Get the road map infos
+                // Calculate the center of the page
+                float pageWidth = page.getMediaBox().getWidth();
+                float centerX = pageWidth / 2;
+
+                // Calculate the position for the title
+                float titleWidth = PDType1Font.HELVETICA_BOLD.getStringWidth("Road Map") / 1000 * 20;
+                float titleX = centerX - titleWidth / 2;
+
+                contentStream.beginText();
+                contentStream.newLineAtOffset(titleX, 700);
+                contentStream.showText("Road Map");
+                contentStream.newLineAtOffset(-titleX+100, -30);
+
                 Courier courier = courierTourData.getKey();
                 List<Pair<RoadSegment, Date>> roadSegments = courierTourData.getValue();
 
@@ -73,8 +79,8 @@ public class PDFRoadMap {
                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                 contentStream.showText("Tour Starting at the Warehouse at 8 AM");
                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
-
                 contentStream.setFont(PDType1Font.HELVETICA, 11);
+
                 // Keep track of the previous RoadSegment
                 RoadSegment previousRoadSegment = null;
                 for (int i = 0; i < roadSegments.size(); i++) {
@@ -82,12 +88,13 @@ public class PDFRoadMap {
                     Date arrivalTime = roadSegments.get(i).getValue();
 
                     // Check if the current RoadSegment is different from the previous one
-                    if (arrivalTime != null || !segment.equals(previousRoadSegment)) {
+                    if (i == 0 || !Objects.equals(previousRoadSegment.getName(), segment.getName())) {
                         // Add text to the content stream
                         if (i > 0) {
                             RoadSegment previousSegment = roadSegments.get(i - 1).getKey();
                             String turnDirection = segment.getTurnDirection(previousSegment);
                             System.out.println(turnDirection);
+
                             if (!turnDirection.equals("zero")) {
                                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName() + " id: " + segment.getOrigin().getId());
@@ -103,20 +110,23 @@ public class PDFRoadMap {
                             contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                         }
                     }
-                    else {
+                    /*else {
                         contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                         contentStream.showText("Continue straight");
-                    }
+                    }*/
                     previousRoadSegment = segment;
                 }
 
                 contentStream.newLineAtOffset(0, -30); // Adjust the vertical offset as needed
                 contentStream.showText("You're back to the Warehouse. Your tour is finished!");
                 contentStream.newLineAtOffset(0, -50); // Adjust the vertical offset as needed
-            }
 
-            contentStream.endText();
-            contentStream.close();
+                // Finish the current page and start a new one
+                if (contentStream != null) {
+                    contentStream.endText();
+                    contentStream.close();
+                }
+            }
 
             // Save the document to the specified output path
             document.save(outputPath.toAbsolutePath().toString());

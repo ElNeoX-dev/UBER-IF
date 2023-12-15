@@ -80,10 +80,14 @@ public class RoadSegment extends Shape {
 
     private double calculateAngle(RoadSegment previousSegment) {
         // Calculate the vectors representing the directions of the two road segments
-        double vector1X = origin.getLongitude() - previousSegment.destination.getLongitude();
-        double vector1Y = origin.getLatitude() - previousSegment.destination.getLatitude();
-        double vector2X = destination.getLongitude() - origin.getLongitude();
-        double vector2Y = destination.getLatitude() - origin.getLatitude();
+        // Point 1 : origin prev
+        // Point 2 : origin this
+        // Point 3 : dest this
+        // Calculate the vectors
+        double vector1X = this.getOrigin().getLongitude() - previousSegment.getOrigin().getLongitude();
+        double vector1Y = this.getOrigin().getLatitude() - previousSegment.getOrigin().getLatitude();
+        double vector2X = this.getDestination().getLongitude() - this.getOrigin().getLongitude();
+        double vector2Y = this.getDestination().getLatitude() - this.getOrigin().getLatitude();
 
         // Calculate the cross product of the two vectors
         double crossProduct = vector1X * vector2Y - vector1Y * vector2X;
@@ -98,8 +102,10 @@ public class RoadSegment extends Shape {
         // Calculate the angle in radians
         double angleRad = Math.atan2(crossProduct, dotProduct);
 
-        // Convert the angle to degrees
+        // Ensure the angle is within the range [0, 360]
         double angleDeg = Math.toDegrees(angleRad);
+        angleDeg = (angleDeg + 360) % 360;
+
         System.out.println(angleDeg);
 
         return angleDeg;
