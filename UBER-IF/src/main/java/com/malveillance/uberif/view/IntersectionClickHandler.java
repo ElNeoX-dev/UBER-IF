@@ -1,5 +1,7 @@
 package com.malveillance.uberif.view;
 
+import com.malveillance.uberif.controller.OptimizeRouteCommand;
+import com.malveillance.uberif.controller.SelectCommand;
 import com.malveillance.uberif.model.Courier;
 import com.malveillance.uberif.model.Intersection;
 import com.malveillance.uberif.model.TimeWindow;
@@ -70,12 +72,18 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
                         intersection.setFill(currentCourier.getColor());
                         intersection.getCircle().setRadius(graphicalView.height / 150);
 
+
                         TimeWindow timeWindow = new TimeWindow(startH, 60);
 
                         System.out.println(timeWindow.getStartingTime() + " " + timeWindow.getEndingTime());
 
-                        graphicalView.getCityMap().getSelectedPairList(currentCourier)
-                                .add(new Pair<>(intersection, timeWindow));
+                        Pair<Intersection,TimeWindow> selectedPair= new Pair<>(intersection, timeWindow);
+                        SelectCommand selectCommand;
+                        selectCommand = new SelectCommand(graphicalView, currentCourier, selectedPair);
+                        graphicalView.getInvoker().setCommand(selectCommand);
+                        graphicalView.getInvoker().executeCommand();
+                        //graphicalView.getCityMap().getSelectedPairList(currentCourier)
+                        //       .add(new Pair<>(intersection, timeWindow));
                     }
 
                 }

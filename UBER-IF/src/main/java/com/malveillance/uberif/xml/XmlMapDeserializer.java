@@ -73,7 +73,6 @@ public class XmlMapDeserializer {
             }
 
 
-
             // Parse Intersections
             NodeList intersectionList = doc.getElementsByTagName("intersection");
             for (int i = 0; i < intersectionList.getLength(); i++) {
