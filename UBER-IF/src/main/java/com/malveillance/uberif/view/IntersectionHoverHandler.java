@@ -43,7 +43,9 @@ public class IntersectionHoverHandler implements EventHandler<MouseEvent> {
         }
 
         if (intersectionNearest != null && distanceMin < graphicalView.width / 24) {
+
             intersectionLabel.setText(/*"Intersection n°" + intersectionNearest.getId() + "\n" + */"Lat: "
+
                     + intersectionNearest.getLatitude() + "\nLong: " + intersectionNearest.getLongitude());
             intersectionNearest.setRadius((graphicalView.height / 125) * graphicalView.coef);
         }
