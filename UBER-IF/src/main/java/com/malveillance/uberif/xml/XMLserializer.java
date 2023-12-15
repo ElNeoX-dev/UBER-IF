@@ -19,6 +19,8 @@ import com.malveillance.uberif.model.*;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import java.io.IOException;
+
 
 public class XMLserializer /*implements Visitor */ {// Singleton
 
@@ -35,7 +37,7 @@ public class XMLserializer /*implements Visitor */ {// Singleton
     }
 
 
-    public void serialize(List<Tour> tourList, /*NECESSAIRE ??? Map<Intersection, List<RoadSegment>> segmentUsed,*/ Warehouse warehouse, String  name) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    public Document serialize(List<Tour> tourList, /*NECESSAIRE ??? Map<Intersection, List<RoadSegment>> segmentUsed,*/ Warehouse warehouse, String  name) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         document = documentBuilder.newDocument();
@@ -90,7 +92,7 @@ public class XMLserializer /*implements Visitor */ {// Singleton
         transformer.transform(domSource, streamResult);
 
 
-
+        return null;
     }
 
     private void createAttribute(Element root, String name, String value){
@@ -98,6 +100,25 @@ public class XMLserializer /*implements Visitor */ {// Singleton
         root.setAttributeNode(attribute);
         attribute.setValue(value);
     }
+
+    public void writeDocumentToFile(Document document, String filename) throws TransformerException, IOException {
+        File file = new File(filename);
+        File parentDirectory = file.getParentFile();
+
+        // Check if the parent directories exist and create them if they don't
+        if (!parentDirectory.exists() && !parentDirectory.mkdirs()) {
+            throw new IOException("Failed to create directory: " + parentDirectory.getAbsolutePath());
+        }
+
+        // Now proceed with writing the file
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        DOMSource domSource = new DOMSource(document);
+        StreamResult streamResult = new StreamResult(file);
+        transformer.transform(domSource, streamResult);
+    }
+
 
 
 
