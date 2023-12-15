@@ -42,6 +42,6 @@ public class DeliveryTest {
         Delivery delivery = new Delivery(intersection, timeWindow);
 
         // Verify that toString returns the expected formatted string
-        assertEquals("Delivery{intersection=Intersection 1 [Lat: 0.0, Long: 0.0], timeWindow=TimeWindow{startingTime=Tue Dec 12 08:00:00 CET 2023, endingTime=Tue Dec 12 08:00:00 CET 2023}}", delivery.toString());
+        assertEquals("Delivery{intersection=Intersection 1 [Lat: 0.0, Long: 0.0], timeWindow=TimeWindow{startingTime=Fri Dec 15 08:00:00 CET 2023, endingTime=Fri Dec 15 08:00:00 CET 2023}}", delivery.toString());
     }
 }

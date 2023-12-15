@@ -3,6 +3,7 @@ module com.malveillance.uberif {
     requires javafx.fxml;
     requires java.xml;
     requires java.desktop;
+    requires jfixture;
 
 
     opens com.malveillance.uberif to javafx.fxml;
