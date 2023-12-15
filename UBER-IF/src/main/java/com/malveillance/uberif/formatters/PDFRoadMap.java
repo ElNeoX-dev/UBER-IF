@@ -98,13 +98,25 @@ public class PDFRoadMap {
                             if (!turnDirection.equals("zero")) {
                                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName());
-                                countLines += 2;
+                                countLines++;
+                                System.out.println(countLines + " 1");
+                                if (countLines >= 45) {
+                                    countLines = 0;
+                                    contentStream.endText();
+                                    contentStream.close();
 
+                                    page = new PDPage();
+                                    document.addPage(page);
+                                    contentStream = new PDPageContentStream(document, page);
+                                    contentStream.setFont(PDType1Font.HELVETICA, 11);
+                                    contentStream.beginText();
+                                }
                             }
                         } else {
-                            contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
-                            contentStream.showText("Go on " + segment.getName() + " id: " + segment.getOrigin().getId());
-                            countLines += 2;                      }
+                            contentStream.newLineAtOffset(0, -12);
+                            contentStream.showText("Go on " + segment.getName());
+                            countLines++;
+                        }
 
                         if (arrivalTime != null) {
                             contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
@@ -112,7 +124,17 @@ public class PDFRoadMap {
                             contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                             countLines += 3;
 
+                            if (countLines >= 45) {
+                                countLines = 0;
+                                contentStream.endText();
+                                contentStream.close();
 
+                                page = new PDPage();
+                                document.addPage(page);
+                                contentStream = new PDPageContentStream(document, page);
+                                contentStream.setFont(PDType1Font.HELVETICA, 11);
+                                contentStream.beginText();
+                            }
                         }
                     }
                     /*else {
