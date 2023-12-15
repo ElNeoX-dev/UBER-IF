@@ -1,5 +1,6 @@
 package com.malveillance.uberif.view;
 
+import com.malveillance.uberif.formatters.PDFRoadMap;
 import com.malveillance.uberif.controller.*;
 import com.malveillance.uberif.model.*;
 import com.malveillance.uberif.model.service.AlgoService;
@@ -79,6 +80,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                         }
                     }
                     courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
+                    PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
                 }
             }
         }
@@ -198,7 +200,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("Error");
         dialog.setHeaderText("There's no suitable tour for this Courier");
-        dialog.setContentText("Courier : " + courier.getName());
+        dialog.setContentText("Courier: " + courier.getName());
 
         dialog.showAndWait();
     }

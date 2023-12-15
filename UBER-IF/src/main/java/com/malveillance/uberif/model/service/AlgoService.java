@@ -8,9 +8,18 @@ import javafx.util.Pair;
 import java.util.*;
 import java.util.Map;
 
+/**
+ * This class provides algorithms for calculating optimal routes for delivery services.
+ */
 public class AlgoService {
     private static double courierSpeed = 15 / 3.6;
 
+    /**
+     * Creates a subgraph of a given city map, including only specified intersections
+     * @param cityMap The original city map
+     * @param intersections The list of intersections to include in the subgraph
+     * @return A new CityMap object representing the subgraph
+     */
     private static CityMap createSubGraph(CityMap cityMap, List<Intersection> intersections) {
         CityMap subGraph = new CityMap(cityMap.getWarehouse(), intersections);
         for (Intersection intersection : subGraph.getNodes().keySet()) {
@@ -19,6 +28,11 @@ public class AlgoService {
         return subGraph;
     }
 
+    /**
+     * Converts a given graph map into a complete graph
+     * @param cityMap The original city map
+     * @return A new CityMap object representing the complete graph
+     */
     private static CityMap makeCompleteGraph(CityMap cityMap) {
         List<Intersection> intersections = new ArrayList<>(cityMap.getNodes().keySet());
         CityMap completeGraph = new CityMap(cityMap.getWarehouse(), intersections);
@@ -34,6 +48,13 @@ public class AlgoService {
         return completeGraph;
     }
 
+    /**
+     * Dijkstra's algorithm to find the shortest path between two intersections
+     * @param graph The graph to search in
+     * @param start The starting intersection
+     * @param end The ending intersection
+     * @return A Pair containing the total distance and a list of intersections forming the shortest path
+     */
     private static Pair<Double, List<Intersection>> dijkstra(CityMap graph, Intersection start, Intersection end) {
         Map<Intersection, Double> distances = new HashMap<>();
         Map<Intersection, Intersection> previous = new HashMap<>();
@@ -71,6 +92,11 @@ public class AlgoService {
         return new Pair<>(Double.MAX_VALUE, new ArrayList<>());
     }
 
+    /**
+     * Converts a city map graph into a time graph, adjusting road lengths based on courier speed
+     * @param graph The original city map graph
+     * @return The city map graph with road lengths adjusted for time
+     */
     private static CityMap convertToTimeGraph(CityMap graph) {
         graph.getNodes().forEach((node, roadSegments) ->
                 roadSegments.forEach(roadSegment ->
@@ -78,6 +104,12 @@ public class AlgoService {
         return graph;
     }
 
+    /**
+     * Calculates the optimal route for a set of deliveries using TSP algorithm
+     * @param cityMap The city map to calculate the route
+     * @param tour The tour containing a list of deliveries
+     * @return A list of pairs, containing an intersection and the estimated arrival date
+     */
     public static List<Pair<Intersection, Date>> calculateOptimalRoute(CityMap cityMap, Tour tour) {
         List<Intersection> allIntersections = new ArrayList<>();
         List<Delivery> deliveries = tour.getDeliveries();
@@ -130,25 +162,32 @@ public class AlgoService {
         Intersection firstIntersection = completeSubGraph.getWarehouse().getIntersection();
         Intersection prev = firstIntersection;
         List<Pair<Intersection, Date>> finalTour = new LinkedList<>();
+        Date arrivalDate = null;
 
         try {
             for (int i = 0; i < completeSubGraph.getNbNodes(); i++) {
                 Pair<Intersection, Date> delivery = tsp.getSolution(i);
                 Intersection next = delivery.getKey();
-                Date arrivalDate = delivery.getValue();
+                arrivalDate = delivery.getValue();
                 List<Intersection> path = allPaths.getOrDefault(new Pair<>(prev, next), Arrays.asList(prev, next));
 
-                Intersection intersection = path.get(1);
-                finalTour.add(new Pair<>(intersection, arrivalDate));
-                for (int j = 2; j < path.size(); j++) {
-                    intersection = path.get(j);
+                for (int j = 1; j < path.size() - 1; j++) {
+                    Intersection intersection = path.get(j);
                     finalTour.add(new Pair<>(intersection, null));
                 }
+                finalTour.add(new Pair<>(path.get(path.size() - 1), arrivalDate));
                 prev = next;
             }
             List<Intersection> path = allPaths.getOrDefault(new Pair<>(prev, firstIntersection), Arrays.asList(prev, firstIntersection));
-            for (int j = 1; j < path.size(); j++) {
-                finalTour.add(new Pair<>(path.get(j),null));
+            double distanceToWarehouse = completeSubGraph.getDistance(prev, firstIntersection);
+            for (int j = 1; j < path.size() - 1; j++) {
+                finalTour.add(new Pair<>(path.get(j), null));
+            }
+            if (arrivalDate != null) {
+                long fiveMinutesInMilliseconds = 5 * 60 * 1000; // 5 minutes in milliseconds
+                long distanceToWarehouseInMilliseconds = (long) (distanceToWarehouse * 1000); // Distance in milliseconds
+                Date warehouseArrivalTime = new Date(arrivalDate.getTime() + fiveMinutesInMilliseconds + distanceToWarehouseInMilliseconds);
+                finalTour.add(new Pair<>(firstIntersection, warehouseArrivalTime));
             }
         } catch (IndexOutOfBoundsException ex) {
             System.out.println("No possible solution");
@@ -165,5 +204,4 @@ public class AlgoService {
         });*/
         return finalTour;
     }
-
 }
