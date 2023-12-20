@@ -23,17 +23,14 @@ public class CourierTest {
         // Test getters and setters
         assertEquals("John", courier.getName());
         assertEquals(Color.BLUE, courier.getColor());
-        assertNull(courier.getId()); // id should be null by default
         assertNull(courier.getCurrentTour()); // currentTour should be null by default
 
         // Update values using setters
-        courier.setId(1L);
         courier.setCurrentTour(new Tour());
         courier.setColor(Color.RED);
         courier.setName("Alice");
 
         // Verify that getters return the updated values
-        assertEquals(1L, courier.getId());
         assertEquals("Alice", courier.getName());
         assertEquals(Color.RED, courier.getColor());
         assertEquals(new Tour(), courier.getCurrentTour());
