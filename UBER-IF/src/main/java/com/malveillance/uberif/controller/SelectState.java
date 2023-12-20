@@ -13,16 +13,23 @@ class SelectState implements State {
         this.graphicalView= graphicalView.deepCopy();
     }
     @Override
-    public void handleInput(Context context, String input) {
-        if (input.equals("addAddress")) {
-            // Code to add address
+    public void handleInput(Context context, String input, GraphicalView graphicalView) {
+        if (input.equals("selectCourier")) {
+            context.setState(new SelectState(graphicalView));
         }
-        // Other input handling for AddressState
+        if (input.equals("optimize")) {
+            context.setState(new SelectState(graphicalView));
+        }
+        if (input.equals("plus")) {
+            context.setState(new SelectState(graphicalView));
+        }
+        // Other input handling for InitialState
     }
 
+
     @Override
-    public CityMap getCityMap() {
-        return graphicalView.getCityMap();
+    public GraphicalView getGraphicalView() {
+        return graphicalView;
     }
 
     @Override

@@ -14,16 +14,19 @@ class InitialState implements State {
         this.graphicalView = graphicalView.deepCopy();
     }
     @Override
-    public void handleInput(Context context, String input) {
+    public void handleInput(Context context, String input, GraphicalView graphicalView) {
         if (input.equals("selectCourier")) {
-            context.setState(new SelectState(this.graphicalView));
+            context.setState(new SelectState(graphicalView));
+        }
+        if (input.equals("optimize")) {
+            context.setState(new SelectState(graphicalView));
         }
         // Other input handling for InitialState
     }
 
     @Override
-    public CityMap getCityMap() {
-        return graphicalView.getCityMap();
+    public GraphicalView getGraphicalView() {
+        return graphicalView;
     }
 
     @Override

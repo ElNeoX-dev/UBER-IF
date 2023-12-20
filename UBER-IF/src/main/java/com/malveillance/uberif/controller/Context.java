@@ -42,7 +42,7 @@ public class Context {
         }
     }
 
-    public void handleInput(String input) {
-        currentState.handleInput(this, input);
+    public void handleInput(String input, GraphicalView graphicalView) {
+        currentState.handleInput(this, input, graphicalView);
     }
 }

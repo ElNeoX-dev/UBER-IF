@@ -1,13 +1,11 @@
 package com.malveillance.uberif.view;
 
-import com.malveillance.uberif.controller.OptimizeRouteCommand;
 import com.malveillance.uberif.controller.SelectCommand;
 import com.malveillance.uberif.model.Courier;
 import com.malveillance.uberif.model.Intersection;
 import com.malveillance.uberif.model.TimeWindow;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
