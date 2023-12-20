@@ -54,38 +54,41 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         mapPane.getChildren().clear();
         update(this.cityMap, this.cityMap.getNodes());
         for(Courier courier : cityMap.getCourierDotMap().keySet()) {
+            // if a courier doesn't have any delivery, we don't calculate the road, unless it's the courier selected
             if(!courier.getName().isEmpty()) {
-                List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(courier);
-                Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(0)));
-                for (Pair<Intersection, TimeWindow> d : deliveryPoints) {
-                    tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
-                }
-                courier.setCurrentTour(tour);
-                List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
-                if(computedTravel == null)
-                {
-                    showDialogWarningError("Error", "There's no suitable tour for this Courier", "Courier : " + courier.getName());
-                }
-                else
-                {
-                    int j = 0;
-                    List<Pair<RoadSegment, Date>> travel = new ArrayList<>();
-                    for(Pair<Intersection, Date> p : computedTravel) {
-                        if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {
-                            List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
-                            for(RoadSegment r : roadSegments) {
-                                if(r.getDestination() == computedTravel.get(j + 1).getKey())
-                                {
-                                    drawLine(r, courier.getColor());
-                                    travel.add(new Pair<RoadSegment, Date>(r, computedTravel.get(j + 1).getValue()));
-                                    j++;
-                                    break;
+                if (!cityMap.getSelectedPairList(courier).isEmpty() || courier.equals(selectedCourier.getKey())) {
+                    List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(courier);
+                    Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(0)));
+                    for (Pair<Intersection, TimeWindow> d : deliveryPoints) {
+                        tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
+                    }
+                    courier.setCurrentTour(tour);
+                    List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
+                    if(computedTravel == null)
+                    {
+                        showDialogWarningError("Error", "There's no suitable tour for this Courier", "Courier : " + courier.getName());
+                    }
+                    else
+                    {
+                        int j = 0;
+                        List<Pair<RoadSegment, Date>> travel = new ArrayList<>();
+                        for(Pair<Intersection, Date> p : computedTravel) {
+                            if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {
+                                List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
+                                for(RoadSegment r : roadSegments) {
+                                    if(r.getDestination() == computedTravel.get(j + 1).getKey())
+                                    {
+                                        drawLine(r, courier.getColor());
+                                        travel.add(new Pair<RoadSegment, Date>(r, computedTravel.get(j + 1).getValue()));
+                                        j++;
+                                        break;
+                                    }
                                 }
                             }
                         }
+                        courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
+                        PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
                     }
-                    courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
-                    PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
                 }
             }
         }
