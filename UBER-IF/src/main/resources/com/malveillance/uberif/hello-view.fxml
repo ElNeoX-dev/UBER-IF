@@ -101,7 +101,7 @@
 
 
 
-                        <Button id="validateBtn" fx:id="validateBtn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onOptimizeBtnClick" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="btn-opti" stylesheets="@Theme.css" text="Validate" textFill="#ffffff">
+                        <Button id="validateBtn" fx:id="validateBtn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onOptimizeBtnClick" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" styleClass="btn-opti" stylesheets="@Theme.css" text="Calculate route" textFill="#ffffff">
                             <font>
                                 <Font name="Uber Move Medium" size="14.0" />
                             </font>
