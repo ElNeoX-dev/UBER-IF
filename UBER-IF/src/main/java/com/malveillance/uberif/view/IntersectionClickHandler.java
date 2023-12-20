@@ -12,10 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class IntersectionClickHandler implements EventHandler<MouseEvent> {
     private Intersection intersection;
@@ -72,7 +69,7 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
 
                         TimeWindow timeWindow = new TimeWindow(startH, 60);
 
-                        System.out.println(timeWindow.getStartingTime() + " " + timeWindow.getEndingTime());
+                        // System.out.println(timeWindow.getStartingTime() + " " + timeWindow.getEndingTime());
 
                         graphicalView.getCityMap().getSelectedPairList(currentCourier)
                                 .add(new Pair<>(intersection, timeWindow));
@@ -86,18 +83,18 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
 
     public String showChoiceDialogTime() {
         final String[] res = { "" };
-        ChoiceDialog dialog = new ChoiceDialog("8h");
+        ChoiceDialog dialog = new ChoiceDialog("8h -> 9h");
         dialog.setTitle("Enter a time window");
         dialog.setHeaderText("Enter a time window");
         dialog.setContentText("Please select the wanted delivery time : ");
 
         ObservableList<String> list = dialog.getItems();
-        list.add("8h");
-        list.add("9h");
-        list.add("10h");
-        list.add("11h");
+        list.add("8h -> 9h");
+        list.add("9h -> 10h");
+        list.add("10h -> 11h");
+        list.add("11h -> 12h");
 
-        dialog.showAndWait().ifPresent(result -> res[0] = dialog.getResult().toString());
+        dialog.showAndWait().ifPresent(result -> res[0] = Arrays.stream(dialog.getResult().toString().split("h")).toList().get(0));
 
         return res[0];
     }
