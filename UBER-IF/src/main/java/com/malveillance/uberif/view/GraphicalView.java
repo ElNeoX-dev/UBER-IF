@@ -242,7 +242,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                 }
                 cityMap.removeCourier(lastCourier);
 
-                // If the last is selected
                 if (choiceCourier.getItems().size() == 1) {
                     selectedCourier = new Pair<>(noOne, cityMap.getCourierDotMap().get(noOne));
                 }
@@ -340,6 +339,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         this.cityMap = cityMapController.loadNewCityMap((String) choiceMap.getSelectionModel().getSelectedItem(), false);
         this.cityMap.addObserver(this);
 
+        selectedCourier = new Pair<>(noOne, cityMap.getCourierDotMap().get(noOne));
+
         addCourier("John");
 
         choiceCourier.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuCourierListener(this));
@@ -355,7 +356,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         });
 
         cityMap.addCourier(noOne);
-        //selectedCourier = new Pair<>(noOne, cityMap.getCourierDotMap().get(noOne));
 
         mapPane.addEventHandler(MouseEvent.MOUSE_MOVED, new IntersectionHoverHandler(this, lbInfos));
 
