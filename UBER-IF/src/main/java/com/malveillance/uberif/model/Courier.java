@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Courier {
-    private static Long id;
     private Color color ;
     private String name ;
 
@@ -34,14 +33,6 @@ public class Courier {
 
     public List<Intersection> getSelectedIntersectionList() {
         return selectedDotList;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Tour getCurrentTour() {
