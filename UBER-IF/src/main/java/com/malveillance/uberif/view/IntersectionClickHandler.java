@@ -57,7 +57,7 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
                     String result = showChoiceDialogTime();
                     int startH = -1;
                     try {
-                        startH = Integer.parseInt(result.replace("h", ""));
+                        startH = Integer.parseInt(result);
                     } catch (NumberFormatException err) {
                         System.out.println("Erreur lors du parseInt : " + err);
                     }
