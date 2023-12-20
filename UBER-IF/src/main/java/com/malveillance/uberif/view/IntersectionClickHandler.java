@@ -65,7 +65,7 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
                         System.out.println("Erreur lors du parseInt : " + err);
                     }
 
-                    if (!result.isEmpty() && startH >= 8 && startH <= 12) {
+                    if (!result.isEmpty() && startH >= 8 && startH <= 11) {
                         intersection.setIsOwned(true);
                         intersection.setFill(currentCourier.getColor());
                         intersection.getCircle().setRadius(graphicalView.height / 150);
@@ -96,7 +96,6 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
         list.add("9h");
         list.add("10h");
         list.add("11h");
-        list.add("12h");
 
         dialog.showAndWait().ifPresent(result -> res[0] = dialog.getResult().toString());
 
