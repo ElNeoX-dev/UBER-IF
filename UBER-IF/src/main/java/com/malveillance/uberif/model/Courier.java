@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Courier {
-    private static Long id;
     private Color color ;
     private String name ;
 
@@ -36,14 +35,6 @@ public class Courier {
         return selectedDotList;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Tour getCurrentTour() {
         return currentTour;
     }
@@ -71,7 +62,9 @@ public class Courier {
     @Override
     public String toString() {
         return "Courier{" +
-                "id=" + id +
+                "color=" + color +
+                ", name='" + name + '\'' +
+                ", selectedDotList=" + selectedDotList +
                 ", currentTour=" + currentTour +
                 '}';
     }
