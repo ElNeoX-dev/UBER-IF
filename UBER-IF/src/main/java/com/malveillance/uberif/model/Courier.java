@@ -62,10 +62,7 @@ public class Courier {
     @Override
     public String toString() {
         return "Courier{" +
-                "color=" + color +
-                ", name='" + name + '\'' +
-                ", selectedDotList=" + selectedDotList +
-                ", currentTour=" + currentTour +
+                "currentTour=" + currentTour +
                 '}';
     }
 }
