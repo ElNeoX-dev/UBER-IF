@@ -27,11 +27,9 @@ public class PDFRoadMap {
         return dateFormat.format(arrivalTime);
     }
 
-    public static void generatePDF(List<Pair<Intersection, Date>> roadMap, List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas) {
+    public static void generatePDF(String outputDirectory, String fileName, List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas) {
         try {
-            // Specify the output directory
-            String outputDirectory = "resources/output/";
-
+          
             // Create the output directory if it doesn't exist
             File outputDir = new File(outputDirectory);
             if (!outputDir.exists()) {
@@ -39,7 +37,7 @@ public class PDFRoadMap {
             }
 
             // Construct the output file path
-            String outputFilePath = outputDirectory + "RoadMap.pdf";
+            String outputFilePath = outputDirectory + fileName + ".pdf";
             Path outputPath = Paths.get(outputFilePath);
 
             PDDocument document = new PDDocument();
@@ -54,10 +52,8 @@ public class PDFRoadMap {
                 document.addPage(page);
 
                 contentStream = new PDPageContentStream(document, page);
-
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 20);
 
-                // Get the road map infos
                 // Calculate the center of the page
                 float pageWidth = page.getMediaBox().getWidth();
                 float centerX = pageWidth / 2;
@@ -74,12 +70,12 @@ public class PDFRoadMap {
                 Courier courier = courierTourData.getKey();
                 List<Pair<RoadSegment, Date>> roadSegments = courierTourData.getValue();
 
-                // Process courier information and road segments as needed
+                // Process courier information and road segments
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
                 contentStream.showText("Road Map for Courier " + courier.getName());
-                contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                contentStream.newLineAtOffset(0, -12);
                 contentStream.showText("Tour Starting at the Warehouse at 8 AM");
-                contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                contentStream.newLineAtOffset(0, -12);
                 contentStream.setFont(PDType1Font.HELVETICA, 11);
 
                 // Keep track of the previous RoadSegment
@@ -89,7 +85,7 @@ public class PDFRoadMap {
                     Date arrivalTime = roadSegments.get(i).getValue();
 
                     // Check if the current RoadSegment is different from the previous one
-                    if (i == 0 || !Objects.equals(previousRoadSegment.getName(), segment.getName())) {
+                    if (i == 0 || !Objects.equals(previousRoadSegment.getName(), segment.getName()) || arrivalTime != null) {
                         // Add text to the content stream
                         if (i > 0) {
                             RoadSegment previousSegment = roadSegments.get(i - 1).getKey();
@@ -99,7 +95,7 @@ public class PDFRoadMap {
                                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName());
                                 countLines++;
-                                System.out.println(countLines + " 1");
+                                // System.out.println(countLines + " 1");
                                 if (countLines >= 45) {
                                     countLines = 0;
                                     contentStream.endText();
@@ -137,14 +133,9 @@ public class PDFRoadMap {
                             }
                         }
                     }
-                    /*else {
-                        contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
-                        contentStream.showText("Continue straight");
-                    }*/
                     previousRoadSegment = segment;
                 }
 
-                contentStream.newLineAtOffset(0, -30); // Adjust the vertical offset as needed
                 contentStream.showText("You're back to the Warehouse. Your tour is finished!");
                 countLines += 3;
                 if (countLines >= 35){
