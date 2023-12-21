@@ -97,7 +97,7 @@ public class PDFRoadMap {
                                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName());
                                 countLines++;
-                                System.out.println(countLines + " 1");
+                                // System.out.println(countLines + " 1");
                                 if (countLines >= 45) {
                                     countLines = 0;
                                     contentStream.endText();
