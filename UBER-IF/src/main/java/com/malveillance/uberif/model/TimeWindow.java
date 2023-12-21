@@ -2,6 +2,7 @@ package com.malveillance.uberif.model;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class TimeWindow {
 
@@ -71,5 +72,18 @@ public class TimeWindow {
                 "startingTime=" + startingTime +
                 ", endingTime=" + endingTime +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimeWindow that = (TimeWindow) o;
+        return Objects.equals(startingTime, that.startingTime) && Objects.equals(endingTime, that.endingTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startingTime, endingTime);
     }
 }
