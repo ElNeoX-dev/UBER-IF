@@ -78,7 +78,7 @@ Contains the core data structures and logic.
 Deals with the user interface and presentation logic.
 
 * **Window:** The main window of the application.
-* **GraphicalView:** Responsible for rendering the map and tours vi- sually.
+* **GraphicalView:** Responsible for rendering the map and tours visually.
 * **MouseListener, KeyboardListener, ButtonListener:** Handle user inputs.
 
 #### Controllers Package
