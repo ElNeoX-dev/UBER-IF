@@ -52,7 +52,7 @@ public class CourierTest {
     @Test
     void toString_ShouldReturnFormattedString() {
         // Verify that toString returns the expected formatted string
-        assertEquals("Courier{id=null, currentTour=null}", courier.toString());
+        assertEquals("Courier{currentTour=null}", courier.toString());
     }
 }
 
