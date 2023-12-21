@@ -3,6 +3,7 @@ package com.malveillance.uberif.view;
 import com.malveillance.uberif.formatters.PDFRoadMap;
 import com.malveillance.uberif.controller.*;
 import com.malveillance.uberif.model.*;
+import com.malveillance.uberif.model.Shape;
 import com.malveillance.uberif.model.service.AlgoService;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
@@ -12,6 +13,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -23,10 +27,15 @@ import javafx.util.Pair;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.paint.Color;
+
+import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.awt.*;
+import java.io.File;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 public class GraphicalView extends ShapeVisitor implements Observer {
     private CityMapController cityMapController;
@@ -91,23 +100,37 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
     }
 
+    JFileChooser chooser;
     @FXML
     protected void onSaveBtnClick() {
         System.out.println("Save click");
-        String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
+        chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Please choose a destination");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setSize(new Dimension(200, 200));
+        chooser.setVisible(true);
+        chooser.setSize(new Dimension(200, 500));
+        chooser.setAlignmentX(200);
+        chooser.setAlignmentY(200);
 
-        if (!nameOutput.isEmpty()) {
-            try {
-                xmlSerializer.serialize(cityMap.getCourierDotMap().keySet(), cityMap.getWarehouse(), nameOutput);
-            } catch (ParserConfigurationException e) {
-                System.out.println("ParserConfigurationException : " + e);
-                throw new RuntimeException(e);
-            } catch (TransformerException e) {
-                System.out.println("TransformerException : " + e);
-                throw new RuntimeException(e);
+        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            System.out.println(chooser.getSelectedFile());
+            String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
+            if (!nameOutput.isEmpty()) {
+                try {
+                    xmlSerializer.serialize(cityMap.getCourierDotMap().keySet(), cityMap.getWarehouse(), chooser.getSelectedFile() + nameOutput);
+                } catch (ParserConfigurationException e) {
+                    System.out.println("ParserConfigurationException : " + e);
+                    throw new RuntimeException(e);
+                } catch (TransformerException e) {
+                    System.out.println("TransformerException : " + e);
+                    throw new RuntimeException(e);
+                }
+            } else {
+                showDialogWarningError("Error", "The file name is empty", "");
             }
-        } else {
-            showDialogWarningError("Error", "The file name is empty", "");
         }
 
     }
