@@ -8,6 +8,7 @@ import com.malveillance.uberif.model.service.AlgoService;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
 import com.malveillance.uberif.xml.XMLserializer;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +24,9 @@ import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -40,7 +44,6 @@ import java.util.List;
 public class GraphicalView extends ShapeVisitor implements Observer {
     private CityMapController cityMapController;
     private PaneController paneController;
-
 
     private Context context;
     private Invoker invoker;
@@ -94,7 +97,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                         }
                     }
                     courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
-                    PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
                 }
             }
         }
@@ -104,23 +106,12 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     @FXML
     protected void onSaveBtnClick() {
         System.out.println("Save click");
-        chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new java.io.File("."));
-        chooser.setDialogTitle("Please choose a destination");
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setAcceptAllFileFilterUsed(false);
-        chooser.setSize(new Dimension(200, 200));
-        chooser.setVisible(true);
-        chooser.setSize(new Dimension(200, 500));
-        chooser.setAlignmentX(200);
-        chooser.setAlignmentY(200);
-
-        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-            System.out.println(chooser.getSelectedFile());
+        String path = showDirectoryChooser() ;
+        if (!path.isEmpty()) {
             String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
             if (!nameOutput.isEmpty()) {
                 try {
-                    xmlSerializer.serialize(cityMap.getCourierDotMap().keySet(), cityMap.getWarehouse(), chooser.getSelectedFile() + nameOutput);
+                    xmlSerializer.serialize(cityMap.getCourierDotMap().keySet(), cityMap.getWarehouse(), path + nameOutput);
                 } catch (ParserConfigurationException e) {
                     System.out.println("ParserConfigurationException : " + e);
                     throw new RuntimeException(e);
@@ -138,11 +129,11 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     @FXML
     protected void onRestoreBtnClick() {
         System.out.println("Restore click");
-        String nameInput = showDialogBoxInput("Enter the input file name", "Input file's name", "Enter the input file's name : ");
-        System.out.println(doesResourceExist(nameInput+".uberif.xml"));
-        if (!nameInput.isEmpty() && doesResourceExist(nameInput+".uberif.xml")) {
+        String path = showFileChooser() ;
+        System.out.println(path);
+        if (!path.isEmpty()) {
 
-            CityMap newMap = cityMapController.loadNewCityMap(nameInput+".uberif.xml", true);
+            CityMap newMap = cityMapController.loadNewCityMap(path, true);
             this.cityMap.merge(newMap);
 
             for (Courier courier : cityMap.getListCourier()) {
@@ -166,7 +157,23 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             update(this.cityMap, this.cityMap.getNodes());
 
         } else {
-            showDialogWarningError("Error", "No output file found", "File : " + nameInput + ".uberif.xml");
+            showDialogWarningError("Error", "No input file found", "File : " + path);
+        }
+    }
+
+    @FXML
+    public void onSaveFdRBtnClick() {
+        System.out.println("Save roadMap click");
+        if (courierTourDatas != null && !courierTourDatas.isEmpty()) {
+            String path = showDirectoryChooser() ;
+            String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
+            if (!path.isEmpty() && !nameOutput.isEmpty()) {
+                PDFRoadMap.generatePDF(path, nameOutput, courierTourDatas);
+            } else {
+                showDialogWarningError("Error", "The file name is empty", "");
+            }
+        } else {
+            showDialogWarningError("Error", "The route must be calculated before saving a roadmap", "Please click on 'Calculate routes' before saving the roadmap");
         }
     }
 
@@ -244,6 +251,36 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         dialog.setContentText(content);
 
         dialog.showAndWait();
+    }
+
+    public String showDirectoryChooser() {
+        String path = "" ;
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Please choose the destination directory for the output");
+        File defaultDirectory = new File("./..");
+        chooser.setInitialDirectory(defaultDirectory);
+
+        File selectedDirectory = chooser.showDialog(new Stage());
+        if (selectedDirectory != null) {
+            path = selectedDirectory.getPath() + "/";
+        }
+        return path;
+    }
+
+    public String showFileChooser() {
+        String path = "";
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Please choose the .uberif file to load");
+        File defaultDirectory = new File("./..");
+        chooser.setInitialDirectory(defaultDirectory);
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Uber'IF Files", "*.uberif")
+        );
+        File selectedFile = chooser.showOpenDialog(new Stage());
+        if (selectedFile != null) {
+            path = selectedFile.getPath();
+        }
+        return path;
     }
 
 
@@ -564,11 +601,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         return selectedCourier;
     }
 
-    public boolean doesResourceExist(String resourceName) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource("output/"+resourceName);
-        return resource != null;
-    }
 
     /*
      * public void printMinMaxLatLong() {

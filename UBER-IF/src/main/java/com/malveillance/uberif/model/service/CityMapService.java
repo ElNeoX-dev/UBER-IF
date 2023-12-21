@@ -25,7 +25,7 @@ public class CityMapService {
         XmlMapDeserializer parser = new XmlMapDeserializer();
 
         if (isSavedMap) {
-            parser.deserialize("src/main/resources/output/" + fileName);
+            parser.deserialize(fileName);
             map = new CityMap(parser.getWarehouse(), parser.getTourCourierPairList(), parser.getIntersectionsElements(), fileName, true);
         }else {
             // Split the mapName and take the first word
