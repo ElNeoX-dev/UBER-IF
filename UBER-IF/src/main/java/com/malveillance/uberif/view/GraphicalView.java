@@ -99,7 +99,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                             }
                         }
                         courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
-                        PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
                     }
                 }
             }
