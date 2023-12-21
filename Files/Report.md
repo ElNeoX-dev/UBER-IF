@@ -180,7 +180,7 @@ For a sprint planning for a team of seven members over eight sessions, focusing 
 #### Initial Planning
 * Being able to generate a PDF file with the road maps for the couriers. - 3 hours
 * Being able to display the delivery routes with different colours for different couriers. - 30 min
-* Being able to choose a file in which saving / from which restoring the tours. - 2 hours
+* Being able to save/store tours in a file & choose a file in which saving / from which restoring the tours. - 2 hours
 * Being able to compute best tours for more deliveries for one courier by adding heuristics and modifying the iterator. - 5 hours
 * Being able to adapt to the map the displayed best tour when changing maps. - 1 hour
 * Doing more Unit Tests. - 8 hours
@@ -196,6 +196,7 @@ For a sprint planning for a team of seven members over eight sessions, focusing 
 **Outside Sessions work**
 * PDF file. - 2 hours
 * Improving UI. - 4 hours
+* Being able to save/store tours in a file. - 3 hours
 
 
 ## 7. Architectural and Design Patterns choices
