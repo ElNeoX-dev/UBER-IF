@@ -95,7 +95,7 @@ public class XMLserializer /*implements Visitor */ {// Singleton
             i = 1 ;
         }
 
-        File outputFile = new File("src/main/resources/output/" + name + ".uberif.xml");
+        File outputFile = new File( name + ".uberif");
         outputFile.getParentFile().mkdirs();new StreamResult(outputFile);
 
         // save the xml file
