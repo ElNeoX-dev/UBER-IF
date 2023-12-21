@@ -1,67 +1,205 @@
 # Agile
 
-## First Iteration Report
+## PLD Agile: Agile Development Report
+
+Mark Beckmann, Back-End Developer & Product Owner 
+
+Evann Guillot, Back-End Developer
+
+Noham Martin, Back-End Developer
+
+Tim Morel, Front-End Developer
+
+Marie Roulier, Full-Stack Developer & Scrum Master 
+
+Hugo Warin, Full-Stack Developer
+
+Zyad Haddad, Front-End Developer
+
+
+
+Group: H4132 Department: Computer Science 
+
+University: INSA Lyon
 
 ### Table of Contents
 
-1. [Use Case Diagram](#1-use-case-diagram)
-2. [Description of the main success scenario of all identified use cases](#2-description-of-the-main-success-scenario-of-all-identified-use-cases)
-3. [Class and Package Diagrams](#3-class-and-package-diagrams)
-4. [State-Transition Diagram](#4-state-transition-diagram)
-5. [Plannings of the different iterations](#5-plannings-of-the-different-iterations)
-6. [Architectural and Design Patterns choices](#6-architectural-and-design-patterns-choices)
-7. [Why JUNIT?](#7-why-junit)
-8. [Discussion on Social and Environmental Issues related to the application](#8-discussion-on-social-and-environmental-issues-related-to-the-application)
-9. [Technical and Human Review](#9-technical-and-human-review)
-10. [Glossary](#10-glossary)
+1. [Introduction](#1-introduction)
+2. [Use Case Diagram](#2-use-case-diagram)
+3. [Description of the main success scenario of all identified use cases](#3-description-of-the-main-success-scenario-of-all-identified-use-cases)
+4. [Class and Package Diagrams](#4-class-and-package-diagrams)
+5. [State-Transition Diagram](#5-state-transition-diagram)
+6. [Plannings of the different iterations](#6-plannings-of-the-different-iterations)
+7. [Architectural and Design Patterns choices](#7-architectural-and-design-patterns-choices)
+8. [Why JUNIT?](#8-why-junit)
+9. [Discussion on Social and Environmental Issues related to the application](#9-discussion-on-social-and-environmental-issues-related-to-the-application)
+10. [Technical and Human Review](#10-technical-and-human-review)
+11. [Glossary](#11-glossary)
 
-## 1. Use Case Diagram
+## 1. Introduction
+This report documents the Agile development process of the PLD Agile project. The project’s goal is to develop an application for optimizing delivery tours in urban settings using bicycles. Embracing Agile and SCRUM methodologies, the focus is on iterative development, robust team collaboration, and high adaptability.
+
+## 2. Use Case Diagram
 
 Here's the use case diagram for our application:
 
 ![Use Case Diagram](useCase.png "Use Case Diagram")
 
-## 2. Description of the main success scenario of all identified use cases
 
-| USE CASE                  | Main Success Scenario                                                                                                                                                                                                                                                                                                                                   |
-| ------------------------- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+By Manager UberIF, we mean the user that get incoming delivery requests, calculates routes from the warehouse and that manages the couriers.
+
+## 3. Description of the main success scenario of all identified use cases
+
+| USE CASE                  | Main Success Scenario                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Create Delivery Request   | 1. Manager chooses a courier<br>2. Manager selects an intersection and enters a time window<br>3. System checks and validates data<br>4. System creates the delivery request<br>5. System initiates the process of finding the best tour for the chosen courier. If the tour is feasible, the directions are printed in a PDF document for the courier. |
-| Load City Map             | 1. Manager selects another city map to load in the dropdown list. By default, the small map is loaded. <br>2. System gets all the necessary information from an XML file<br>3. System display successfully the map                                                                                                                                      |
-| Modify Number of Couriers | 1. Manager clicks on “+” or “-” to modify the number of available couriers. If they click on "+", they enter the name of the new courier. If they click on "-", the last courier added is removed. <br>2. System adjusts the number of couriers                                                                                                         |
-| Save Tours                | 1. Manager clicks on saving the tours running at the moment<br>2. System saves tour details to an XML file<br>3. System acknowledges successful saving of the tour                                                                                                                                                                                      |
-| Restore Tours             | 1. Manager clicks on restoring the tours<br>2. Manager chooses the tours they want to restore<br>3. System retrieves and displays the selected tour details                                                                                                                                                                                             |
+| Load City Map             | 1. Manager selects another city map to load in the dropdown list. By default, the small map is loaded. <br>2. System gets all the necessary information from an XML file<br>3. System display successfully the map                                                                                                                                                   |
+| Modify Number of Couriers | 1. Manager clicks on “+” or “-” to modify the number of available couriers. If they click on "+", they enter the name of the new courier. If they click on "-", the last courier added is removed. <br>2. System adjusts the number of couriers                                                                                                                      |
+| Save Tours                | 1. Manager clicks on saving the tours running at the moment<br>2. System saves tour details to an XML file<br>3. System acknowledges successful saving of the tour                                                                                                                                                                                                   |
+| Restore Tours             | 1. Manager clicks on restoring the tours<br>2. Manager chooses the tours they want to restore<br>3. System retrieves and displays the selected tour details                                                                                                                                                                                                          |
 
-## 3. Class and Package Diagrams
+## 4. Class and Package Diagrams
 
-## 4. State-Transition diagram
+The aim of this diagram is to explain how we want to build our software to answer the client needs. It is important to note that this diagram constantly evolves and therefore only should be used to understand the general idea of how our software is structured. It is not the actual nor final version and doe not exactly explain all classes and packages.
 
-## 5. Plannings of the different iterations
+This diagram is organized into several packages, which group related classes and interfaces that interact with each other to perform various functions within the application.
+
+
+### Description and Explanation of the Diagram
+#### Models Package
+Contains the core data structures and logic.
+
+* **Delivery:** Represents a delivery request, including location, time window, and assigned courier.
+* **CityMap:** Holds the graph data structure of the city, with intersections and road segments.
+* **Courier:** Stores information about each courier, including their current tour.
+* **Tour:** Manages the sequence of deliveries and the computation of the optimal route.
+
+#### Views Package
+Deals with the user interface and presentation logic.
+
+* **Window:** The main window of the application.
+* **GraphicalView:** Responsible for rendering the map and tours vi- sually.
+* **MouseListener, KeyboardListener, ButtonListener:** Handle user inputs.
+
+#### Controllers Package
+Manages the application flow and responds to user actions.
+
+* **Controller:** The main controller that orchestrates the application’s behavior.
+* **ListOfCommands:** Maintains a list of commands for undo/redo functionality.
+* **Command:** An abstraction for actions that can be performed, such as adding or removing a delivery.
+
+#### XMLMapParser
+A utility class for parsing the city map from an XML file.
+
+### Architecture and Design Patterns
+* The architecture follows the **Model-View-Controller (MVC)** pattern, separating concerns and allowing for modular development and testing.
+* **Observer pattern** is used within the Models package, allowing views to react to changes in the model.
+* The **Command Pattern**  is implemented in the Controllers package, encapsulating actions as objects, enabling sophisticated control structures such as undo/redo.
+* **State Pattern** is used for managing different states of the application, such as initial, address, and delete states.
+
+
+## 5. State-Transition diagram
+
+We think that there's no need for a state-transition diagram since our application only has one single state.
+
+## 6. Plannings of the different iterations
+
+For a sprint planning for a team of seven members over eight sessions, focusing on the inception phase of your project, it’s important to allocate tasks effectively to meet all deliverables. We had 8 Sessions with 4 hours per session.
 
 ### a. Sprint 1 Review
 #### Initial Planning
 
+* Being able to load the map of intersections with the file given at the beginning. - 4 hours
+* Being able to compute the best route. - 12 hours
+* Change the number of couriers. - 2 hours
+
 #### Actual Planning
 
-- Being able to load the map of intersections with the file given at the beginning
-- Being able to display the best route
-- Change the number of couriers
-- Entering and managing delivery requests within the right time window
+**Session 1**
+* **All members:** Setting up project environment for development and conception. - 2 hours per member
+* **All members:** Brainstorming session for identifying main use cases and initial architecture. - 1 hour per member
+* **Tim:** Start working on Glossary. - 1 hour
+* **Marie & Noham:** Use Case Diagram. - 1 hour
+* **Mark & Hugo:** Sequence and Class Diagram. - 1 hour
+* **Evann:** Architecture conception. - 1 hour
+* **Zyad:** Sick
+
+**Session 2**
+* **All members:** Daily discussion on where everybody is at. Synthesis of 1st session results. - 30 min
+* **Evann & Hugo:** Continuation of architecture conception. - 3 hours
+* **Marie & Noham:** Structured description of selected use cases. - 1.5 hour
+* **Noham:** Joined Mark to work on algorithms. - 1.5 hour
+* **Tim & Zyad:** Conception of UX/UI. - 3 hours
+* **Marie:** Joined the front end team to design and program the UI. - 1.5 hour
+* **Mark:** Research on algorithms and loook at given code for TSP. - 3 hour
+* **All members:** Recapitulative Discussion. - 30 min
+
+**Session 3**
+* **All members:** Daily discussion on where everybody is at. Synthesis of 1st session results. - 30 min
+* **All members:** Revisited packages, validation and implementation of packages and classes. - 2 hours
+* **Marie & Noham & Hugo & Evann:** Continued work on algorithms. - 1.5 hour
+* **Tim & Marie:** Front End Development, correction of bugs related to displaying and the UI. - 1.5 hour
+* **Hugo & Evann:** Debugging Git. - 1 hour
+* **All members:** Recapitulative Discussion. - 10 min
+
+**Session 4**
+* **All members:** Daily discussion on where everybody is at. Synthesis of 2nd session results. - 30 min
+* **Noham & Evann:** Debugging backend. - 1.5 hour
+* **Hugo & Zyad & Tim:** Front End Debugging and background improvement. - 1.5 hour
+* **All members:** Class meeting. - 2.5 hours
+* **Marie & Mark:** Developing deliverables. - 1.5 hour
+
+**Outside Sessions work**
+* **Tim:** Development of V1 XML Parser. - 2 hours
+* **Tim:** Development of map for UI. - 3 hours
+* **All members:** Back End Development and Code Cleaning. - 5 hours per member
+
+**Overall**
+* Being able to load the map of intersections with the file given at the beginning. - 5 hours
+* Being able to compute the best route. - 14 hours
+* Change the number of couriers. - 1 hours
 
 ### b. Sprint 2 Review
 #### Initial Planning
-#### Actual Planning
+* Being able to compute and manage delivery requests within the right time window. - 4 hours
+* Being able to display on the map the best tours. - 2 hours
+* Being able to manage different states (going back with Control+Z). - 3 hours
+* Being able to manage multiple couriers at the same time. - 2 hours
+* Improving selection of the intersections when creating a delivery request. - 30 min
+* Starting Unit Tests. - 2 hours
 
-- Add new features: being able to add manually a delivery at an intersection that's not in the XML file given initially
-- Telling the courier a road is not cyclable and he can't go deliver by this road
+#### Actual Planning
+* Being able to compute and manage delivery requests within the right time window. - 6 hours
+* Being able to display on the map the best tours. - 3 hours
+* Being able to manage different states (going back with Control+Z). - 4 hours
+* Being able to manage multiple couriers at the same time. - 1 hour
+* Improving selection of the intersections when creating a delivery request. - 30 min
+* Starting Unit Tests. - 8 hours
 
 ### c. Sprint 3 Review
 #### Initial Planning
+* Being able to generate a PDF file with the road maps for the couriers. - 3 hours
+* Being able to display the delivery routes with different colours for different couriers. - 30 min
+* Being able to choose a file in which saving / from which restoring the tours. - 2 hours
+* Being able to compute best tours for more deliveries for one courier by adding heuristics and modifying the iterator. - 5 hours
+* Being able to adapt to the map the displayed best tour when changing maps. - 1 hour
+* Doing more Unit Tests. - 8 hours
+
 #### Actual Planning
+* Being able to generate a PDF file with the road maps for the couriers. - 5 hours
+* Being able to display the delivery routes with different colours for different couriers. - 1 hour
+* Being able to choose a file in which saving / from which restoring the tours. - 3 hours
+* Being able to compute best tours for more deliveries for one courier by adding heuristics and modifying the iterator. - 3 hours
+* Being able to adapt to the map the displayed best tour when changing maps. - 1.5 hour
+* Doing more Unit Tests. - 8 hours
+
+**Outside Sessions work**
+* PDF file. - 2 hours
+* Improving UI. - 4 hours
 
 
-## 6. Architectural and Design Patterns choices
+## 7. Architectural and Design Patterns choices
 The application employs the Model-View-Controller (MVC) architecture, pro- viding several advantages:
-
 
 **Separation of Concerns:** MVC divides the application into three main components—Model, View, and Controller—facilitating ease of mainte- nance and code evolution.
 
@@ -79,7 +217,7 @@ The application employs the Model-View-Controller (MVC) architecture, pro- vidin
 
 **Complex Interaction Handling:** Efficient management of complex in- teractions between UI and business logic, crucial for modern web applica- tions.
 
-## 7. Why JUNIT?
+## 8. Why JUNIT?
 
 For unit testing, we will use JUnit, Mockito, and JFixture. Here is a simplified example of a unit test in Java using JFixture for test data generation and Mockito for mocking dependencies:
 
@@ -161,7 +299,7 @@ public class UserServiceTest {
 ```
 In this example, JFixture is used for automatic instance creation, and Mock- ito for mocking UserRepository and configuring its behavior. The test verifies that userService.getUserById returns the expected User object and that the mock repository is called correctly.
 
-## 8. Discussion on social and environmental issues related to the application
+## 9. Discussion on social and environmental issues related to the application
 
 Using bicycles for urban delivery services is a great step towards addressing both social and environmental issues. Indeed, it can not only reduce urban congestion, but also contribute to reduced delivery times, which makes it more efficient overall. However, it's also important to take a look at negative impacts it could have.
 
@@ -177,7 +315,7 @@ Sadly, this application brings the problem of increased consumption of single-us
 
 Lastly, one could say that this concept will definitely increase the price of products, making them less accessible for poor people.
 
-## 9. Technical and Human Review
+## 10. Technical and Human Review
 ### Technical Review
 
 Technically speaking, we haven't encountered a lot of problems in the three sprints we have made.
@@ -196,10 +334,16 @@ Nonetheless, we think that we could have worked differently regarding the manage
 
 Regarding the human review, we loved working together. It was a great team and the mood was always good. 
 
-Everybody was always motivated to work, even at 8 AM. The task repartition was also great and we worked evenly outside of class.
+Everybody was always motivated to work, even at 8 AM. The task repartition was also great, and we worked evenly outside of class.
+
+While team communication was generally direct and effective, it could have been improved from time to time. For instance, we could have communicated more effectively on where everybody was at during the sessions, and not only at the beginning of the sessions.
+
+Team member satisfaction, with a mean score of 8, reflected a positive atmosphere. Importantly, no well-being concerns were raised, indicating a generally happy team.
+
+Agile practices allowed team members to focus on their favourite areas of interest or desired learning.
 
 
-## 10. Glossary
+## 11. Glossary
 
 - **_Application_**: The software system designed for optimizing delivery tours in cities using bicycles.
 - **_City Map_**: A digital representation of a city's layout, including intersections and road segments, used for planning delivery tours.
