@@ -9,15 +9,32 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * The CityMap class represents all the intersections and road segments of a map.
+ */
 public class CityMap extends Observable {
+
+    /**
+     * The maximum length of a road segment.
+     */
     public static final double INFINITE_LENGTH = Double.MAX_VALUE;
+    /**
+     * The list of intersections and road segments of the city map.
+     */
     private final Map<Intersection, List<RoadSegment>> nodes;
+
+    
     private Map<Courier, List<Pair<Intersection, TimeWindow>>> courierDotMap;
     private final Warehouse warehouse;
     private Map<Courier, List<Pair<Intersection, Date>>> travelList;
 
     private String mapName;
 
+    /**
+     * Constructor for the CityMap class
+     * @param warehouse The warehouse of the city map
+     * @param intersections The list of intersections in the city map
+     */
     public CityMap(Warehouse warehouse, List<Intersection> intersections) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
@@ -29,6 +46,12 @@ public class CityMap extends Observable {
         this.travelList = new HashMap<>();
     }
 
+    /**
+     * Constructor for the CityMap class
+     * @param warehouse The warehouse of the city map
+     * @param intersections The list of intersections in the city map
+     * @param segments The list of road segments in the city map
+     */
     public CityMap(Warehouse warehouse, List<Intersection> intersections, List<RoadSegment> segments, String mapName) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
@@ -43,6 +66,13 @@ public class CityMap extends Observable {
         }
     }
 
+    /**
+     * Constructor for the CityMap class
+     * @param warehouse The warehouse of the city map
+     * @param intersections The list of intersections in the city map
+     * @param mapName The list of road segments in the city map
+     * @param isSavedMap Whether the map is saved or not
+     */
     public CityMap(Warehouse warehouse, List<Pair<Tour, Courier>> tourCourierPairList, List<Intersection> intersections, String mapName, boolean isSavedMap) {
         this.warehouse = warehouse;
         this.nodes = new HashMap<>();
@@ -69,36 +99,10 @@ public class CityMap extends Observable {
         }
     }
 
-    /*
-    public void merge(CityMap newCityMap) {
-
-        // merge intersections
-        for (Intersection intersection : newCityMap.getNodes().keySet()) {
-            for (Intersection intersectionInMap : this.nodes.keySet()) {
-                if (intersectionInMap.getId().equals(intersection.getId())) {
-                    intersectionInMap.setIsOwned(intersection.isOwned());
-                    break;
-                }
-            }
-        }
-
-        for (Courier courier : newCityMap.getListCourier()) {
-            if (!courier.getName().isEmpty()) {
-                // if courier's name already exists
-                for (Courier courierInMap : this.getListCourier()) {
-                    if (courierInMap.getName().equals(courier.getName())) {
-                        this.courierDotMap.get(courierInMap).addAll(newCityMap.getCourierDotMap().get(courier));
-                        break;
-                    } else {
-                        this.courierDotMap.put(courier, newCityMap.getCourierDotMap().get(courier));
-                    }
-                }
-            }
-        }
-
-
-    }*/
-
+    /**
+     * Merge the data of a new CityMap into the current CityMap
+     * @param newCityMap The new CityMap to merge
+     */
     public void merge(CityMap newCityMap) {
         // Mettre à jour les intersections dans la carte actuelle
         for (Intersection newIntersection : newCityMap.getNodes().keySet()) {
@@ -140,24 +144,46 @@ public class CityMap extends Observable {
         }
     }
 
+    /**
+     * Add an intersection to the city map
+     * @param intersection The intersection to add
+     */
     private void addIntersection(Intersection intersection) {
         if (!this.nodes.containsKey(intersection)) {
             this.nodes.put(intersection, new ArrayList<>());
         }
     }
 
+    /**
+     * Add a courier to the city map
+     * @param courier The courier to add
+     */
     public void addCourier(Courier courier) {
         this.courierDotMap.put(courier, new ArrayList<>());
     }
 
+    /**
+     * Remove a courier from the city map
+     * @param courier The courier to remove
+     */
     public void removeCourier(Courier courier) {
         this.courierDotMap.remove(courier);
     }
 
+    /**
+     * returns the list of selected intersections and timeWindow by the courier
+     * @param courier The courier to get the selected intersections from
+     * @return The list of selected intersections and timeWindow by the courier
+     */
     public List<Pair<Intersection, TimeWindow>> getSelectedPairList(Courier courier) {
         return courierDotMap.get(courier);
     }
 
+    /**
+     * returns the list of selected intersections by the courier
+     * @param courier The courier to get the selected intersections from
+     * @return The list of selected intersections by the courier
+     */
     public List<Intersection> seeSelectedIntersectionList(Courier courier) {
         List<Intersection> intersections = new ArrayList<>();
 
@@ -169,6 +195,11 @@ public class CityMap extends Observable {
         return intersections;
     }
 
+    /**
+     * returns the list of couriers
+     *
+     * @return The list of couriers
+     */
     public List<Courier> getListCourier() {
         List<Courier> couriers = new ArrayList<>();
 
@@ -179,55 +210,115 @@ public class CityMap extends Observable {
         return couriers;
     }
 
+    /**
+     * returns the Map of couriers and their selected intersections with timeWindow
+     * @return The Map of couriers and their selected intersections with timeWindow
+     */
     public Map<Courier, List<Pair<Intersection, TimeWindow>>> getCourierDotMap() {
         return courierDotMap;
     }
 
+    /**
+     * Set the courierDotMap
+     * @param courierDotMap The courierDotMap to set
+     */
     public void setCourierDotMap(Map<Courier, List<Pair<Intersection, TimeWindow>>> courierDotMap) {
         this.courierDotMap = courierDotMap;
     }
 
+    /**
+     * Add a travel plan to the travel list
+     * @param courier The courier to add the travel plan to
+     * @param plan The travel plan to add
+     */
     public void addTravelPlan(Courier courier, List<Pair<Intersection, Date>> plan) {
         travelList.put(courier, plan);
     }
 
+    /**
+     * Get the travel plan of a courier
+     * @param courier The courier to get the travel plan from
+     * @return The travel plan of the courier
+     */
     public List<Pair<Intersection, Date>> getTravelPlan(Courier courier) {
         return travelList.getOrDefault(courier, new ArrayList<>());
     }
 
+    /**
+     * Remove the travel plan of a courier
+     * @param courier The courier to remove the travel plan from
+     */
     public void removeTravelPlan(Courier courier) {
         travelList.remove(courier);
     }
 
+    /**
+     * Get the travel list
+     * @return The travel list
+     */
     public Map<Courier, List<Pair<Intersection, Date>>> getTravelList() {
         return travelList;
     }
 
+    /**
+     * add a road segment to the city map
+     * @param segment The road segment to add
+     */
     public void addRoadSegment(RoadSegment segment) {
         this.nodes.get(segment.getOrigin()).add(segment);
     }
 
+    /**
+     * check if the city map has a road segment from source to destination
+     * @param source The source intersection
+     * @param destination The destination intersection
+     * @return Whether the city map has a road segment from source to destination
+     */
     public boolean hasRoadSegment(Intersection source, Intersection destination) {
         return this.nodes.get(source).stream()
                 .anyMatch(segment -> segment.getDestination().equals(destination));
     }
 
+    /**
+     * get the adjacent roads of an intersection
+     * @param intersection The intersection to get the adjacent roads from
+     * @return The adjacent roads of the intersection
+     */
     public List<RoadSegment> getAdjacentRoads(Intersection intersection) {
         return this.nodes.getOrDefault(intersection, new ArrayList<>());
     }
 
+    /**
+     * set the adjacent roads of an intersection
+     * @param intersection The intersection to set the adjacent roads of
+     * @param roadSegments The adjacent roads to set
+     */
     public void setAdjacentRoads(Intersection intersection, List<RoadSegment> roadSegments) {
         this.nodes.get(intersection).addAll(roadSegments);
     }
 
+    /**
+     * get the nodes of the city map
+     * @return The nodes of the city map
+     */
     public Map<Intersection, List<RoadSegment>> getNodes() {
         return this.nodes;
     }
 
+    /**
+     * get the warehouse of the city map
+     * @return The warehouse of the city map
+     */
     public Warehouse getWarehouse() {
         return this.warehouse;
     }
 
+    /**
+     * get the distance between two intersections
+     * @param source The source intersection
+     * @param destination The destination intersection
+     * @return The distance between the two intersections
+     */
     public double getDistance(Intersection source, Intersection destination) {
         for (RoadSegment segment : this.nodes.get(source)) {
             if (segment.getDestination().equals(destination)) {
@@ -237,6 +328,12 @@ public class CityMap extends Observable {
         return INFINITE_LENGTH;
     }
 
+    /**
+     * set the distance between two intersections
+     * @param source The source intersection
+     * @param destination The destination intersection
+     * @param distance The distance between the two intersections
+     */
     public void setDistance(Intersection source, Intersection destination, double distance) {
         for (RoadSegment segment : this.nodes.get(source)) {
             if (segment.getDestination().equals(destination)) {
@@ -246,18 +343,35 @@ public class CityMap extends Observable {
         }
     }
 
+    /**
+     * get the number of nodes in the city map
+     * @return The number of nodes in the city map
+     */
     public int getNbNodes() {
         return nodes.size();
     }
 
+    /**
+     * get the map name
+     * @return The map name
+     */
     public String getMapName() {
         return mapName;
     }
 
+    /**
+     * check if the intersection is in the city map
+     * @param intersection The intersection to check
+     * @return Whether the intersection is in the city map
+     */
     public boolean IntersectionInMap(Intersection intersection) {
         return this.nodes.keySet().contains(intersection);
     }
 
+    /**
+     * makes a deep copy of the city map
+     * @return A deep copy of the city map
+     */
     public CityMap deepCopy() {
         Warehouse copiedWarehouse = new Warehouse(this.warehouse);
         List<Intersection> copiedIntersections = new ArrayList<>();

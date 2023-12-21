@@ -12,39 +12,90 @@ import java.util.Calendar;
 import java.util.Date;
 
 public abstract class TemplateTSP implements TSP {
-	private List<Pair<Intersection,Date>> bestSol;
+
+	/**
+	 * The best solution found during the search.
+	 */
+	private List<Pair<Intersection, Date>> bestSol;
+
+	/**
+	 * The city map on which the TSP is performed.
+	 */
 	protected CityMap g;
+
+	/**
+	 * The cost of the best solution found.
+	 */
 	private double bestSolCost;
+
+	/**
+	 * The time limit for the TSP search.
+	 */
 	private int timeLimit;
+
+	/**
+	 * The start time of the TSP search.
+	 */
 	private long startTime;
+
+	/**
+	 * The current time during the TSP search.
+	 */
 	private double currentTime;
+
+	/**
+	 * The default starting hour for delivery.
+	 */
 	private static final int deliveryStartTime = 8;
+
+	/**
+	 * The number of seconds in an hour.
+	 */
 	private static final int secondsInHour = 3600;
 
-	public void searchSolution(int timeLimit, CityMap g,Tour t,Date startingDate){
+	/**
+	 * Initiates the TSP search with the specified time limit, city map, tour, and starting date.
+	 *
+	 * @param timeLimit     the time limit for the TSP search
+	 * @param g             the city map
+	 * @param t             the tour
+	 * @param startingDate  the starting date for the TSP search
+	 */
+	public void searchSolution(int timeLimit, CityMap g, Tour t, Date startingDate) {
 		if (timeLimit <= 0) return;
 		startTime = System.currentTimeMillis();
 		this.timeLimit = timeLimit;
 		this.g = g;
 		bestSol = new ArrayList<>();
-		Collection<Delivery> unvisited = new ArrayList<>(g.getNbNodes()-1);
+		Collection<Delivery> unvisited = new ArrayList<>(g.getNbNodes() - 1);
 		unvisited.addAll(t.getDeliveries());
-        unvisited.remove(t.getStartingPoint());
+		unvisited.remove(t.getStartingPoint());
 
-		Collection<Pair<Intersection,Date>> visited = new ArrayList<>(g.getNbNodes());
-		visited.add(new Pair<>(t.getStartingPoint().getIntersection(),startingDate));
+		Collection<Pair<Intersection, Date>> visited = new ArrayList<>(g.getNbNodes());
+		visited.add(new Pair<>(t.getStartingPoint().getIntersection(), startingDate));
 
 		bestSolCost = Integer.MAX_VALUE;
 		branchAndBound(t.getStartingPoint(), unvisited, visited, 0);
 	}
 
-	public Pair<Intersection,Date> getSolution(int i){
-		if (g != null && i>=0 && i<g.getNbNodes())
+	/**
+	 * Gets the solution at the specified index.
+	 *
+	 * @param i the index of the solution
+	 * @return the solution at the specified index
+	 */
+	public Pair<Intersection, Date> getSolution(int i) {
+		if (g != null && i >= 0 && i < g.getNbNodes())
 			return bestSol.get(i);
 		return null;
 	}
 
-	public double getSolutionCost(){
+	/**
+	 * Gets the cost of the best solution found.
+	 *
+	 * @return the cost of the best solution
+	 */
+	public double getSolutionCost() {
 		if (g != null)
 			return bestSolCost;
 		return -1;

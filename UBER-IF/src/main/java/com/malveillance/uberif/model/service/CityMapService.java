@@ -18,6 +18,12 @@ public class CityMapService {
 
     }
 
+    /**
+     * Load the XML file that corresponds to the mapName
+     * @param mapName The name of the map
+     * @param isSavedMap Whether the map is saved or not
+     * @return A CityMap object linked to the XML file
+     */
     public CityMap loadMap(String mapName, boolean isSavedMap ){
 
         CityMap map;
