@@ -14,16 +14,34 @@ import javafx.util.Pair;
 
 import java.util.*;
 
+/**
+ * The class represents a listener for the choice menu of couriers.
+ */
 public class IntersectionClickHandler implements EventHandler<MouseEvent> {
+
+    /**
+     * The intersection.
+     */
     private Intersection intersection;
 
+    /**
+     * The graphical view.
+     */
     private GraphicalView graphicalView;
 
+    /**
+     * Constructs a new ChoiceMenuCourierListener with the specified graphical view.
+     * @param graphicalView the graphical view
+     */
     public IntersectionClickHandler(Intersection intersection, GraphicalView graphicalView) {
         this.intersection = intersection;
         this.graphicalView = graphicalView;
     }
 
+    /**
+     * Handles the courier selection event.
+     * @param event the observable object
+     */
     @Override
     public void handle(MouseEvent event) {
         // System.out.println("Mouse clicked over intersection (" + intersection.getId()
@@ -87,6 +105,10 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
 
     }
 
+    /**
+     * Shows a choice dialog box to select a time window
+     * @return the selected time window
+     */
     public String showChoiceDialogTime() {
         final String[] res = { "" };
         ChoiceDialog dialog = new ChoiceDialog("8h -> 9h");
@@ -105,6 +127,10 @@ public class IntersectionClickHandler implements EventHandler<MouseEvent> {
         return res[0];
     }
 
+    /**
+     * Shows a dialog box to enter a courier's name
+     * @return the courier's name
+     */
     public String showDialogBoxInput() {
         final String[] res = { null };
         TextInputDialog dialog = new TextInputDialog("");

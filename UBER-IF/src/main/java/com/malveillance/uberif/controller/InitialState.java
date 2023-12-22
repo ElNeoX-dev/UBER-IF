@@ -6,10 +6,16 @@ import com.malveillance.uberif.model.Courier;
 import com.malveillance.uberif.view.GraphicalView;
 import javafx.scene.control.Label;
 
+/**
+ * The class represents the InitialState.
+ */
 class InitialState implements State {
 
     private GraphicalView graphicalView = null;
 
+        /**
+     * Constructs a new InitialState.
+     */
     public InitialState(GraphicalView graphicalView){
         this.graphicalView = graphicalView.deepCopy();
     }

@@ -5,17 +5,34 @@ import com.malveillance.uberif.view.GraphicalView;
 
 import java.util.Stack;
 
+/**
+ * The class represents a context.
+ */
 public class Context {
+    /**
+     * Represents the current state.
+     */
     private State currentState;
+
+    /**
+     * Represents the previous states.
+     */
     private Stack<State> previousStates;
     private Stack<State> undoneStates;
 
+    /**
+     * Constructs a new Context.
+     */
     public Context(GraphicalView graphicalView) {
         this.currentState = new InitialState(graphicalView);
         this.previousStates = new Stack<>();
         this.undoneStates = new Stack<>();
     }
 
+    /**
+     * sets the state.
+     * @param state the state
+     */
     public void setState(State state) {
         if (currentState != null) {
             this.previousStates.push(currentState);

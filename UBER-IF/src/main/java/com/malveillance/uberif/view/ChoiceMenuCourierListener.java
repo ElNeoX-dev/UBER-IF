@@ -10,14 +10,30 @@ import javafx.util.Pair;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The class represents a listener for the choice menu of couriers.
+ */
 public class ChoiceMenuCourierListener implements ChangeListener<String> {
 
+    /**
+     * The graphical view.
+     */
     private GraphicalView graphicalView;
 
+    /**
+     * Constructs a new ChoiceMenuCourierListener with the specified graphical view.
+     * @param graphicalView the graphical view
+     */
     public ChoiceMenuCourierListener(GraphicalView graphicalView) {
         this.graphicalView = graphicalView;
     }
 
+    /**
+     * Handles the courier selection event.
+     * @param observable the observable object
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
     @Override
     public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
         // System.out.println("Courier selected: " + newValue);

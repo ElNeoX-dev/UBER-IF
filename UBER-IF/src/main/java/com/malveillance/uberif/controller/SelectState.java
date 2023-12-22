@@ -5,6 +5,9 @@ import com.malveillance.uberif.model.Courier;
 import com.malveillance.uberif.view.GraphicalView;
 import javafx.scene.control.Label;
 
+/**
+ * The class represents the SelectState.
+ */
 class SelectState implements State {
     private GraphicalView graphicalView = null;
 
@@ -12,6 +15,12 @@ class SelectState implements State {
     public SelectState(GraphicalView graphicalView){
         this.graphicalView= graphicalView.deepCopy();
     }
+
+    /**
+     * Handles the input.
+     * @param context the context
+     * @param input the input
+     */
     @Override
     public void handleInput(Context context, String input, GraphicalView graphicalView) {
         if (input.equals("selectCourier")) {

@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * The class represents a command to optimize the route.
+ */
 public class OptimizeRouteCommand implements Command {
     private GraphicalView graphicalView;
     private Context context;
@@ -19,12 +21,15 @@ public class OptimizeRouteCommand implements Command {
         this.context = context;
     }
 
+    /**
+     * Executes the command in order to optimize the routes.
+     */
     @Override
     public void execute() {
 
         // CityMap previousCityMap = cityMap.deepCopy();
 
-        graphicalView.courierTourDatas = new ArrayList<>();
+        graphicalView.setCourierTourDatas(new ArrayList<>());
         graphicalView.getMapPane().getChildren().clear();
         graphicalView.update(graphicalView.getCityMap(), graphicalView.getCityMap().getNodes());
         for(Courier courier : graphicalView.getCityMap().getCourierDotMap().keySet()) {
@@ -41,15 +46,5 @@ public class OptimizeRouteCommand implements Command {
         }
         context.handleInput("optimize", graphicalView);
     }
-
-
-
-//    @Override
-//    public void undo() {
-//        if (previousState != null) {
-//            // Restore the previous state
-//
-//        }
-//    }
 }
 

@@ -26,8 +26,4 @@ public class SelectCommand implements Command {
         graphicalView.getContext().setState(newState);
     }
 
-//    @Override
-//    public void undo() {
-//        // Logic to undo adding an address
-//    }
 }
