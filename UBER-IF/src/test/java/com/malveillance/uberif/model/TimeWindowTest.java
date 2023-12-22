@@ -9,7 +9,7 @@ class TimeWindowTest {
 
     @Test
     void constructors_ShouldCorrectlyInitializeFields() {
-        // Test the constructor with specific starting and ending times
+        // Test the constructor - start and end time
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 10);
         cal.set(Calendar.MINUTE, 0);
@@ -18,14 +18,14 @@ class TimeWindowTest {
         cal.add(Calendar.HOUR_OF_DAY, 2);
         Date endTime = cal.getTime();
         TimeWindow tw = new TimeWindow(startTime, endTime);
-        //Problèmes avec les assertEquals
+        //Problems with assertEquals (I think because of depth comparison of object)
         //assertEquals(startTime, tw.getStartingTime());
         //assertEquals(endTime, tw.getEndingTime());
         assertEquals(startTime.getTime(), tw.getStartingTime().getTime());
         assertEquals(endTime.getTime(), tw.getEndingTime().getTime());
 
 
-        // Test the constructor with starting time and duration in minutes
+        // Test the constructor - start time and duration
         cal.setTime(startTime);
         int duration = 120; // 2 hours
         tw = new TimeWindow(startTime, duration);
@@ -33,7 +33,7 @@ class TimeWindowTest {
         cal.add(Calendar.MINUTE, duration);
         assertEquals(cal.getTime(), tw.getEndingTime());
 
-        // Test the constructor with hour and minutes for the day
+        // Test the constructor - hour and minutes
         int hour = 8;
         int minutes = 30;
         tw = new TimeWindow(hour, minutes);
@@ -47,7 +47,7 @@ class TimeWindowTest {
         assertEquals(expectedStart, tw.getStartingTime());
         assertEquals(expectedEnd, tw.getEndingTime());
 
-        // Test the constructor with only minutes for the day
+        // Test the constructor - only minutes
         tw = new TimeWindow(duration);
         cal.setTime(new Date());
         cal.set(Calendar.HOUR_OF_DAY, TimeWindow.defaultStartingHour);

@@ -15,9 +15,7 @@ class IntersectionTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize Intersection with sample data
         intersection = new Intersection(id, latitude, longitude);
-        // Create a mock ShapeVisitor instance
         mockVisitor = mock(ShapeVisitor.class);
     }
 
@@ -36,7 +34,7 @@ class IntersectionTest {
         intersection.setLatitude(newLatitude);
         intersection.setLongitude(newLongitude);
 
-        // Assert that properties were updated correctly
+        // Assert
         assertEquals(newId, intersection.getId(), "setId should set the correct id.");
         assertEquals(newLatitude, intersection.getLatitude(), "setLatitude should set the correct latitude.");
         assertEquals(newLongitude, intersection.getLongitude(), "setLongitude should set the correct longitude.");
@@ -73,10 +71,8 @@ class IntersectionTest {
 
     @Test
     void accept_ShouldInvokeVisitOnShapeVisitor() {
-        // Call the accept method on intersection
         intersection.accept(mockVisitor);
 
-        // Verify that the visit method was called on the mockVisitor
         verify(mockVisitor).visit(intersection);
     }
 }
