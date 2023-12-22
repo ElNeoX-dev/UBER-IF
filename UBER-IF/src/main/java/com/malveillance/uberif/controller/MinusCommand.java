@@ -40,7 +40,7 @@ public class MinusCommand implements Command {
         // CityMap previousCityMap = cityMap.deepCopy();
 
         if (graphicalView.getNbCouriers() > 0) {
-            graphicalView.getNbCouriers();
+            graphicalView.setNbCouriers(graphicalView.getNbCouriers() - 1);
             graphicalView.getNbCourierLb().setText(String.valueOf(graphicalView.getNbCouriers()));
 
             Courier lastCourier = graphicalView.getSelectedCourier().getKey();
