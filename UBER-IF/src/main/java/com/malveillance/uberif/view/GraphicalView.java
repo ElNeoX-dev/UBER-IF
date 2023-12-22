@@ -7,7 +7,7 @@ import com.malveillance.uberif.model.Shape;
 import com.malveillance.uberif.model.service.AlgoService;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
-import com.malveillance.uberif.util.ResourceReader;
+import com.malveillance.uberif.util.Reader;
 import com.malveillance.uberif.xml.XMLserializer;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
@@ -193,7 +193,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
             }
 
-            update(this.cityMap, this.cityMap.getNodes());
+            this.onOptimizeBtnClick();
 
         } else {
             showDialogWarningError("Error", "No input file found", "File : " + path);
@@ -570,7 +570,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
             this.cityMap = newmap;
 
-            ResourceReader rsReader = new ResourceReader();
+            Reader rsReader = new Reader();
             InputStream is = rsReader.getFileAsIOStream(cityMap.getMapName() + "Map.png");
 
             BackgroundImage backgroundImage = new BackgroundImage(

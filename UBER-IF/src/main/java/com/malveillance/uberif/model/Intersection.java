@@ -175,7 +175,7 @@ public class Intersection extends Shape {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Intersection that = (Intersection) obj;
-        return id != null ? id.equals(that.id) : that.id == null;
+        return id != null && id.equals(that.id);
     }
 
     /**
