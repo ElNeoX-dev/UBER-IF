@@ -35,16 +35,15 @@ public class PDFRoadMap {
         return dateFormat.format(arrivalTime);
     }
 
-    /**
+        /**
      * Generates a PDF file containing the road map of the tour of a courier.
-     * @param roadMap the list of intersections and their arrival times
+     * @param outputDirectory the output directory
+     * @param fileName the file name
      * @param courierTourDatas the list of couriers and their tours
      */
-    public static void generatePDF(List<Pair<Intersection, Date>> roadMap, List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas) {
+    public static void generatePDF(String outputDirectory, String fileName, List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas) {
         try {
-            // Specify the output directory
-            String outputDirectory = "src/main/resources/output/";
-
+          
             // Create the output directory if it doesn't exist
             File outputDir = new File(outputDirectory);
             if (!outputDir.exists()) {
@@ -52,7 +51,7 @@ public class PDFRoadMap {
             }
 
             // Construct the output file path
-            String outputFilePath = outputDirectory + "RoadMap.pdf";
+            String outputFilePath = outputDirectory + fileName + ".pdf";
             Path outputPath = Paths.get(outputFilePath);
 
             PDDocument document = new PDDocument();
@@ -110,7 +109,7 @@ public class PDFRoadMap {
                                 contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName());
                                 countLines++;
-                                System.out.println(countLines + " 1");
+                                // System.out.println(countLines + " 1");
                                 if (countLines >= 45) {
                                     countLines = 0;
                                     contentStream.endText();

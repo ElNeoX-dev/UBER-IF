@@ -3,15 +3,20 @@ package com.malveillance.uberif.view;
 import com.malveillance.uberif.formatters.PDFRoadMap;
 import com.malveillance.uberif.controller.*;
 import com.malveillance.uberif.model.*;
+import com.malveillance.uberif.model.Shape;
 import com.malveillance.uberif.model.service.AlgoService;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
 import com.malveillance.uberif.xml.XMLserializer;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -19,14 +24,22 @@ import javafx.scene.shape.Line;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.paint.Color;
+
+import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.awt.*;
+import java.io.File;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 /**
  * The class represents the graphical view, used to display the city map and handles the user interactions.
@@ -85,63 +98,70 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         mapPane.getChildren().clear();
         update(this.cityMap, this.cityMap.getNodes());
         for(Courier courier : cityMap.getCourierDotMap().keySet()) {
+            // if a courier doesn't have any delivery, we don't calculate the road, unless it's the courier selected
             if(!courier.getName().isEmpty()) {
-                List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(courier);
-                Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(0)));
-                for (Pair<Intersection, TimeWindow> d : deliveryPoints) {
-                    tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
-                }
-                courier.setCurrentTour(tour);
-                List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
-                if(computedTravel == null)
-                {
-                    showDialogWarningError("Error", "There's no suitable tour for this Courier", "Courier : " + courier.getName());
-                }
-                else
-                {
-                    int j = 0;
-                    List<Pair<RoadSegment, Date>> travel = new ArrayList<>();
-                    for(Pair<Intersection, Date> p : computedTravel) {
-                        if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {
-                            List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
-                            for(RoadSegment r : roadSegments) {
-                                if(r.getDestination() == computedTravel.get(j + 1).getKey())
-                                {
-                                    drawLine(r, courier.getColor());
-                                    travel.add(new Pair<RoadSegment, Date>(r, computedTravel.get(j + 1).getValue()));
-                                    j++;
-                                    break;
+                if (!cityMap.getSelectedPairList(courier).isEmpty() || courier.equals(selectedCourier.getKey())) {
+                    List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(courier);
+                    Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(0)));
+                    for (Pair<Intersection, TimeWindow> d : deliveryPoints) {
+                        tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
+                    }
+                    courier.setCurrentTour(tour);
+                    List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
+                    if(computedTravel == null)
+                    {
+                        showDialogWarningError("Error", "There's no suitable tour for this Courier", "Courier : " + courier.getName());
+                    }
+                    else
+                    {
+                        int j = 0;
+                        List<Pair<RoadSegment, Date>> travel = new ArrayList<>();
+                        for(Pair<Intersection, Date> p : computedTravel) {
+                            if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {
+                                List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
+                                for(RoadSegment r : roadSegments) {
+                                    if(r.getDestination() == computedTravel.get(j + 1).getKey())
+                                    {
+                                        drawLine(r, courier.getColor());
+                                        travel.add(new Pair<RoadSegment, Date>(r, computedTravel.get(j + 1).getValue()));
+                                        j++;
+                                        break;
+                                    }
                                 }
                             }
                         }
+                        courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
                     }
-                    courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
-                    PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
                 }
             }
         }
     }
 
+    JFileChooser chooser;
+
     /**
      * Handles the save button click event and saves the city map
      */
+
     @FXML
     protected void onSaveBtnClick() {
         System.out.println("Save click");
-        String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
-
-        if (!nameOutput.isEmpty()) {
-            try {
-                xmlSerializer.serialize(cityMap.getCourierDotMap().keySet(), cityMap.getWarehouse(), nameOutput);
-            } catch (ParserConfigurationException e) {
-                System.out.println("ParserConfigurationException : " + e);
-                throw new RuntimeException(e);
-            } catch (TransformerException e) {
-                System.out.println("TransformerException : " + e);
-                throw new RuntimeException(e);
+        String path = showDirectoryChooser() ;
+        if (!path.isEmpty()) {
+            String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
+            if (!nameOutput.isEmpty()) {
+                try {
+                    xmlSerializer.serialize(cityMap.getCourierDotMap().keySet(), cityMap.getWarehouse(), path + nameOutput);
+                } catch (ParserConfigurationException e) {
+                    System.out.println("ParserConfigurationException : " + e);
+                    throw new RuntimeException(e);
+                } catch (TransformerException e) {
+                    System.out.println("TransformerException : " + e);
+                    throw new RuntimeException(e);
+                }
+            } else {
+                showDialogWarningError("Error", "The file name is empty", "");
             }
-        } else {
-            showDialogWarningError("Error", "The file name is empty", "");
         }
 
     }
@@ -152,11 +172,11 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     @FXML
     protected void onRestoreBtnClick() {
         System.out.println("Restore click");
-        String nameInput = showDialogBoxInput("Enter the input file name", "Input file's name", "Enter the input file's name : ");
-        System.out.println(doesResourceExist(nameInput+".uberif.xml"));
-        if (!nameInput.isEmpty() && doesResourceExist(nameInput+".uberif.xml")) {
+        String path = showFileChooser() ;
+        System.out.println(path);
+        if (!path.isEmpty()) {
 
-            CityMap newMap = cityMapController.loadNewCityMap(nameInput+".uberif.xml", true);
+            CityMap newMap = cityMapController.loadNewCityMap(path, true);
             this.cityMap.merge(newMap);
 
             for (Courier courier : cityMap.getListCourier()) {
@@ -180,7 +200,23 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             update(this.cityMap, this.cityMap.getNodes());
 
         } else {
-            showDialogWarningError("Error", "No output file found", "File : " + nameInput + ".uberif.xml");
+            showDialogWarningError("Error", "No input file found", "File : " + path);
+        }
+    }
+
+    @FXML
+    public void onSaveFdRBtnClick() {
+        System.out.println("Save roadMap click");
+        if (courierTourDatas != null && !courierTourDatas.isEmpty()) {
+            String path = showDirectoryChooser() ;
+            String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
+            if (!path.isEmpty() && !nameOutput.isEmpty()) {
+                PDFRoadMap.generatePDF(path, nameOutput, courierTourDatas);
+            } else {
+                showDialogWarningError("Error", "The file name is empty", "");
+            }
+        } else {
+            showDialogWarningError("Error", "The route must be calculated before saving a roadmap", "Please click on 'Calculate routes' before saving the roadmap");
         }
     }
 
@@ -284,6 +320,36 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         dialog.setContentText(content);
 
         dialog.showAndWait();
+    }
+
+    public String showDirectoryChooser() {
+        String path = "" ;
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Please choose the destination directory for the output");
+        File defaultDirectory = new File("./..");
+        chooser.setInitialDirectory(defaultDirectory);
+
+        File selectedDirectory = chooser.showDialog(new Stage());
+        if (selectedDirectory != null) {
+            path = selectedDirectory.getPath() + "/";
+        }
+        return path;
+    }
+
+    public String showFileChooser() {
+        String path = "";
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Please choose the .uberif file to load");
+        File defaultDirectory = new File("./..");
+        chooser.setInitialDirectory(defaultDirectory);
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Uber'IF Files", "*.uberif")
+        );
+        File selectedFile = chooser.showOpenDialog(new Stage());
+        if (selectedFile != null) {
+            path = selectedFile.getPath();
+        }
+        return path;
     }
 
 
