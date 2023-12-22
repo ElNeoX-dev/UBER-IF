@@ -12,6 +12,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +35,7 @@ public class XmlMapDeserializer {
     public XmlMapDeserializer() {
     }
 
-    public void deserialize(String filePath) {
+    public void deserialize(URI filePath) {
         try {
             File xmlFile = new File(filePath);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
