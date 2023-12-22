@@ -33,6 +33,7 @@ jobs:
       # uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       run: |
         cd UBER-IF
+        gradle wrapper
         ./gradlew build
       # with:
       #   gradle-version: '7.6' # Replace with your desired Gradle version
