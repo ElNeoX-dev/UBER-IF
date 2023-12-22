@@ -13,6 +13,9 @@ This is what our application looks like when the user (the manager) runs the app
 
 ## Description of the features
 
+To go to the previous state (undo), the user can press Control + P (works like Control + Z).
+To go to the next state (redo), the user can press Control + O (works like Control + Y).
+
 Let's go over the different features from top to bottom, and from left to right.
 
 ### Search Intersection by ID
@@ -35,7 +38,7 @@ The manager can add or remove couriers by clicking on the plus or minus button r
 
 When adding a new courier, the manager will have to enter the name of the courier in a little pop-up window. A random colour will be assigned to them, which helps to distinguish the delivery tours for different couriers. The courier will automatically be selected for computing delivery tours after that.
 
-Clicking on the minus button removes the last added courier.
+Clicking on the minus button removes the selected courier.
 
 ### Choice of Courier
 
@@ -57,11 +60,11 @@ This will generate a .uberif file.
 
 ### Restoring tours from a file
 
-When clicking on the Restore button, the manager will have to select the file from which they want the tours to be restored. After that, the tours will be displayed on the map.
+When clicking on the Restore button, the manager will have to select the file from which they want the tours to be restored. After that, the previous tours from the file will be displayed on the map.
 
 ### Saving the roadmap of the couriers in a PDF file
 
-When clicking on the Save Roadmap button, a PDF file for the couriers, containing the directions, departure and arrival time (one page for each courier) is generated in resources > output.
+When clicking on the Save Roadmap button, a PDF file for the couriers, containing the directions, departure and arrival time (one page for each courier) is generated where the manager chooses.
 
 ### Choice of an intersection
 
