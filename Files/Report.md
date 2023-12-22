@@ -360,6 +360,8 @@ Agile practices allowed team members to focus on their favourite areas of intere
 
 ## 11. Possible improvements
 
+One of our biggest mistakes is that we didn't start by implementing the states (going back with the equivalent of Control + Z). Next time, we'll do it at the beginning.
+
 We could have improved our application by using SOLID principles. For instance, we should have done 1 class for 1 responsibility. What's more, we should have injected dependencies so that high-level modules didn't depend on low-level modules. Both should depend on abstractions. By using these principles, we could have gotten more test coverage.
 
 Also, our restoring of tours is not optimized. It doesn't automatically change map and update the list of couriers with the information contained in the file. For instance, if the user is on the small map and the restored tours were on the large map, it won't work.
@@ -389,3 +391,4 @@ Lastly, we could have improved the algorithms even more so that it would compute
 - **_Travel Speed:_** The assumed constant speed of the couriers, used for calculating tour duration and feasibility.
 - **_Delivery Performance Time:_** The time taken to perform a delivery, assumed to be constant (e.g., 15 minutes).
 - **_User:_** The person operating the application, responsible for loading maps, inputting delivery requests, and managing couriers. In our case, the user is the manager of UBER'IF.
+- 
