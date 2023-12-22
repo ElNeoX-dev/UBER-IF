@@ -2,7 +2,8 @@
 
 ## Running the application
 
-To run the application, the user only has to build compile, and run the .jar directory by entering the command: java -jar UBER-IF-1.0-SNAPSHOT-all.jar
+To run the application, the user only has to build the .jar directory by entering the command: ./gradlew clean shadowJar
+Then, enter the following command to execute the .jar: java -jar build/libs/UBER-IF-1.0-SNAPSHOT-all.jar
 
 **ATTENTION: YOU WILL NEED JAVA 19 FOR THIS APPLICATION**
 
