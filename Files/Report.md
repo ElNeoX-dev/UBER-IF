@@ -391,3 +391,4 @@ Lastly, we could have improved the algorithms even more so that it would compute
 - **_Travel Speed:_** The assumed constant speed of the couriers, used for calculating tour duration and feasibility.
 - **_Delivery Performance Time:_** The time taken to perform a delivery, assumed to be constant (e.g., 15 minutes).
 - **_User:_** The person operating the application, responsible for loading maps, inputting delivery requests, and managing couriers. In our case, the user is the manager of UBER'IF.
+- 
