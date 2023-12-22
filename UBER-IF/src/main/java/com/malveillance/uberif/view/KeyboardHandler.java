@@ -18,6 +18,7 @@ public class KeyboardHandler implements EventHandler<KeyEvent> {
         KeyCombination ctrlS = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
         KeyCombination ctrlR = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
         KeyCombination ctrlP = new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN);
+        KeyCombination ctrlO = new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN);
         if (event.getCode() == KeyCode.ENTER) {
             graphicalView.onOptimizeBtnClick();
         } else if (ctrlS.match(event)) {
@@ -26,6 +27,9 @@ public class KeyboardHandler implements EventHandler<KeyEvent> {
             graphicalView.onRestoreBtnClick();
         } else if (ctrlP.match(event)) {
             graphicalView.undo();
+        } else if (ctrlO.match(event)) {
+            System.out.println("Lolz");
+            graphicalView.redo();
         } else if (event.getCode() == KeyCode.PLUS) {
             graphicalView.onPlusBtnClick();
         } else if (event.getCode() == KeyCode.MINUS) {

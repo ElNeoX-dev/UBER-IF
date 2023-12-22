@@ -1,13 +1,6 @@
 package com.malveillance.uberif.controller;
 
-import com.malveillance.uberif.model.*;
-import com.malveillance.uberif.model.service.AlgoService;
 import com.malveillance.uberif.view.GraphicalView;
-import javafx.util.Pair;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 
 public class PlusCommand implements Command {
@@ -24,23 +17,15 @@ public class PlusCommand implements Command {
 
         // CityMap previousCityMap = cityMap.deepCopy();
 
-        graphicalView.courierTourDatas = new ArrayList<>();
-        graphicalView.getMapPane().getChildren().clear();
-        graphicalView.update(graphicalView.getCityMap(), graphicalView.getCityMap().getNodes());
-        for(Courier courier : graphicalView.getCityMap().getCourierDotMap().keySet()) {
-            if(!courier.getName().isEmpty()) {
-                List<Pair<Intersection, TimeWindow>> deliveryPoints = graphicalView.getCityMap().getSelectedPairList(courier);
-                Tour tour = new Tour(new Delivery(graphicalView.getCityMap().getWarehouse().getIntersection(), new TimeWindow(0)));
-                for (Pair<Intersection, TimeWindow> d : deliveryPoints) {
-                    tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
-                }
-                courier.setCurrentTour(tour);
-                List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(graphicalView.getCityMap(), tour);
-                graphicalView.getCityMap().addTravelPlan(courier, computedTravel);
-            }
+        String nameCourier = graphicalView.showDialogBoxInput("Enter the courier's name", "Courier's name", "Enter the courier's name : ");
+
+        if (nameCourier != null && !nameCourier.isEmpty()) {
+
+            graphicalView.addCourier(nameCourier);
+
         }
-        context.handleInput("optimize", graphicalView);
-    }
+        context.handleInput("plus", graphicalView);
+        }
 
 
 

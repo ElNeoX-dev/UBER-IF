@@ -27,89 +27,70 @@ import java.net.URL;
 import java.util.*;
 
 public class GraphicalView extends ShapeVisitor implements Observer {
+    public List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas;
+    double width;
+    double height;
+    double coef = 1.0;
     private CityMapController cityMapController;
     private PaneController paneController;
-
     private Context context;
     private Invoker invoker;
-
     private XMLserializer xmlSerializer;
-
-
-    public List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas;
-
     private int nbCouriers = 0;
-
     private Courier noOne = new Courier("", Color.RED);
+    @FXML
+    private TextField searchBox;
+    @FXML
+    private Label nbCourierLb;
+    @FXML
+    private Label lbInfos;
+    @FXML
+    private Button minusBtn;
+    @FXML
+    private Pane mapPane;
+    @FXML
+    private ChoiceBox choiceMap;
+    @FXML
+    private ChoiceBox choiceCourier;
+    private CityMap cityMap;
+    private Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier;
 
+    public GraphicalView() {
+        CityMapService cityMapService = new CityMapService();
+        PaneService paneService = new PaneService();
+        cityMapController = new CityMapController(cityMapService);
+        paneController = new PaneController(paneService);
+    }
 
     @FXML
     protected void onOptimizeBtnClick() {
         System.out.println("Optimize click");
-        // Create and execute the OptimizeRouteCommand
         OptimizeRouteCommand optimizeCommand;
         optimizeCommand = new OptimizeRouteCommand(this, context);
         invoker.setCommand(optimizeCommand);
         invoker.executeCommand();
-        //optimizeCommand.execute();
-        //this.cityMap = optimizeCommand.getCityMap();
         update(this.cityMap, this.cityMap.getNodes());
     }
 
     @FXML
     protected void onSaveBtnClick() {
         System.out.println("Save click");
-        String nameOutput = showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
-
-        if (!nameOutput.isEmpty()) {
-            try {
-                xmlSerializer.serialize(cityMap.getCourierDotMap().keySet(), cityMap.getWarehouse(), nameOutput);
-            } catch (ParserConfigurationException e) {
-                System.out.println("ParserConfigurationException : " + e);
-                throw new RuntimeException(e);
-            } catch (TransformerException e) {
-                System.out.println("TransformerException : " + e);
-                throw new RuntimeException(e);
-            }
-        } else {
-            showDialogWarningError("Error", "The file name is empty", "");
-        }
+        SaveCommand saveCommand;
+        saveCommand = new SaveCommand(this, context);
+        invoker.setCommand(saveCommand);
+        invoker.executeCommand();
+        update(this.cityMap, this.cityMap.getNodes());
 
     }
 
     @FXML
     protected void onRestoreBtnClick() {
         System.out.println("Restore click");
-        String nameInput = showDialogBoxInput("Enter the input file name", "Input file's name", "Enter the input file's name : ");
-        System.out.println(doesResourceExist(nameInput+".uberif.xml"));
-        if (!nameInput.isEmpty() && doesResourceExist(nameInput+".uberif.xml")) {
-
-            CityMap newMap = cityMapController.loadNewCityMap(nameInput+".uberif.xml", true);
-            this.cityMap.merge(newMap);
-
-            for (Courier courier : cityMap.getListCourier()) {
-
-                if (!choiceCourier.getItems().contains(courier.getName()) && !courier.getName().isEmpty()) {
-                    if (nbCouriers == 0) {
-                        minusBtn.getStyleClass().remove("grey-state");
-                        minusBtn.getStyleClass().add("blue-state");
-                    }
-
-                    nbCouriers++;
-                    nbCourierLb.setText(String.valueOf(nbCouriers));
-                    choiceCourier.getItems().add(courier.getName());
-
-                    choiceCourier.getSelectionModel().select(choiceCourier.getItems().size() - 1);
-                    selectedCourier = new Pair<>(courier, cityMap.getCourierDotMap().get(courier));
-                }
-
-            }
-
-            update(this.cityMap, this.cityMap.getNodes());
-
-        } else {
-            showDialogWarningError("Error", "No output file found", "File : " + nameInput + ".uberif.xml");
-        }
+        RestoreCommand restoreCommand;
+        restoreCommand = new RestoreCommand(this, context);
+        invoker.setCommand(restoreCommand);
+        invoker.executeCommand();
+        update(this.cityMap, this.cityMap.getNodes());
     }
 
     @FXML
@@ -129,13 +110,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     @FXML
     protected void onPlusBtnClick() {
         System.out.println("Plus click");
-        // Create and execute the OptimizeRouteCommand
         PlusCommand plusCommand;
         plusCommand = new PlusCommand(this, context);
         invoker.setCommand(plusCommand);
         invoker.executeCommand();
-        //optimizeCommand.execute();
-        //this.cityMap = optimizeCommand.getCityMap();
         update(this.cityMap, this.cityMap.getNodes());
 
     }
@@ -167,7 +145,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     }
 
     public String showDialogBoxInput(String title, String header, String content) {
-        final String[] res = { null };
+        final String[] res = {null};
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle(title);
         dialog.setHeaderText(header);
@@ -179,7 +157,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         return res[0];
     }
 
-
     public void showDialogWarningError(String title, String header, String content) {
         Alert dialog = new Alert(Alert.AlertType.INFORMATION);
         dialog.setTitle(title);
@@ -189,38 +166,41 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         dialog.showAndWait();
     }
 
+    public Courier getNoOne() {
+        return noOne;
+    }
+
+    public Label getNbCourierLb() {
+        return nbCourierLb;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public int getNbCouriers() {
+        return nbCouriers;
+    }
+
+    public void setNbCouriers(int nbCouriers) {
+        this.nbCouriers = nbCouriers;
+    }
+
+    public Button getMinusBtn() {
+        return minusBtn;
+    }
+
+    public ChoiceBox getChoiceCourier() {
+        return choiceCourier;
+    }
 
     @FXML
     protected void onMinusBtnClick() {
-        if (nbCouriers > 0) {
-            nbCouriers--;
-            nbCourierLb.setText(String.valueOf(nbCouriers));
-
-            Courier lastCourier = selectedCourier.getKey();
-            if (!lastCourier.getName().isEmpty()) {
-                // clear the dots of the courier
-                for (Pair<Intersection, TimeWindow> intersectionPair : cityMap.getSelectedPairList(lastCourier)) {
-                    intersectionPair.getKey().setFill(Color.RED);
-                    intersectionPair.getKey().setRadius((height / 220) * coef);
-                    intersectionPair.getKey().setIsOwned(false);
-
-                    // cityMap.getCourierDotMap().get(noOne).add(intersectionPair);
-                }
-                cityMap.getTravelList().remove(lastCourier);
-                cityMap.removeCourier(lastCourier);
-
-                // If the last is selected
-                if (choiceCourier.getItems().size() == 1) {
-                    selectedCourier = new Pair<>(noOne, cityMap.getCourierDotMap().get(noOne));
-                }
-                choiceCourier.getItems().remove(lastCourier.getName());
-                choiceCourier.getSelectionModel().selectFirst();
-            }
-            if (nbCouriers == 0) {
-                minusBtn.getStyleClass().remove("blue-state");
-                minusBtn.getStyleClass().add("grey-state");
-            }
-        }
+        System.out.println("Minus click");
+        MinusCommand minusCommand;
+        minusCommand = new MinusCommand(this, context);
+        invoker.setCommand(minusCommand);
+        invoker.executeCommand();
         update(this.cityMap, this.cityMap.getNodes());
     }
 
@@ -252,7 +232,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         this.paneController = newView.paneController;
 
         // Update models and services
-        this.cityMap = newView.cityMap;
+        this.cityMap = newView.cityMap.deepCopy();
         this.xmlSerializer = newView.xmlSerializer;
 
         // Update UI components if necessary
@@ -266,7 +246,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         this.minusBtn = newView.minusBtn;
 
 
-
         // Update additional fields
         this.width = newView.width;
         this.height = newView.height;
@@ -278,9 +257,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         nbCourierLb.setText(String.valueOf(nbCouriers));
         this.noOne = newView.noOne;
 
+        this.courierTourDatas = newView.courierTourDatas;
+
         this.update(this.cityMap, this.cityMap.getNodes());
     }
-
 
     protected void undo() {
         this.context.undo();
@@ -290,13 +270,13 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Clear the items in the choice box
         choiceCourier.getItems().clear();
 
-        update(this.cityMap, this.cityMap.getNodes());
+        //update(this.cityMap, this.cityMap.getNodes());
 
         // Repopulate the choice box
         if (cityMap.getCourierDotMap() != null) {
             for (Courier courier : cityMap.getCourierDotMap().keySet()) {
                 if (!courier.getName().isEmpty())
-                choiceCourier.getItems().add(courier.getName());
+                    choiceCourier.getItems().add(courier.getName());
             }
         }
         this.lbInfos = context.getState().getlbInfos();
@@ -313,11 +293,42 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
 
         choiceMap.getSelectionModel().select(formatMapName(cityMap.getMapName()));
+        update(this.cityMap, this.cityMap.getNodes());
     }
 
+    protected void redo() {
+        this.context.redo();
+        this.updateGraphicalView(this.context.getState().getGraphicalView());
+        //this.cityMap.addObserver(this);
 
-    @FXML
-    private TextField searchBox;
+        // Clear the items in the choice box
+        choiceCourier.getItems().clear();
+
+        //update(this.cityMap, this.cityMap.getNodes());
+
+        // Repopulate the choice box
+        if (cityMap.getCourierDotMap() != null) {
+            for (Courier courier : cityMap.getCourierDotMap().keySet()) {
+                if (!courier.getName().isEmpty())
+                    choiceCourier.getItems().add(courier.getName());
+            }
+        }
+        this.lbInfos = context.getState().getlbInfos();
+        String selectedCourierName = context.getState().getSelectedCourier().getName();
+        // Reselect the previously selected courier, if it exists
+        if (selectedCourierName != null) {
+            choiceCourier.getSelectionModel().select(selectedCourierName);
+            for (Courier courier : cityMap.getCourierDotMap().keySet()) {
+                if (courier.getName().equals(selectedCourierName)) {
+                    selectedCourier = new Pair<>(courier, cityMap.getCourierDotMap().get(courier));
+                    break;
+                }
+            }
+        }
+
+        choiceMap.getSelectionModel().select(formatMapName(cityMap.getMapName()));
+        update(this.cityMap, this.cityMap.getNodes());
+    }
 
     @FXML
     protected void onSearchBoxTyped() {
@@ -344,33 +355,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
 
     }
-
-    @FXML
-    private Label nbCourierLb;
-
-    @FXML
-    private Label lbInfos;
-
-    @FXML
-    private Button minusBtn;
-
-    @FXML
-    private Pane mapPane;
-
-    @FXML
-    private ChoiceBox choiceMap;
-
-    @FXML
-    private ChoiceBox choiceCourier;
-
-    double width;
-    double height;
-
-    double coef = 1.0;
-
-    private CityMap cityMap;
-
-    private Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier;
 
     @FXML
     public void initialize() {
@@ -431,13 +415,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         this.paneController = paneController;
     }
 
-    public GraphicalView() {
-        CityMapService cityMapService = new CityMapService();
-        PaneService paneService = new PaneService();
-        cityMapController = new CityMapController(cityMapService);
-        paneController = new PaneController(paneService);
-    }
-
     // Methods to update the UI
     // These methods can be called by the controller to update the UI
     @Override
@@ -462,7 +439,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                 case "Large" -> coef = 0.3;
             }
 
-            newmap.setCourierDotMap(cityMap.getCourierDotMap());
+            //newmap.setCourierDotMap(cityMap.getCourierDotMap());
             mapPane.getChildren().clear();
             // Draw lines first
             newmap.getWarehouse().accept(this);
@@ -472,32 +449,8 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                 elem.accept(this);
             }
 
-            for(Courier courier : this.cityMap.getTravelList().keySet()) {
-                List<Pair<Intersection, Date>> computedTravel = this.cityMap.getTravelList().get(courier);
-                if (computedTravel == null) {
-                    showDialogWarningError("Error", "There's no suitable tour for this Courier", "Courier : " + courier.getName());
-                } else {
-                    int j = 0;
-                    List<Pair<RoadSegment, Date>> travel = new ArrayList<>();
-                    for (Pair<Intersection, Date> p : computedTravel) {
-                        if (!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {
-                            List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
-                            for (RoadSegment r : roadSegments) {
-                                if (r.getDestination() == computedTravel.get(j + 1).getKey()) {
-                                    drawLine(r, courier.getColor());
-                                    travel.add(new Pair<RoadSegment, Date>(r, computedTravel.get(j + 1).getValue()));
-                                    j++;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
-                    PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
-                }
-            }
 
-            this.cityMap = newmap;
+            //this.cityMap = newmap;
 
             BackgroundImage backgroundImage = new BackgroundImage(
                     new Image("file:src/main/resources/com/malveillance/uberif/" + cityMap.getMapName() + "Map.png"),
@@ -512,25 +465,21 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             // printMinMaxLatLong();
 
             paneController.updateScale(newmap.getNodes().keySet());
-            
-            
-            if (cityMap.getTravelList() != null) {
-                for (Courier courier : cityMap.getTravelList().keySet()) {
-                    List<Pair<Intersection, Date>> computedTravel = cityMap.getTravelPlan(courier);
-                    if(computedTravel == null)
-                    {
+
+
+            if (newmap.getTravelList() != null) {
+                for (Courier courier : newmap.getTravelList().keySet()) {
+                    List<Pair<Intersection, Date>> computedTravel = newmap.getTravelPlan(courier);
+                    if (computedTravel == null) {
                         showDialogWarningError("Error", "There's no suitable tour for this Courier", "Courier : " + courier.getName());
-                    }
-                    else
-                    {
+                    } else {
                         int j = 0;
                         List<Pair<RoadSegment, Date>> travel = new ArrayList<>();
-                        for(Pair<Intersection, Date> p : computedTravel) {
-                            if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {
-                                List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
-                                for(RoadSegment r : roadSegments) {
-                                    if(r.getDestination() == computedTravel.get(j + 1).getKey())
-                                    {
+                        for (Pair<Intersection, Date> p : computedTravel) {
+                            if (!(p.getKey() == newmap.getWarehouse().getIntersection()) || j == 0) {
+                                List<RoadSegment> roadSegments = newmap.getNodes().get(p.getKey());
+                                for (RoadSegment r : roadSegments) {
+                                    if (r.getDestination() == computedTravel.get(j + 1).getKey()) {
                                         drawLine(r, courier.getColor());
                                         travel.add(new Pair<RoadSegment, Date>(r, computedTravel.get(j + 1).getValue()));
                                         j++;
@@ -542,21 +491,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                         courierTourDatas.add(new Pair<Courier, List<Pair<RoadSegment, Date>>>(courier, travel));
                         PDFRoadMap.generatePDF(computedTravel, courierTourDatas);
                     }
-                    // for (Pair<Intersection, Date> p : cityMap.getTravelPlan(courier)) {
-                    //     if (!(p.getKey() == cityMap.getWarehouse().getIntersection()) || cityMap.getTravelPlan(courier).indexOf(p) == 0) {
-                    //         List<RoadSegment> roadSegments = cityMap.getNodes().get(p.getKey());
-                    //         for (RoadSegment r : roadSegments) {
-                    //             if (r.getDestination() == cityMap.getTravelPlan(courier).get(cityMap.getTravelPlan(courier).indexOf(p) + 1).getKey()) {
-                    //                 drawLine(r, courier.getColor());
-                    //                 break;
-                    //             }
-                    //         }
-                    //     }
-                    // }
                 }
             }
         }
-
     }
 
     public void visit(Warehouse warehouse) {
@@ -615,7 +552,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         drawLine(segment, Color.GREY);
     }
 
-
     public void drawLine(RoadSegment segment, Color color) {
         double startX = paneController.getIntersectionX(segment.getOrigin(), width) - (width - mapPane.getWidth()) / 2;
         double startY = paneController.getIntersectionY(segment.getOrigin(), height) - (height - mapPane.getHeight()) / 2;
@@ -653,22 +589,25 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         mapPane.getChildren().addAll(road, arrowHead);
     }
 
-
     public CityMap getCityMap() {
         return this.cityMap;
     }
 
-    public void setSelectedCourier(Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier) {
-        this.selectedCourier = selectedCourier;
+    public double getCoef() {
+        return coef;
     }
 
     public Pair<Courier, List<Pair<Intersection, TimeWindow>>> getSelectedCourier() {
         return selectedCourier;
     }
 
+    public void setSelectedCourier(Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier) {
+        this.selectedCourier = selectedCourier;
+    }
+
     public boolean doesResourceExist(String resourceName) {
         ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource("output/"+resourceName);
+        URL resource = classLoader.getResource("output/" + resourceName);
         return resource != null;
     }
 
@@ -693,6 +632,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
         // Copying primitive and immutable fields
         copy.nbCouriers = this.nbCouriers;
+        copy.courierTourDatas = this.courierTourDatas;
 
         // Assuming Courier has a proper copy constructor or clone method
         copy.noOne = new Courier(this.noOne);
@@ -721,22 +661,22 @@ public class GraphicalView extends ShapeVisitor implements Observer {
      * double maxLat = Double.MIN_VALUE;
      * double minLong = Double.MAX_VALUE;
      * double maxLong = Double.MIN_VALUE;
-     * 
-     * 
+     *
+     *
      * for (Intersection inter : this.cityMap.getNodes().keySet()) {
      * if (inter.getLatitude() < minLat) {
      * minLat = inter.getLatitude();
      * } else if (inter.getLatitude() > maxLat) {
      * maxLat = inter.getLatitude();
      * }
-     * 
+     *
      * if (inter.getLongitude() < minLong) {
      * minLong = inter.getLongitude();
      * } else if (inter.getLongitude() > maxLong) {
      * maxLong = inter.getLongitude();
      * }
      * }
-     * 
+     *
      * System.out.println("minLat : " + minLat + "\nmaxLat : " + maxLat +
      * "\nminLong : " + minLong + "\nmaxLong : " + maxLong);
      * }

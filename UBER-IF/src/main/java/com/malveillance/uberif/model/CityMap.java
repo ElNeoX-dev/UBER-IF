@@ -260,46 +260,41 @@ public class CityMap extends Observable {
 
     public CityMap deepCopy() {
         Warehouse copiedWarehouse = new Warehouse(this.warehouse);
-        List<Intersection> copiedIntersections = new ArrayList<>();
-        for (Intersection intersection : this.nodes.keySet()) {
-            copiedIntersections.add(new Intersection(intersection));
-        }
+        List<Intersection> copiedIntersections = new ArrayList<>(this.nodes.keySet());
 
         List<RoadSegment> copiedSegments = new ArrayList<>();
         for (List<RoadSegment> segments : this.nodes.values()) {
-            for (RoadSegment segment : segments) {
-                copiedSegments.add(new RoadSegment(segment));
-            }
+            copiedSegments.addAll(segments);
         }
 
-        CityMap copiedCityMap = new CityMap(copiedWarehouse, copiedIntersections, copiedSegments, this.mapName);
+        CityMap copiedCityMap = new CityMap(this.warehouse, copiedIntersections, copiedSegments, this.mapName);
 
         for (Map.Entry<Courier, List<Pair<Intersection, TimeWindow>>> entry : this.courierDotMap.entrySet()) {
             Courier copiedCourier = new Courier(entry.getKey());
-            List<Pair<Intersection, TimeWindow>> copiedPairs = new ArrayList<>();
-            for (Pair<Intersection, TimeWindow> pair : entry.getValue()) {
-                Intersection copiedIntersection = new Intersection(pair.getKey());
-                TimeWindow copiedTimeWindow = new TimeWindow(pair.getValue());
-                copiedPairs.add(new Pair<>(copiedIntersection, copiedTimeWindow));
+            List<Pair<Intersection, TimeWindow>> courierPairs = entry.getValue();
+            if (courierPairs != null) {
+                List<Pair<Intersection, TimeWindow>> copiedPairs = new ArrayList<>();
+                for (Pair<Intersection, TimeWindow> pair : courierPairs) {
+                    Intersection copiedIntersection = new Intersection(pair.getKey());
+                    TimeWindow copiedTimeWindow = pair.getValue() != null ? new TimeWindow(pair.getValue()) : null;
+                    copiedPairs.add(new Pair<>(pair.getKey(), copiedTimeWindow));
+                }
+                copiedCityMap.getCourierDotMap().put(entry.getKey(), copiedPairs);
             }
-            copiedCityMap.getCourierDotMap().put(entry.getKey(), copiedPairs);
         }
 
         Map<Courier, List<Pair<Intersection, Date>>> copiedTravelList = new HashMap<>();
         for (Map.Entry<Courier, List<Pair<Intersection, Date>>> entry : this.travelList.entrySet()) {
-            Courier copiedCourier = new Courier(entry.getKey()); // Assuming there's a copy constructor in Courier
-            List<Pair<Intersection, Date>> copiedPlan = new ArrayList<>();
-            for (Pair<Intersection, Date> pair : entry.getValue()) {
-                Intersection copiedIntersection = new Intersection(pair.getKey());
-                if (pair.getValue() != null) {
-                    Date copiedDate = new Date(pair.getValue().getTime());
-                    copiedPlan.add(new Pair<>(copiedIntersection, copiedDate));
+            Courier copiedCourier = new Courier(entry.getKey());
+            List<Pair<Intersection, Date>> travelPlan = entry.getValue();
+            if (travelPlan != null) {
+                List<Pair<Intersection, Date>> copiedPlan = new ArrayList<>();
+                for (Pair<Intersection, Date> pair : travelPlan) {
+                    Date copiedDate = pair.getValue() != null ? new Date(pair.getValue().getTime()) : null;
+                    copiedPlan.add(new Pair<>(pair.getKey(), copiedDate));
                 }
-                else{
-                    copiedPlan.add(new Pair<>(copiedIntersection, null));
-                }
+                copiedTravelList.put(entry.getKey(), copiedPlan);
             }
-            copiedTravelList.put(copiedCourier, copiedPlan);
         }
 
         copiedCityMap.setTravelList(copiedTravelList);
