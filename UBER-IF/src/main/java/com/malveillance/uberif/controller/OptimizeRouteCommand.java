@@ -8,16 +8,33 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 
-
+/**
+ * The class represents a command to optimize the route.
+ */
 public class OptimizeRouteCommand implements Command {
+
+    /**
+     * The city map.
+     */
     private CityMap cityMap;
+
+    /**
+     * The previous state.
+     */
     private CityMap previousState;
 
+    /**
+     * Constructs a new OptimizeRouteCommand.
+     * @param cityMap the city map
+     */
     public OptimizeRouteCommand(CityMap cityMap) {
         this.cityMap = cityMap;
         this.previousState = null;
     }
 
+    /**
+     * Executes the command in order to optimize the routes.
+     */
     @Override
     public void execute() {
         // Backup the current state
@@ -39,6 +56,9 @@ public class OptimizeRouteCommand implements Command {
             }
         }
 
+    /**
+     * Undoes the command.
+     */
     @Override
     public void undo() {
         if (previousState != null) {

@@ -28,24 +28,55 @@ import javax.xml.transform.TransformerException;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * The class represents the graphical view, used to display the city map and handles the user interactions.
+ */
 public class GraphicalView extends ShapeVisitor implements Observer {
+
+    /**
+     * The city map controller
+     */
     private CityMapController cityMapController;
+
+    /**
+     * The pane controller
+     */
     private PaneController paneController;
 
-
+    /**
+     * The context
+     */
     private Context context;
+
+    /**
+     * The invoker
+     */
     private Invoker invoker;
 
+    /**
+     * The XML serializer
+     */
     private XMLserializer xmlSerializer;
 
-
+    /**
+     * The list of couriers and their tours
+     */
     private List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas;
 
+    /**
+     * The number of couriers
+     */
     private int nbCouriers = 0;
 
+    /**
+     * The no one courier used when no courier is selected
+     */
     private Courier noOne = new Courier("", Color.RED);
 
 
+    /**
+     * Handles the optimize button click event and optimizes the routes using the TSP algorithm
+     */
     @FXML
     protected void onOptimizeBtnClick() {
         System.out.println("Optimize click");
@@ -91,6 +122,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
     }
 
+    /**
+     * Handles the save button click event and saves the city map
+     */
     @FXML
     protected void onSaveBtnClick() {
         System.out.println("Save click");
@@ -112,6 +146,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     }
 
+    /**
+     * Handles the restore button click event and restores the city map
+     */
     @FXML
     protected void onRestoreBtnClick() {
         System.out.println("Restore click");
@@ -147,6 +184,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
     }
 
+    /**
+     * Handles the mouse entered event on an intersection
+     */
     @FXML
     protected void onMouseEntered(MouseEvent event) {
         if (event.getSource() instanceof Button) {
@@ -154,6 +194,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
     }
 
+    /**
+     * Handles the exit of the mouse on an intersection
+     */
     @FXML
     protected void onMouseExited(MouseEvent event) {
         if (event.getSource() instanceof Button) {
@@ -161,6 +204,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
     }
 
+    /**
+     * Handles the plus button click event
+     */
     @FXML
     protected void onPlusBtnClick() {
         String nameCourier = showDialogBoxInput("Enter the courier's name", "Courier's name", "Enter the courier's name : ");
@@ -174,6 +220,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     }
 
+    /**
+     * Adds a courier
+     * @param nameCourier the name of the courier
+     */
     public void addCourier(String nameCourier) {
         if (!choiceCourier.getItems().contains(nameCourier)) {
             Random randomInt = new Random();
@@ -200,6 +250,13 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     }
 
+    /**
+     * Shows a dialog box with an input
+     * @param title the title of the dialog box
+     * @param header the header of the dialog box
+     * @param content the content of the dialog box
+     * @return the input
+     */
     public String showDialogBoxInput(String title, String header, String content) {
         final String[] res = { null };
         TextInputDialog dialog = new TextInputDialog("");
@@ -214,6 +271,12 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     }
 
 
+    /**
+     * Shows a dialog box with a warning message
+     * @param title the title of the dialog box
+     * @param header the header of the dialog box
+     * @param content the content of the dialog box
+     */
     public void showDialogWarningError(String title, String header, String content) {
         Alert dialog = new Alert(Alert.AlertType.INFORMATION);
         dialog.setTitle(title);
@@ -224,6 +287,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     }
 
 
+    /**
+     * Handles the minus button click event
+     */
     @FXML
     protected void onMinusBtnClick() {
         if (nbCouriers > 0) {
@@ -259,6 +325,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
     @FXML
     private TextField searchBox;
 
+    /**
+     * Handles the search box typed event (when the user types in the search box)
+     */
     @FXML
     protected void onSearchBoxTyped() {
 
@@ -312,6 +381,9 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     private Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier;
 
+    /**
+     * Initializes the UI
+     */
     @FXML
     public void initialize() {
 
@@ -361,14 +433,25 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     }
 
+    /**
+     * Sets the city map controller
+     * @param cityMapController the city map controller
+     */
     public void setCityMapController(CityMapController cityMapController) {
         this.cityMapController = cityMapController;
     }
 
+    /**
+     * Sets the pane controller
+     * @param paneController the pane controller
+     */
     public void setPaneController(PaneController paneController) {
         this.paneController = paneController;
     }
 
+    /**
+     * Constructs a new GraphicalView.
+     */
     public GraphicalView() {
         CityMapService cityMapService = new CityMapService();
         PaneService paneService = new PaneService();
@@ -376,8 +459,12 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         paneController = new PaneController(paneService);
     }
 
-    // Methods to update the UI
-    // These methods can be called by the controller to update the UI
+    /**
+     * Updates the UI
+     * @param o the observable
+     * @param arg the argument (in general teh MapPane)
+     */
+
     @Override
     public void update(Observable o, Object arg) {
         if (mapPane.getWidth() > mapPane.getHeight()) {
@@ -438,6 +525,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
     }
 
+    /**
+     * Draws a circle on the map pane
+     * @param warehouse the warehouse
+     */
     public void visit(Warehouse warehouse) {
         // Implementation to draw warehouse
         double intersectionX = paneController.getIntersectionX(warehouse.intersection, width);
@@ -448,6 +539,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         mapPane.getChildren().add(warehouse.getIntersection().getCircle());
     }
 
+    /**
+     * Draws a circle on the map pane
+     * @param intersection the intersection
+     */
     public void visit(Intersection intersection) {
         // Implementation to draw intersection
         double intersectionX = paneController.getIntersectionX(intersection, width);
@@ -482,15 +577,21 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         }
     }
 
+    /**
+     * Draws a line on the map pane
+     * @param segment the road segment
+     */
     public void visit(RoadSegment segment) {
         // Implementation to draw segment
         drawLine(segment, Color.GREY);
     }
 
 
-
-
-
+    /**
+     * Draws a line on the map pane
+     * @param segment the road segment
+     * @param color the color of the line
+     */
     public void drawLine(RoadSegment segment, Color color) {
         double startX = paneController.getIntersectionX(segment.getOrigin(), width) - (width - mapPane.getWidth()) / 2;
         double startY = paneController.getIntersectionY(segment.getOrigin(), height) - (height - mapPane.getHeight()) / 2;
@@ -528,50 +629,39 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         mapPane.getChildren().addAll(road, arrowHead);
     }
 
-
+    /**
+     * Returns the city map
+     * @return the city map
+     */
     public CityMap getCityMap() {
         return this.cityMap;
     }
 
+    /**
+     * Sets the selected courier
+     * @param selectedCourier the selected courier
+     */
     public void setSelectedCourier(Pair<Courier, List<Pair<Intersection, TimeWindow>>> selectedCourier) {
         this.selectedCourier = selectedCourier;
     }
 
+    /**
+     * Returns the selected courier
+     * @return the selected courier
+     */
     public Pair<Courier, List<Pair<Intersection, TimeWindow>>> getSelectedCourier() {
         return selectedCourier;
     }
 
+    /**
+     * Checks if the resource exists
+     * @param resourceName the resource name
+     * @return true if the resource exists, false otherwise
+     */
     public boolean doesResourceExist(String resourceName) {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource("output/"+resourceName);
         return resource != null;
     }
-
-    /*
-     * public void printMinMaxLatLong() {
-     * double minLat = Double.MAX_VALUE;
-     * double maxLat = Double.MIN_VALUE;
-     * double minLong = Double.MAX_VALUE;
-     * double maxLong = Double.MIN_VALUE;
-     * 
-     * 
-     * for (Intersection inter : this.cityMap.getNodes().keySet()) {
-     * if (inter.getLatitude() < minLat) {
-     * minLat = inter.getLatitude();
-     * } else if (inter.getLatitude() > maxLat) {
-     * maxLat = inter.getLatitude();
-     * }
-     * 
-     * if (inter.getLongitude() < minLong) {
-     * minLong = inter.getLongitude();
-     * } else if (inter.getLongitude() > maxLong) {
-     * maxLong = inter.getLongitude();
-     * }
-     * }
-     * 
-     * System.out.println("minLat : " + minLat + "\nmaxLat : " + maxLat +
-     * "\nminLong : " + minLong + "\nmaxLong : " + maxLong);
-     * }
-     */
 
 }

@@ -23,11 +23,24 @@ public class CityMap extends Observable {
      */
     private final Map<Intersection, List<RoadSegment>> nodes;
 
-    
+    /**
+     * The list of couriers and their selected intersections with timeWindow.
+     */
     private Map<Courier, List<Pair<Intersection, TimeWindow>>> courierDotMap;
+
+    /**
+     * The warehouse of the city map.
+     */
     private final Warehouse warehouse;
+
+    /**
+     * The list of couriers and their travel plans.
+     */
     private Map<Courier, List<Pair<Intersection, Date>>> travelList;
 
+    /**
+     * The name of the map.
+     */
     private String mapName;
 
     /**

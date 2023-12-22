@@ -18,7 +18,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The PDFRoadMap class is responsible for generating a PDF file containing the road map of the tour of a courier.
+ */
 public class PDFRoadMap {
+    /**
+     * Formats the arrival time to a string with only the HH:mm:ss part.
+     * @param arrivalTime the arrival time
+     * @return the formatted arrival time
+     */
     private static String formatArrivalTime(Date arrivalTime) {
         // Create a SimpleDateFormat object with the desired format
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -27,6 +35,11 @@ public class PDFRoadMap {
         return dateFormat.format(arrivalTime);
     }
 
+    /**
+     * Generates a PDF file containing the road map of the tour of a courier.
+     * @param roadMap the list of intersections and their arrival times
+     * @param courierTourDatas the list of couriers and their tours
+     */
     public static void generatePDF(List<Pair<Intersection, Date>> roadMap, List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas) {
         try {
             // Specify the output directory
