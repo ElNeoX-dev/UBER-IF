@@ -350,6 +350,12 @@ We could have improved our application by using SOLID principles. For instance, 
 
 Also, our restoring of tours is not optimized at all. It doesn't display the previous tours as we would have liked.
 
+What we could have done also is display departure and arrival time for each delivery.
+
+What's more, by working more on the algorithms, we could have increased the number of delivery by courier. For now, a courier can only deliver 15 points at a time.
+
+Lastly, we could have improved the algorithms even more so that it would compute the delivery tours for all couriers, and not only consider a courier one by one.
+
 ## 12. Glossary
 
 - **_Application_**: The software system designed for optimizing delivery tours in cities using bicycles.
