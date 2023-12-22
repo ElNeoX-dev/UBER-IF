@@ -43,13 +43,6 @@ public class PDFRoadMap {
      */
     public static void generatePDF(String outputDirectory, String fileName, List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas) {
         try {
-          
-            // Create the output directory if it doesn't exist
-            File outputDir = new File(outputDirectory);
-            if (!outputDir.exists()) {
-                outputDir.mkdirs();
-            }
-
             // Construct the output file path
             String outputFilePath = outputDirectory + fileName + ".pdf";
             Path outputPath = Paths.get(outputFilePath);
@@ -106,10 +99,10 @@ public class PDFRoadMap {
                             String turnDirection = segment.getTurnDirection(previousSegment);
 
                             if (!turnDirection.equals("zero")) {
-                                contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                                contentStream.newLineAtOffset(0, -12);
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName());
                                 countLines++;
-                                // System.out.println(countLines + " 1");
+
                                 if (countLines >= 45) {
                                     countLines = 0;
                                     contentStream.endText();
@@ -119,7 +112,9 @@ public class PDFRoadMap {
                                     document.addPage(page);
                                     contentStream = new PDPageContentStream(document, page);
                                     contentStream.setFont(PDType1Font.HELVETICA, 11);
+
                                     contentStream.beginText();
+                                    contentStream.newLineAtOffset(100, 700);
                                 }
                             }
                         } else {
@@ -129,9 +124,9 @@ public class PDFRoadMap {
                         }
 
                         if (arrivalTime != null) {
-                            contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                            contentStream.newLineAtOffset(0, -12);
                             contentStream.showText("You will reach your destination at " + formatArrivalTime(arrivalTime));
-                            contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                            contentStream.newLineAtOffset(0, -12);
                             countLines += 3;
 
                             if (countLines >= 45) {
@@ -152,19 +147,21 @@ public class PDFRoadMap {
 
                 contentStream.showText("You're back to the Warehouse. Your tour is finished!");
                 countLines += 3;
-                if (countLines >= 35){
+                if (countLines >= 45){
                     countLines = 0;
-                    page = new PDPage();
-                    document.addPage(page);
-
-                    contentStream = new PDPageContentStream(document, page);
-                }
-
-                // Finish the current page and start a new one
-                if (contentStream != null) {
                     contentStream.endText();
                     contentStream.close();
+
+                    page = new PDPage();
+                    document.addPage(page);
+                    contentStream = new PDPageContentStream(document, page);
+                    contentStream.setFont(PDType1Font.HELVETICA, 11);
+                    contentStream.beginText();
                 }
+
+
+                contentStream.endText();
+                contentStream.close();
             }
 
             // Save the document to the specified output path
