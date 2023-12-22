@@ -6,24 +6,41 @@ import javafx.scene.input.MouseEvent;
 
 import javafx.scene.control.Label;
 
+/**
+ * The class represents a listener for the hover event on an intersection.
+ */
 public class IntersectionHoverHandler implements EventHandler<MouseEvent> {
-    // private final Intersection intersection;
 
+    /**
+     * The graphical view.
+     */
     private GraphicalView graphicalView;
 
+    /**
+     * The intersection label.
+     */
     private Label intersectionLabel;
 
+    /**
+     * Constructs a new IntersectionHoverHandler with the specified graphical view
+     * and intersection label.
+     *
+     * @param graphicalView   the graphical view
+     * @param intersectionLabel the intersection label
+     */
     public IntersectionHoverHandler(GraphicalView graphicalView,
-            /* Intersection intersection, */ Label intersectionLabel) {
-        // this.intersection = intersection;
+             Label intersectionLabel) {
         this.intersectionLabel = intersectionLabel;
         this.graphicalView = graphicalView;
     }
 
+    /**
+     * Handles the hover event on an intersection.
+     *
+     * @param event the hover event
+     */
     @Override
     public void handle(MouseEvent event) {
-        // System.out.println("Mouse over intersection (" + intersection.getId() + ") at
-        // (" + intersection.getLatitude() + ", " + intersection.getLongitude() + ")");
         Intersection intersectionNearest = null;
         double distanceMin = Double.MAX_VALUE;
 
