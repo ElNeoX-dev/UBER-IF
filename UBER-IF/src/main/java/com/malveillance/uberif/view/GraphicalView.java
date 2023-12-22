@@ -193,7 +193,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
             }
 
-            update(this.cityMap, this.cityMap.getNodes());
+            this.onOptimizeBtnClick();
 
         } else {
             showDialogWarningError("Error", "No input file found", "File : " + path);

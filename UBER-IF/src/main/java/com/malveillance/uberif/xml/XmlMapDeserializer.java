@@ -11,12 +11,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class XmlMapDeserializer {
 
@@ -50,6 +46,30 @@ public class XmlMapDeserializer {
                 }
             }
 
+
+
+            // Parse Intersections
+            NodeList intersectionList = doc.getElementsByTagName("intersection");
+            for (int i = 0; i < intersectionList.getLength(); i++) {
+                Node node = intersectionList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String intersectionId = element.getAttribute("id");
+                    Intersection intersection = new Intersection(
+                            intersectionId,
+                            Double.parseDouble(element.getAttribute("latitude")),
+                            Double.parseDouble(element.getAttribute("longitude"))
+                    );
+
+                    mapElements.add(intersection);
+                    intersectionsElements.add(intersection);
+                    if (element.getAttribute("id").equals(warehouseId)) {
+                        mapElements.add(new Warehouse(intersection));
+                        warehouse = new Warehouse(intersection);
+                    }
+                }
+            }
+
             Map<String, Pair<Tour, Courier>> tours = new HashMap<>();
             NodeList tourList = doc.getElementsByTagName("tour");
             for (int i = 0; i < tourList.getLength(); i++) {
@@ -71,29 +91,6 @@ public class XmlMapDeserializer {
                 }
             }
 
-
-
-            // Parse Intersections
-            NodeList intersectionList = doc.getElementsByTagName("intersection");
-            for (int i = 0; i < intersectionList.getLength(); i++) {
-                Node node = intersectionList.item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) node;
-                    Intersection intersection = new Intersection(
-                            element.getAttribute("id"),
-                            Double.parseDouble(element.getAttribute("latitude")),
-                            Double.parseDouble(element.getAttribute("longitude"))
-                    );
-
-                    mapElements.add(intersection);
-                    intersectionsElements.add(intersection);
-                    if (element.getAttribute("id").equals(warehouseId)) {
-                        mapElements.add(new Warehouse(intersection));
-                        warehouse = new Warehouse(intersection);
-                    }
-                }
-            }
-
             //Parse Deliveries
             NodeList deliveryList = doc.getElementsByTagName("delivery");
             for (int i = 0; i < deliveryList.getLength(); i++) {
@@ -104,7 +101,7 @@ public class XmlMapDeserializer {
                     Intersection intersection = null;
                     for (Intersection inter : intersectionsElements) {
                         if (inter.getId().equals(element.getAttribute("intersectionId"))) {
-                            intersection = inter ;
+                            intersection = inter;
                             inter.setIsOwned(true);
                             break;
                         }
@@ -115,7 +112,7 @@ public class XmlMapDeserializer {
 
                     Delivery delivery = new Delivery(
                             intersection,
-                            new TimeWindow(Integer.parseInt(timeWindowStart), Integer.parseInt(timeWindowEnd))
+                            new TimeWindow(Integer.parseInt(timeWindowStart), 60)
                     );
 
                     mapElements.add(intersection);
