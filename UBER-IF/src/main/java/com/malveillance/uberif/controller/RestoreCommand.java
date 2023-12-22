@@ -27,11 +27,11 @@ public class RestoreCommand implements Command {
     public void execute() {
 
         System.out.println("Restore click");
-        String nameInput = graphicalView.showDialogBoxInput("Enter the input file name", "Input file's name", "Enter the input file's name : ");
-        System.out.println(graphicalView.doesResourceExist(nameInput + ".uberif.xml"));
-        if (!nameInput.isEmpty() && graphicalView.doesResourceExist(nameInput + ".uberif.xml")) {
+        String path = graphicalView.showFileChooser() ;
+        System.out.println(path);
+        if (!path.isEmpty()) {
 
-            CityMap newMap = cityMapController.loadNewCityMap(nameInput + ".uberif.xml", true);
+            CityMap newMap = cityMapController.loadNewCityMap(path, true);
             graphicalView.getCityMap().merge(newMap);
 
             for (Courier courier : graphicalView.getCityMap().getListCourier()) {
@@ -42,8 +42,9 @@ public class RestoreCommand implements Command {
                         graphicalView.getMinusBtn().getStyleClass().add("blue-state");
                     }
 
-                    graphicalView.setNbCouriers(graphicalView.getNbCouriers() + 1);
-                    graphicalView.getNbCourierLb().setText(String.valueOf(graphicalView.getNbCouriers()));
+                    int nbCouriers = graphicalView.getNbCouriers() + 1;
+                    graphicalView.setNbCouriers(nbCouriers);
+                    graphicalView.getNbCourierLb().setText(String.valueOf(nbCouriers));
                     graphicalView.getChoiceCourier().getItems().add(courier.getName());
 
                     graphicalView.getChoiceCourier().getSelectionModel().select(graphicalView.getChoiceCourier().getItems().size() - 1);
@@ -51,18 +52,13 @@ public class RestoreCommand implements Command {
                 }
 
             }
+
+            graphicalView.update(graphicalView.getCityMap(), graphicalView.getCityMap().getNodes());
+
         } else {
-            graphicalView.showDialogWarningError("Error", "No output file found", "File : " + nameInput + ".uberif.xml");
+            graphicalView.showDialogWarningError("Error", "No input file found", "File : " + path);
         }
 
-
-//    @Override
-//    public void undo() {
-//        if (previousState != null) {
-//            // Restore the previous state
-//
-//        }
-//    }
     }
 }
 
