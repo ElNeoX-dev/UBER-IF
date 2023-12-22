@@ -2,8 +2,11 @@ package com.malveillance.uberif.model.service;
 
 import com.malveillance.uberif.model.*;
 import com.malveillance.uberif.xml.XmlMapDeserializer;
-import com.malveillance.uberif.util.ResourceReader;
+import com.malveillance.uberif.util.Reader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class CityMapService {
@@ -23,12 +26,12 @@ public class CityMapService {
         CityMap map = null;
         String fileName = mapName;
         XmlMapDeserializer parser = new XmlMapDeserializer();
-        ResourceReader rsReader = new ResourceReader();
+        Reader rsReader = new Reader();
 
         try {
             if (isSavedMap) {
-                InputStream is = rsReader.getFileAsIOStream(fileName);
-                parser.deserialize(is);
+                File file = rsReader.getFile(fileName);
+                parser.deserialize(new FileInputStream(file));
                 map = new CityMap(parser.getWarehouse(), parser.getTourCourierPairList(), parser.getIntersectionsElements(), fileName, true);
             } else {
                 // Split the mapName and take the first word
@@ -41,7 +44,7 @@ public class CityMapService {
 
                 map = new CityMap(parser.getWarehouse(), parser.getIntersectionsElements(), parser.getSegmentElements(), fileName);
             }
-        } catch (NullPointerException e) {
+        } catch (FileNotFoundException|NullPointerException e) {
             System.err.println("Error occured when loading map "+ fileName + "\n" + e);
         }
 

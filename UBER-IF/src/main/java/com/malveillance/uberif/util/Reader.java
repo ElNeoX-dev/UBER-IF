@@ -1,9 +1,10 @@
 package com.malveillance.uberif.util;
 
+import java.io.File;
 import java.io.InputStream;
 
-public class ResourceReader {
-    public ResourceReader() {
+public class Reader {
+    public Reader() {
     }
 
     public InputStream getFileAsIOStream(final String fileName)
@@ -16,5 +17,9 @@ public class ResourceReader {
             throw new IllegalArgumentException(fileName + " is not found");
         }
         return ioStream;
+    }
+
+    public File getFile(final String path) {
+        return new File(path);
     }
 }

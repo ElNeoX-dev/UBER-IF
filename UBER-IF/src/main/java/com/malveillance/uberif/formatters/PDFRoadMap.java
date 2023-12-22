@@ -68,11 +68,9 @@ public class PDFRoadMap {
                 contentStream = new PDPageContentStream(document, page);
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 20);
 
-                // Calculate the center of the page
                 float pageWidth = page.getMediaBox().getWidth();
                 float centerX = pageWidth / 2;
 
-                // Calculate the position for the title
                 float titleWidth = PDType1Font.HELVETICA_BOLD.getStringWidth("Road Map") / 1000 * 20;
                 float titleX = centerX - titleWidth / 2;
 
@@ -84,7 +82,6 @@ public class PDFRoadMap {
                 Courier courier = courierTourData.getKey();
                 List<Pair<RoadSegment, Date>> roadSegments = courierTourData.getValue();
 
-                // Process courier information and road segments
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
                 contentStream.showText("Road Map for Courier " + courier.getName());
                 contentStream.newLineAtOffset(0, -12);
@@ -92,35 +89,20 @@ public class PDFRoadMap {
                 contentStream.newLineAtOffset(0, -12);
                 contentStream.setFont(PDType1Font.HELVETICA, 11);
 
-                // Keep track of the previous RoadSegment
                 RoadSegment previousRoadSegment = null;
                 for (int i = 0; i < roadSegments.size(); i++) {
                     RoadSegment segment = roadSegments.get(i).getKey();
                     Date arrivalTime = roadSegments.get(i).getValue();
 
-                    // Check if the current RoadSegment is different from the previous one
                     if (i == 0 || !Objects.equals(previousRoadSegment.getName(), segment.getName()) || arrivalTime != null) {
-                        // Add text to the content stream
                         if (i > 0) {
                             RoadSegment previousSegment = roadSegments.get(i - 1).getKey();
                             String turnDirection = segment.getTurnDirection(previousSegment);
 
                             if (!turnDirection.equals("zero")) {
-                                contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                                contentStream.newLineAtOffset(0, -12);
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName());
                                 countLines++;
-                                // System.out.println(countLines + " 1");
-                                if (countLines >= 45) {
-                                    countLines = 0;
-                                    contentStream.endText();
-                                    contentStream.close();
-
-                                    page = new PDPage();
-                                    document.addPage(page);
-                                    contentStream = new PDPageContentStream(document, page);
-                                    contentStream.setFont(PDType1Font.HELVETICA, 11);
-                                    contentStream.beginText();
-                                }
                             }
                         } else {
                             contentStream.newLineAtOffset(0, -12);
@@ -129,23 +111,23 @@ public class PDFRoadMap {
                         }
 
                         if (arrivalTime != null) {
-                            contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                            contentStream.newLineAtOffset(0, -12);
                             contentStream.showText("You will reach your destination at " + formatArrivalTime(arrivalTime));
-                            contentStream.newLineAtOffset(0, -12); // Adjust the vertical offset as needed
+                            contentStream.newLineAtOffset(0, -12);
                             countLines += 3;
 
-                            if (countLines >= 45) {
-                                countLines = 0;
-                                contentStream.endText();
-                                contentStream.close();
-
-                                page = new PDPage();
-                                document.addPage(page);
-                                contentStream = new PDPageContentStream(document, page);
-                                contentStream.setFont(PDType1Font.HELVETICA, 11);
-                                contentStream.beginText();
-                            }
                         }
+                    }
+                    if (countLines >= 45) {
+                        countLines = 0;
+                        contentStream.endText();
+                        contentStream.close();
+
+                        page = new PDPage();
+                        document.addPage(page);
+                        contentStream = new PDPageContentStream(document, page);
+                        contentStream.setFont(PDType1Font.HELVETICA, 11);
+                        contentStream.beginText();
                     }
                     previousRoadSegment = segment;
                 }
