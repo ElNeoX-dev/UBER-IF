@@ -346,7 +346,7 @@ Agile practices allowed team members to focus on their favourite areas of intere
 
 ## 11. Possible improvements
 
-We could have improved our application by using SOLID principles. For instance, we should have done 1 class for 1 responsibility. What's more, we should have injected dependencies so that high-level modules didn't depend on low-level modules. Both should depend on abstractions.
+We could have improved our application by using SOLID principles. For instance, we should have done 1 class for 1 responsibility. What's more, we should have injected dependencies so that high-level modules didn't depend on low-level modules. Both should depend on abstractions. By using these principles, we could have gotten more test coverage.
 
 Also, our restoring of tours is not optimized at all. It doesn't display the previous tours as we would have liked.
 
