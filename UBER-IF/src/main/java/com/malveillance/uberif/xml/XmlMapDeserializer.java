@@ -11,10 +11,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.time.LocalDateTime;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,12 +32,11 @@ public class XmlMapDeserializer {
     public XmlMapDeserializer() {
     }
 
-    public void deserialize(URI filePath) {
+    public void deserialize(InputStream is) {
         try {
-            File xmlFile = new File(filePath);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(xmlFile);
+            Document doc = dBuilder.parse(is);
             doc.getDocumentElement().normalize();
 
             // Parse Warehouse
