@@ -362,7 +362,7 @@ Agile practices allowed team members to focus on their favourite areas of intere
 
 We could have improved our application by using SOLID principles. For instance, we should have done 1 class for 1 responsibility. What's more, we should have injected dependencies so that high-level modules didn't depend on low-level modules. Both should depend on abstractions. By using these principles, we could have gotten more test coverage.
 
-Also, our restoring of tours is not optimized at all. It doesn't display the previous tours as we would have liked.
+Also, our restoring of tours is not optimized. It doesn't automatically change map and update the list of couriers with the information contained in the file. For instance, if the user is on the small map and the restored tours were on the large map, it won't work.
 
 What we could have done also is display departure and arrival time for each delivery.
 
