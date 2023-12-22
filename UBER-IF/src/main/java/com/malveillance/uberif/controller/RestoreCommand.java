@@ -73,7 +73,7 @@ public class RestoreCommand implements Command {
                 }
             }
 
-            graphicalView.update(graphicalView.getCityMap(), graphicalView.getCityMap().getNodes());
+            graphicalView.onOptimizeBtnClick();
         } else {
             graphicalView.showDialogWarningError("Error", "No input file found", "File: " + path);
         }

@@ -41,21 +41,25 @@ public class SaveCommand implements Command {
      */
     @Override
     public void execute() {
-        String nameOutput = graphicalView.showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
+        System.out.println("Save click");
+        String path = graphicalView.showDirectoryChooser() ;
+        if (!path.isEmpty()) {
+            String nameOutput = graphicalView.showDialogBoxInput("Enter the output file name", "Output file's name", "Enter the output file's name : ");
 
-        if (!nameOutput.isEmpty()) {
-            try {
-                xmlSerializer.serialize(graphicalView.getCityMap().getCourierDotMap().keySet(), graphicalView.getCityMap().getWarehouse(), nameOutput);
-            } catch (ParserConfigurationException e) {
-                System.out.println("ParserConfigurationException : " + e);
-                throw new RuntimeException(e);
-            } catch (TransformerException e) {
-                System.out.println("TransformerException : " + e);
-                throw new RuntimeException(e);
+            if (!nameOutput.isEmpty()) {
+                try {
+                    graphicalView.getXmlSerializer().serialize(graphicalView.getCityMap().getCourierDotMap().keySet(), graphicalView.getCityMap().getWarehouse(), nameOutput);
+                } catch (ParserConfigurationException e) {
+                    System.out.println("ParserConfigurationException : " + e);
+                    throw new RuntimeException(e);
+                } catch (TransformerException e) {
+                    System.out.println("TransformerException : " + e);
+                    throw new RuntimeException(e);
+                }
+            } else {
+                graphicalView.showDialogWarningError("Error", "The file name is empty", "");
             }
-        } else {
-            graphicalView.showDialogWarningError("Error", "The file name is empty", "");
+            context.handleInput("save", graphicalView);
         }
-        context.handleInput("save", graphicalView);
     }
 }
