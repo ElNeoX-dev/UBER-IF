@@ -1,9 +1,12 @@
 package com.malveillance.uberif.controller;
 
+import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.view.GraphicalView;
+
 import java.util.Stack;
 
 /**
- * The class represents a context.
+ * The class represents a context for managing states and handling user input.
  */
 public class Context {
     /**
@@ -17,28 +20,66 @@ public class Context {
     private Stack<State> previousStates;
 
     /**
-     * Constructs a new Context.
+     * Represents the undone states.
      */
-    public Context() {
-        this.currentState = new InitialState();
-        this.previousStates = null;// Default state
+    private Stack<State> undoneStates;
+
+    /**
+     * Constructs a new Context
+     * @param graphicalView the graphical view associated with the context
+     */
+    public Context(GraphicalView graphicalView) {
+        this.currentState = new InitialState(graphicalView);
+        this.previousStates = new Stack<>();
+        this.undoneStates = new Stack<>();
     }
 
     /**
-     * sets the state.
-     * @param state the state
+     * Sets the state of the context
+     * @param state the new state
      */
     public void setState(State state) {
-        this.previousStates.add(currentState);
+        if (currentState != null) {
+            this.previousStates.push(currentState);
+        }
         this.currentState = state;
+        this.undoneStates.clear();
     }
 
     /**
-     * Handles the input.
-     * @param input the input command
+     * Gets the current state of the context
+     * @return the current state
      */
-    public void handleInput(String input) {
+    public State getState() {
+        return currentState;
+    }
 
-        currentState.handleInput(this, input);
+    /**
+     * Undoes the last state change.
+     */
+    public void undo() {
+        if (!previousStates.empty()) {
+            this.undoneStates.push(currentState);
+            this.currentState = previousStates.pop();
+        }
+    }
+
+    /**
+     * Redoes the last undone state change.
+     */
+    public void redo() {
+        if (!undoneStates.empty()) {
+            this.previousStates.push(currentState);
+            this.currentState = undoneStates.pop();
+        }
+    }
+
+    /**
+     * Handles user input based on the current state
+     * @param input         the user input
+     * @param graphicalView the graphical view associated with the context
+     */
+    public void handleInput(String input, GraphicalView graphicalView) {
+        currentState.handleInput(this, input, graphicalView);
     }
 }

@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * The class represents a template for solving the TSP.
+ */
 public abstract class TemplateTSP implements TSP {
 
 	/**
@@ -54,8 +57,7 @@ public abstract class TemplateTSP implements TSP {
 	private static final int secondsInHour = 3600;
 
 	/**
-	 * Initiates the TSP search with the specified time limit, city map, tour, and starting date.
-	 *
+	 * Initiates the TSP search with the specified time limit, city map, tour, and starting date
 	 * @param timeLimit     the time limit for the TSP search
 	 * @param g             the city map
 	 * @param t             the tour
@@ -79,8 +81,7 @@ public abstract class TemplateTSP implements TSP {
 	}
 
 	/**
-	 * Gets the solution at the specified index.
-	 *
+	 * Gets the solution at the specified index
 	 * @param i the index of the solution
 	 * @return the solution at the specified index
 	 */
@@ -91,8 +92,7 @@ public abstract class TemplateTSP implements TSP {
 	}
 
 	/**
-	 * Gets the cost of the best solution found.
-	 *
+	 * Gets the cost of the best solution found
 	 * @return the cost of the best solution
 	 */
 	public double getSolutionCost() {

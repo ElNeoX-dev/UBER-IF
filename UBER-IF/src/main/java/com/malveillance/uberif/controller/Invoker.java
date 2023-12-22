@@ -25,11 +25,5 @@ public class Invoker {
         command.execute();
     }
 
-    /**
-     * Undoes the command.
-     */
-    public void undoCommand() {
-        command.undo();
-    }
 }
 

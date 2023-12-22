@@ -2,34 +2,34 @@ package com.malveillance.uberif.controller;
 
 import com.malveillance.uberif.model.*;
 import com.malveillance.uberif.model.service.AlgoService;
+import com.malveillance.uberif.view.GraphicalView;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * The class represents a command to optimize the route.
  */
 public class OptimizeRouteCommand implements Command {
+    /**
+     * The graphical view associated with the command.
+     */
+    private GraphicalView graphicalView;
+    /**
+     * The context managing the state transitions.
+     */
+    private Context context;
 
     /**
-     * The city map.
+     * Constructs a new OptimizeRouteCommand
+     * @param graphicalView the graphical view associated with the command
+     * @param context       the context managing the state transitions
      */
-    private CityMap cityMap;
-
-    /**
-     * The previous state.
-     */
-    private CityMap previousState;
-
-    /**
-     * Constructs a new OptimizeRouteCommand.
-     * @param cityMap the city map
-     */
-    public OptimizeRouteCommand(CityMap cityMap) {
-        this.cityMap = cityMap;
-        this.previousState = null;
+    public OptimizeRouteCommand(GraphicalView graphicalView, Context context) {
+        this.graphicalView = graphicalView;
+        this.context = context;
     }
 
     /**
@@ -37,34 +37,24 @@ public class OptimizeRouteCommand implements Command {
      */
     @Override
     public void execute() {
-        // Backup the current state
-        previousState = cityMap.deepCopy(); // Assuming deepCopy() method exists
 
-        System.out.println("Optimize click");
-        for(Courier courier : cityMap.getCourierDotMap().keySet()) {
+        // CityMap previousCityMap = cityMap.deepCopy();
+
+        graphicalView.getMapPane().getChildren().clear();
+        graphicalView.update(graphicalView.getCityMap(), graphicalView.getCityMap().getNodes());
+        for(Courier courier : graphicalView.getCityMap().getCourierDotMap().keySet()) {
             if(!courier.getName().isEmpty()) {
-                List<Pair<Intersection, TimeWindow>> deliveryPoints = cityMap.getSelectedPairList(courier);
-
-                Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(0)));
-                for(Pair<Intersection, TimeWindow> d : deliveryPoints) {
+                List<Pair<Intersection, TimeWindow>> deliveryPoints = graphicalView.getCityMap().getSelectedPairList(courier);
+                Tour tour = new Tour(new Delivery(graphicalView.getCityMap().getWarehouse().getIntersection(), new TimeWindow(0)));
+                for (Pair<Intersection, TimeWindow> d : deliveryPoints) {
                     tour.addDelivery(new Delivery(d.getKey(), d.getValue()));
                 }
                 courier.setCurrentTour(tour);
-                List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);
-                cityMap.addTravelPlan(courier, computedTravel);
-                }
+                List<Pair<Intersection, Date>> computedTravel = AlgoService.calculateOptimalRoute(graphicalView.getCityMap(), tour);
+                graphicalView.getCityMap().addTravelPlan(courier, computedTravel);
             }
         }
-
-    /**
-     * Undoes the command.
-     */
-    @Override
-    public void undo() {
-        if (previousState != null) {
-            // Restore the previous state
-            cityMap = previousState;
-        }
+        context.handleInput("optimize", graphicalView);
     }
 }
 

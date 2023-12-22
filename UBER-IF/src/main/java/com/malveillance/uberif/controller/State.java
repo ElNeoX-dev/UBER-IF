@@ -1,21 +1,39 @@
 package com.malveillance.uberif.controller;
 
 import com.malveillance.uberif.model.CityMap;
+import com.malveillance.uberif.model.Courier;
 import com.malveillance.uberif.model.Intersection;
+import com.malveillance.uberif.view.GraphicalView;
+import javafx.scene.control.Label;
 
 /**
- * The interface represents a state.
+ * The interface represents different states in the application.
+ * States define the behavior of the application based on user input and current conditions.
  */
-interface State {
+public interface State {
     /**
-     * The city map.
+     * Handles user input based on the current state
+     * @param context       the context managing the state transitions
+     * @param input         the user input
+     * @param graphicalView the graphical view associated with the state
      */
-    public CityMap cityMap = null;
+    void handleInput(Context context, String input, GraphicalView graphicalView);
 
     /**
-     * Handles the input.
-     * @param context the context
-     * @param input the input
+     * Gets the graphical view associated with the state
+     * @return the graphical view
      */
-    void handleInput(Context context, String input);
+    GraphicalView getGraphicalView();
+
+    /**
+     * Gets the currently selected courier in the state
+     * @return the selected courier
+     */
+    Courier getSelectedCourier();
+
+    /**
+     * Gets the label providing information in the graphical view
+     * @return the information label
+     */
+    Label getlbInfos();
 }

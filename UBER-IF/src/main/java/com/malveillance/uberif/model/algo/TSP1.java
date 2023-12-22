@@ -6,7 +6,16 @@ import com.malveillance.uberif.model.TimeWindow;
 
 import java.util.*;
 
+/**
+ * The class represents a template for solving the TSP.
+ */
 public class TSP1 extends TemplateTSP {
+
+	/**
+	 * @param currentVertex current vertex
+	 * @param unvisited   set of unvisited vertices
+	 * @return the lower bound of the cost of paths currentVertex
+	 */
 	@Override
 	protected int bound(Delivery currentVertex, Collection<Delivery> unvisited) {
 		if (unvisited.isEmpty()) {
@@ -39,6 +48,13 @@ public class TSP1 extends TemplateTSP {
 		return (int)Math.ceil(bound);
 	}
 
+	/**
+	 * @param currentVertex current vertex
+	 * @param unvisited    set of unvisited vertices
+	 * @param g 		  the graph
+	 * @param currentTime the current time
+	 * @return an iterator to traverse the set of vertices in unvisited
+	 */
 	@Override
 	protected Iterator<Delivery> iterator(Delivery currentVertex, Collection<Delivery> unvisited, CityMap g, double currentTime) {
 		List<Delivery> sortedUnvisited = new ArrayList<>(unvisited);

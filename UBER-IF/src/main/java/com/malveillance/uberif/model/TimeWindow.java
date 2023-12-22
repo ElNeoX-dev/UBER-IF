@@ -81,8 +81,18 @@ public class TimeWindow {
      * @param other the time window to be copied
      */
     public TimeWindow(TimeWindow other) {
-        this.startingTime = (Date) other.startingTime.clone();
-        this.endingTime = (Date) other.endingTime.clone();
+        if (other.startingTime != null){
+            this.startingTime = (Date) other.startingTime.clone();
+        }
+        else {
+            this.startingTime = null;
+        }
+        if (other.endingTime != null) {
+            this.endingTime = (Date) other.endingTime.clone();
+        }
+        else {
+            this.endingTime = null;
+        }
     }
 
     /**

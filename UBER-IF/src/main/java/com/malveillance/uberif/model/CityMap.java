@@ -2,12 +2,7 @@ package com.malveillance.uberif.model;
 
 import javafx.util.Pair;
 
-import java.util.Observable;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 /**
  * The CityMap class represents all the intersections and road segments of a map.
@@ -77,6 +72,7 @@ public class CityMap extends Observable {
         for (RoadSegment segment : segments) {
             this.nodes.get(segment.getOrigin()).add(segment);
         }
+        this.travelList = new HashMap<>();
     }
 
     /**
@@ -251,6 +247,10 @@ public class CityMap extends Observable {
         return travelList.getOrDefault(courier, new ArrayList<>());
     }
 
+    public void setTravelList(Map<Courier, List<Pair<Intersection, Date>>> travelList) {
+        this.travelList = travelList;
+    }
+
     /**
      * Remove the travel plan of a courier
      * @param courier The courier to remove the travel plan from
@@ -381,30 +381,44 @@ public class CityMap extends Observable {
      */
     public CityMap deepCopy() {
         Warehouse copiedWarehouse = new Warehouse(this.warehouse);
-        List<Intersection> copiedIntersections = new ArrayList<>();
-        for (Intersection intersection : this.nodes.keySet()) {
-            copiedIntersections.add(new Intersection(intersection));
-        }
+        List<Intersection> copiedIntersections = new ArrayList<>(this.nodes.keySet());
 
         List<RoadSegment> copiedSegments = new ArrayList<>();
         for (List<RoadSegment> segments : this.nodes.values()) {
-            for (RoadSegment segment : segments) {
-                copiedSegments.add(new RoadSegment(segment));
-            }
+            copiedSegments.addAll(segments);
         }
 
-        CityMap copiedCityMap = new CityMap(copiedWarehouse, copiedIntersections, copiedSegments, this.mapName);
+        CityMap copiedCityMap = new CityMap(this.warehouse, copiedIntersections, copiedSegments, this.mapName);
 
         for (Map.Entry<Courier, List<Pair<Intersection, TimeWindow>>> entry : this.courierDotMap.entrySet()) {
             Courier copiedCourier = new Courier(entry.getKey());
-            List<Pair<Intersection, TimeWindow>> copiedPairs = new ArrayList<>();
-            for (Pair<Intersection, TimeWindow> pair : entry.getValue()) {
-                Intersection copiedIntersection = new Intersection(pair.getKey());
-                TimeWindow copiedTimeWindow = new TimeWindow(pair.getValue());
-                copiedPairs.add(new Pair<>(copiedIntersection, copiedTimeWindow));
+            List<Pair<Intersection, TimeWindow>> courierPairs = entry.getValue();
+            if (courierPairs != null) {
+                List<Pair<Intersection, TimeWindow>> copiedPairs = new ArrayList<>();
+                for (Pair<Intersection, TimeWindow> pair : courierPairs) {
+                    Intersection copiedIntersection = new Intersection(pair.getKey());
+                    TimeWindow copiedTimeWindow = pair.getValue() != null ? new TimeWindow(pair.getValue()) : null;
+                    copiedPairs.add(new Pair<>(pair.getKey(), copiedTimeWindow));
+                }
+                copiedCityMap.getCourierDotMap().put(entry.getKey(), copiedPairs);
             }
-            copiedCityMap.getCourierDotMap().put(copiedCourier, copiedPairs);
         }
+
+        Map<Courier, List<Pair<Intersection, Date>>> copiedTravelList = new HashMap<>();
+        for (Map.Entry<Courier, List<Pair<Intersection, Date>>> entry : this.travelList.entrySet()) {
+            Courier copiedCourier = new Courier(entry.getKey());
+            List<Pair<Intersection, Date>> travelPlan = entry.getValue();
+            if (travelPlan != null) {
+                List<Pair<Intersection, Date>> copiedPlan = new ArrayList<>();
+                for (Pair<Intersection, Date> pair : travelPlan) {
+                    Date copiedDate = pair.getValue() != null ? new Date(pair.getValue().getTime()) : null;
+                    copiedPlan.add(new Pair<>(pair.getKey(), copiedDate));
+                }
+                copiedTravelList.put(entry.getKey(), copiedPlan);
+            }
+        }
+
+        copiedCityMap.setTravelList(copiedTravelList);
 
         return copiedCityMap;
     }
