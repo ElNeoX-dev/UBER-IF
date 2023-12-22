@@ -39,6 +39,18 @@ class InitialState implements State {
         if (input.equals("optimize")) {
             context.setState(new SelectState(graphicalView));
         }
+        if (input.equals("plus")) {
+            context.setState(new SelectState(graphicalView));
+        }
+        if (input.equals("minus")) {
+            context.setState(new SelectState(graphicalView));
+        }
+        if (input.equals("save")) {
+            context.setState(new SelectState(graphicalView));
+        }
+        if (input.equals("restore")) {
+            context.setState(new SelectState(graphicalView));
+        }
     }
 
     /**
