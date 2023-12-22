@@ -139,6 +139,7 @@ public class PDFRoadMap {
                                 contentStream = new PDPageContentStream(document, page);
                                 contentStream.setFont(PDType1Font.HELVETICA, 11);
                                 contentStream.beginText();
+                                contentStream.newLineAtOffset(100, 700);
                             }
                         }
                     }
@@ -157,6 +158,7 @@ public class PDFRoadMap {
                     contentStream = new PDPageContentStream(document, page);
                     contentStream.setFont(PDType1Font.HELVETICA, 11);
                     contentStream.beginText();
+                    contentStream.newLineAtOffset(100, 700);
                 }
 
 
