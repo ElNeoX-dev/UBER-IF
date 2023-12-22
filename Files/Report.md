@@ -63,6 +63,8 @@ By Manager UberIF, we mean the user that get incoming delivery requests, calcula
 
 The aim of this diagram is to explain how we want to build our software to answer the client needs. It is important to note that this diagram constantly evolves and therefore only should be used to understand the general idea of how our software is structured. It is not the actual nor final version and doe not exactly explain all classes and packages.
 
+![Class Diagram](classDiag.png "Class Diagram")
+
 This diagram is organized into several packages, which group related classes and interfaces that interact with each other to perform various functions within the application.
 
 
@@ -360,7 +362,7 @@ Agile practices allowed team members to focus on their favourite areas of intere
 
 We could have improved our application by using SOLID principles. For instance, we should have done 1 class for 1 responsibility. What's more, we should have injected dependencies so that high-level modules didn't depend on low-level modules. Both should depend on abstractions. By using these principles, we could have gotten more test coverage.
 
-Also, our restoring of tours is not optimized at all. It doesn't display the previous tours as we would have liked.
+Also, our restoring of tours is not optimized. It doesn't automatically change map and update the list of couriers with the information contained in the file. For instance, if the user is on the small map and the restored tours were on the large map, it won't work.
 
 What we could have done also is display departure and arrival time for each delivery.
 
