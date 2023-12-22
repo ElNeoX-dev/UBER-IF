@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PaneService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.model.service</a>
+</div>
+
+<h1>Coverage Summary for Class: PaneService (com.malveillance.uberif.model.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PaneService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.7%
+  </span>
+  <span class="absValue">
+    (13/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.5%
+  </span>
+  <span class="absValue">
+    (19/21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.model.service;
+&nbsp;
+&nbsp;public class PaneService {
+&nbsp;
+<b class="fc">&nbsp;    public PaneService() {</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // Scaling factors
+<b class="fc">&nbsp;    private double minX = Double.MAX_VALUE;</b>
+<b class="fc">&nbsp;    private double maxX = Double.MIN_VALUE;</b>
+<b class="fc">&nbsp;    private double minY = Double.MAX_VALUE;</b>
+<b class="fc">&nbsp;    private double maxY = Double.MIN_VALUE;</b>
+<b class="fc">&nbsp;    private double xRange = .0;</b>
+<b class="fc">&nbsp;    private double yRange = .0;</b>
+&nbsp;
+&nbsp;    // Method to map latitude to X position
+&nbsp;    public double longitudeToX(double longitude, double paneWidth){
+<b class="fc">&nbsp;        return ( (longitude - minX) / xRange ) * paneWidth;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Method to map latitude to Y position
+&nbsp;    public double latitudeToY(double latitude, double paneHeight){
+<b class="fc">&nbsp;        return ( (maxY - latitude) / yRange ) * paneHeight;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getMinX() {
+<b class="fc">&nbsp;        return minX;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMinX(double minX) {
+<b class="fc">&nbsp;        this.minX = minX;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getMaxX() {
+<b class="fc">&nbsp;        return maxX;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMaxX(double maxX) {
+<b class="fc">&nbsp;        this.maxX = maxX;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getMinY() {
+<b class="nc">&nbsp;        return minY;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMinY(double minY) {
+<b class="fc">&nbsp;        this.minY = minY;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getMaxY() {
+<b class="nc">&nbsp;        return maxY;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setMaxY(double maxY) {
+<b class="fc">&nbsp;        this.maxY = maxY;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getxRange() {
+<b class="fc">&nbsp;        return xRange;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setxRange(double xRange) {
+<b class="fc">&nbsp;        this.xRange = xRange;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getyRange() {
+<b class="fc">&nbsp;        return yRange;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setyRange(double yRange) {
+<b class="fc">&nbsp;        this.yRange = yRange;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

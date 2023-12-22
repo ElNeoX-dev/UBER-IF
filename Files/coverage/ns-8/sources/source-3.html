@@ -1,0 +1,229 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > XMLserializer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.xml</a>
+</div>
+
+<h1>Coverage Summary for Class: XMLserializer (com.malveillance.uberif.xml)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XMLserializer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.4%
+  </span>
+  <span class="absValue">
+    (5/53)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.xml;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import javax.xml.parsers.DocumentBuilder;
+&nbsp;import javax.xml.parsers.DocumentBuilderFactory;
+&nbsp;import javax.xml.parsers.ParserConfigurationException;
+&nbsp;import javax.xml.transform.OutputKeys;
+&nbsp;import javax.xml.transform.Transformer;
+&nbsp;import javax.xml.transform.TransformerException;
+&nbsp;import javax.xml.transform.TransformerFactory;
+&nbsp;import javax.xml.transform.TransformerFactoryConfigurationError;
+&nbsp;import javax.xml.transform.dom.DOMSource;
+&nbsp;import javax.xml.transform.stream.StreamResult;
+&nbsp;
+&nbsp;import com.malveillance.uberif.model.*;
+&nbsp;import org.w3c.dom.Attr;
+&nbsp;import org.w3c.dom.Document;
+&nbsp;import org.w3c.dom.Element;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;
+&nbsp;public class XMLserializer /*implements Visitor */ {// Singleton
+&nbsp;
+&nbsp;    private Document document;
+&nbsp;
+&nbsp;    private Map&lt;Intersection, List&lt;RoadSegment&gt;&gt; segmentUsed;
+&nbsp;
+<b class="fc">&nbsp;    private static XMLserializer instance = null;</b>
+<b class="fc">&nbsp;    private XMLserializer(){}</b>
+&nbsp;    public static XMLserializer getInstance(){
+<b class="fc">&nbsp;        if (instance == null)</b>
+<b class="fc">&nbsp;            instance = new XMLserializer();</b>
+<b class="fc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public Document serialize(List&lt;Tour&gt; tourList, /*NECESSAIRE ??? Map&lt;Intersection, List&lt;RoadSegment&gt;&gt; segmentUsed,*/ Warehouse warehouse, String  name) throws ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+<b class="nc">&nbsp;        DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();</b>
+<b class="nc">&nbsp;        DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();</b>
+<b class="nc">&nbsp;        document = documentBuilder.newDocument();</b>
+&nbsp;
+&nbsp;        // root element
+<b class="nc">&nbsp;        Element root = document.createElement(&quot;map&quot;);</b>
+<b class="nc">&nbsp;        document.appendChild(root);</b>
+&nbsp;
+&nbsp;        // warehouse element
+<b class="nc">&nbsp;        Element warehouseElement = document.createElement(&quot;warehouse&quot;);</b>
+<b class="nc">&nbsp;        root.appendChild(warehouseElement);</b>
+&nbsp;
+&nbsp;        // set an attribute to warehouse element
+<b class="nc">&nbsp;        Attr warehouseAttr = document.createAttribute(&quot;address&quot;);</b>
+<b class="nc">&nbsp;        warehouseAttr.setValue(warehouse.getIntersection().getId());</b>
+<b class="nc">&nbsp;        warehouseElement.setAttributeNode(warehouseAttr);</b>
+&nbsp;
+<b class="nc">&nbsp;        int i = 1 ;</b>
+<b class="nc">&nbsp;        for (Tour tour : tourList) {</b>
+&nbsp;            // tour element
+<b class="nc">&nbsp;            Element tourElement = document.createElement(&quot;tour&quot;);</b>
+<b class="nc">&nbsp;            root.appendChild(tourElement);</b>
+&nbsp;
+<b class="nc">&nbsp;            createAttribute(tourElement, &quot;tourId&quot;, String.valueOf(tour.getId()));</b>
+&nbsp;
+<b class="nc">&nbsp;            for (Delivery delivery : tour.getDeliveries()) {</b>
+<b class="nc">&nbsp;                Intersection intersection = delivery.getIntersection();</b>
+&nbsp;                // intersection element
+<b class="nc">&nbsp;                Element intersectionElement = document.createElement(&quot;intersection&quot;);</b>
+<b class="nc">&nbsp;                tourElement.appendChild(intersectionElement);</b>
+&nbsp;
+<b class="nc">&nbsp;                createAttribute(intersectionElement, &quot;id&quot;, intersection.getId());</b>
+<b class="nc">&nbsp;                createAttribute(intersectionElement, &quot;latitude&quot;, String.valueOf(intersection.getLatitude()));</b>
+<b class="nc">&nbsp;                createAttribute(intersectionElement, &quot;longitude&quot;, String.valueOf(intersection.getLongitude()));</b>
+<b class="nc">&nbsp;                createAttribute(intersectionElement, &quot;timeWindow&quot;, String.valueOf(delivery.getTimeWindow()));</b>
+&nbsp;//                On verra plus tard apparemment
+&nbsp;//                createAttribute(intersectionElement, &quot;courier&quot;, String.valueOf(delivery.getCourier().getName()));
+&nbsp;//                createAttribute(intersectionElement, &quot;color&quot;, String.valueOf(delivery.getCourier().getColor()));
+<b class="nc">&nbsp;                createAttribute(intersectionElement, &quot;order&quot;, String.valueOf(i));</b>
+<b class="nc">&nbsp;                i++;</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            i = 1 ;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // save the xml file
+<b class="nc">&nbsp;        TransformerFactory transformerFactory = TransformerFactory.newInstance();</b>
+<b class="nc">&nbsp;        Transformer transformer = transformerFactory.newTransformer();</b>
+&nbsp;        // for pretty print
+<b class="nc">&nbsp;        transformer.setOutputProperty(OutputKeys.INDENT, &quot;yes&quot;);</b>
+<b class="nc">&nbsp;        DOMSource domSource = new DOMSource(document);</b>
+<b class="nc">&nbsp;        StreamResult streamResult = new StreamResult(new File(&quot;src/main/resources/output/&quot; + name + &quot;.xml&quot;));</b>
+<b class="nc">&nbsp;        transformer.transform(domSource, streamResult);</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void createAttribute(Element root, String name, String value){
+<b class="nc">&nbsp;        Attr attribute = document.createAttribute(name);</b>
+<b class="nc">&nbsp;        root.setAttributeNode(attribute);</b>
+<b class="nc">&nbsp;        attribute.setValue(value);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void writeDocumentToFile(Document document, String filename) throws TransformerException, IOException {
+<b class="nc">&nbsp;        File file = new File(filename);</b>
+<b class="nc">&nbsp;        File parentDirectory = file.getParentFile();</b>
+&nbsp;
+&nbsp;        // Check if the parent directories exist and create them if they don&#39;t
+<b class="nc">&nbsp;        if (!parentDirectory.exists() &amp;&amp; !parentDirectory.mkdirs()) {</b>
+<b class="nc">&nbsp;            throw new IOException(&quot;Failed to create directory: &quot; + parentDirectory.getAbsolutePath());</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Now proceed with writing the file
+<b class="nc">&nbsp;        TransformerFactory transformerFactory = TransformerFactory.newInstance();</b>
+<b class="nc">&nbsp;        Transformer transformer = transformerFactory.newTransformer();</b>
+<b class="nc">&nbsp;        transformer.setOutputProperty(OutputKeys.INDENT, &quot;yes&quot;);</b>
+<b class="nc">&nbsp;        DOMSource domSource = new DOMSource(document);</b>
+<b class="nc">&nbsp;        StreamResult streamResult = new StreamResult(file);</b>
+<b class="nc">&nbsp;        transformer.transform(domSource, streamResult);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

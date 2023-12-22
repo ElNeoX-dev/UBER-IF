@@ -1,0 +1,153 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PaneController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: PaneController (com.malveillance.uberif.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PaneController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.controller;
+&nbsp;
+&nbsp;import com.malveillance.uberif.model.CityMap;
+&nbsp;import com.malveillance.uberif.model.Intersection;
+&nbsp;import com.malveillance.uberif.model.Warehouse;
+&nbsp;import com.malveillance.uberif.model.service.PaneService;
+&nbsp;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;public class PaneController {
+&nbsp;
+&nbsp;    private PaneService paneService;
+&nbsp;    private State currentState;
+<b class="nc">&nbsp;    public PaneController(PaneService paneService) {</b>
+<b class="nc">&nbsp;        this.paneService = paneService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void leftClick(Intersection intersection){
+<b class="nc">&nbsp;        currentState.leftClick(this, intersection,new CityMap(null, null));</b>
+&nbsp;    }
+&nbsp;    public double getIntersectionX(Intersection i, double paneWidth){
+<b class="nc">&nbsp;        return paneService.longitudeToX(i.getLongitude(), paneWidth);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Method to map latitude to Y position
+&nbsp;    public double getIntersectionY(Intersection i, double paneHeight){
+<b class="nc">&nbsp;        return paneService.latitudeToY(i.getLatitude(), paneHeight);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void updateScale(Set&lt;Intersection&gt; intersectionList) {
+<b class="nc">&nbsp;        paneService.setMinX(Double.MAX_VALUE);</b>
+<b class="nc">&nbsp;        paneService.setMaxX(Double.MIN_VALUE);</b>
+<b class="nc">&nbsp;        paneService.setMinY(Double.MAX_VALUE);</b>
+<b class="nc">&nbsp;        paneService.setMaxY(Double.MIN_VALUE);</b>
+&nbsp;
+&nbsp;        // Fill intersectionsMap (hashmap) while parsing
+<b class="nc">&nbsp;        for (Intersection inter : intersectionList) {</b>
+<b class="nc">&nbsp;            paneService.setMinX(Math.min(paneService.getMinX(), inter.getLongitude()));</b>
+<b class="nc">&nbsp;            paneService.setMaxX(Math.max(paneService.getMaxX(), inter.getLongitude()));</b>
+<b class="nc">&nbsp;            paneService.setMinY(Math.min(paneService.getMinY(), inter.getLatitude()));</b>
+<b class="nc">&nbsp;            paneService.setMaxY(Math.max(paneService.getMaxY(), inter.getLatitude()));</b>
+&nbsp;
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // Compute scaling factors
+<b class="nc">&nbsp;        paneService.setxRange(paneService.getMaxX() - paneService.getMinX());</b>
+<b class="nc">&nbsp;        paneService.setyRange(paneService.getMaxY() - paneService.getMinY());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

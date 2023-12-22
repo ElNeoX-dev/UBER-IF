@@ -1,0 +1,236 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > XmlMapDeserializer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.xml</a>
+</div>
+
+<h1>Coverage Summary for Class: XmlMapDeserializer (com.malveillance.uberif.xml)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">XmlMapDeserializer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (4/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.7%
+  </span>
+  <span class="absValue">
+    (55/60)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.xml;
+&nbsp;
+&nbsp;import javax.xml.parsers.DocumentBuilderFactory;
+&nbsp;import javax.xml.parsers.DocumentBuilder;
+&nbsp;
+&nbsp;import com.malveillance.uberif.model.Intersection;
+&nbsp;import com.malveillance.uberif.model.RoadSegment;
+&nbsp;import com.malveillance.uberif.model.Warehouse;
+&nbsp;import org.w3c.dom.Document;
+&nbsp;import org.w3c.dom.NodeList;
+&nbsp;import org.w3c.dom.Node;
+&nbsp;import org.w3c.dom.Element;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class XmlMapDeserializer {
+&nbsp;
+&nbsp;    // Inutile maintenant mais je laisse au cas où
+<b class="fc">&nbsp;    public List&lt;Object&gt; mapElements = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;    private String warehouseId;
+&nbsp;    private Warehouse warehouse;
+<b class="fc">&nbsp;    private List&lt;Intersection&gt; intersectionsElements = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;    private List&lt;RoadSegment&gt; segmentElements = new ArrayList&lt;&gt;();</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public XmlMapDeserializer(String filePath) {</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            File xmlFile = new File(filePath);</b>
+<b class="fc">&nbsp;            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();</b>
+<b class="fc">&nbsp;            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();</b>
+<b class="fc">&nbsp;            Document doc = dBuilder.parse(xmlFile);</b>
+<b class="fc">&nbsp;            doc.getDocumentElement().normalize();</b>
+&nbsp;
+&nbsp;            // Parse Warehouse
+<b class="fc">&nbsp;            NodeList warehouseList = doc.getElementsByTagName(&quot;warehouse&quot;);</b>
+<b class="fc">&nbsp;            for (int i = 0; i &lt; warehouseList.getLength(); i++) {</b>
+<b class="fc">&nbsp;                Node node = warehouseList.item(i);</b>
+<b class="fc">&nbsp;                if (node.getNodeType() == Node.ELEMENT_NODE) {</b>
+<b class="fc">&nbsp;                    Element element = (Element) node;</b>
+<b class="fc">&nbsp;                    warehouseId = element.getAttribute(&quot;address&quot;);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            // Parse Intersections
+<b class="fc">&nbsp;            NodeList intersectionList = doc.getElementsByTagName(&quot;intersection&quot;);</b>
+<b class="fc">&nbsp;            for (int i = 0; i &lt; intersectionList.getLength(); i++) {</b>
+<b class="fc">&nbsp;                Node node = intersectionList.item(i);</b>
+<b class="fc">&nbsp;                if (node.getNodeType() == Node.ELEMENT_NODE) {</b>
+<b class="fc">&nbsp;                    Element element = (Element) node;</b>
+<b class="fc">&nbsp;                    Intersection intersection = new Intersection(</b>
+<b class="fc">&nbsp;                            element.getAttribute(&quot;id&quot;),</b>
+<b class="fc">&nbsp;                            Double.parseDouble(element.getAttribute(&quot;latitude&quot;)),</b>
+<b class="fc">&nbsp;                            Double.parseDouble(element.getAttribute(&quot;longitude&quot;))</b>
+&nbsp;                    );
+<b class="fc">&nbsp;                    mapElements.add(intersection);</b>
+<b class="fc">&nbsp;                    intersectionsElements.add(intersection);</b>
+<b class="fc">&nbsp;                    if (element.getAttribute(&quot;id&quot;).equals(warehouseId)) {</b>
+<b class="fc">&nbsp;                        mapElements.add(new Warehouse(intersection));</b>
+<b class="fc">&nbsp;                        warehouse = new Warehouse(intersection);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+&nbsp;            // Parse Segments
+<b class="fc">&nbsp;            NodeList segmentList = doc.getElementsByTagName(&quot;segment&quot;);</b>
+<b class="fc">&nbsp;            for (int i = 0; i &lt; segmentList.getLength(); i++) {</b>
+<b class="fc">&nbsp;                Node node = segmentList.item(i);</b>
+<b class="fc">&nbsp;                if (node.getNodeType() == Node.ELEMENT_NODE) {</b>
+<b class="fc">&nbsp;                    Element element = (Element) node;</b>
+<b class="fc">&nbsp;                    String origin = element.getAttribute(&quot;origin&quot;);</b>
+<b class="fc">&nbsp;                    String destination = element.getAttribute(&quot;destination&quot;);</b>
+<b class="fc">&nbsp;                    Intersection originIntersection = null;</b>
+<b class="fc">&nbsp;                    Intersection destinationIntersection = null;</b>
+&nbsp;
+&nbsp;
+&nbsp;                    // find intersection in mapElements in order to put Intersection in RoadSegment
+<b class="fc">&nbsp;                    for (Intersection intersection : intersectionsElements) {</b>
+<b class="fc">&nbsp;                        if (intersection.getId().equals(origin)) {</b>
+<b class="fc">&nbsp;                            originIntersection = intersection;</b>
+<b class="fc">&nbsp;                        } else if (intersection.getId().equals(destination)) {</b>
+<b class="fc">&nbsp;                            destinationIntersection = intersection;</b>
+&nbsp;                        }
+<b class="fc">&nbsp;                        if (originIntersection != null &amp;&amp; destinationIntersection != null) {</b>
+<b class="fc">&nbsp;                            RoadSegment roadSegment = new RoadSegment(</b>
+&nbsp;                                    originIntersection,
+&nbsp;                                    destinationIntersection,
+<b class="fc">&nbsp;                                    Double.parseDouble(element.getAttribute(&quot;length&quot;)),</b>
+<b class="fc">&nbsp;                                    element.getAttribute(&quot;name&quot;)</b>
+&nbsp;                            );
+<b class="fc">&nbsp;                            mapElements.add(roadSegment);</b>
+<b class="fc">&nbsp;                            segmentElements.add(roadSegment);</b>
+<b class="fc">&nbsp;                            break;</b>
+&nbsp;                        }
+&nbsp;
+<b class="fc">&nbsp;                    }</b>
+&nbsp;
+&nbsp;
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public Warehouse getWarehouse() {
+<b class="fc">&nbsp;        return warehouse;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Intersection&gt; getIntersectionsElements() {
+<b class="fc">&nbsp;        return intersectionsElements;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;RoadSegment&gt; getSegmentElements() {
+<b class="fc">&nbsp;        return segmentElements;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setWarehouse(Warehouse warehouse) {
+<b class="nc">&nbsp;        this.warehouse = warehouse;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setIntersectionsElements(List&lt;Intersection&gt; intersectionsElements) {
+<b class="nc">&nbsp;        this.intersectionsElements = intersectionsElements;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSegmentElements(List&lt;RoadSegment&gt; segmentElements) {
+<b class="nc">&nbsp;        this.segmentElements = segmentElements;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

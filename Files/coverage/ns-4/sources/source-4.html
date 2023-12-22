@@ -1,0 +1,238 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TemplateTSP</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.model.algo</a>
+</div>
+
+<h1>Coverage Summary for Class: TemplateTSP (com.malveillance.uberif.model.algo)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TemplateTSP</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/58)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.model.algo;
+&nbsp;
+&nbsp;import com.malveillance.uberif.model.*;
+&nbsp;import com.malveillance.uberif.model.Delivery;
+&nbsp;import javafx.util.Pair;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Collection;
+&nbsp;import java.util.Iterator;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Calendar;
+&nbsp;import java.util.Date;
+&nbsp;
+<b class="nc">&nbsp;public abstract class TemplateTSP implements TSP {</b>
+&nbsp;	private List&lt;Pair&lt;Intersection,Date&gt;&gt; bestSol;
+&nbsp;	protected CityMap g;
+&nbsp;	private double bestSolCost;
+&nbsp;	private int timeLimit;
+&nbsp;	private long startTime;
+&nbsp;	private double currentTime;
+&nbsp;	private static final int deliveryStartTime = 8;
+&nbsp;	private static final int secondsInHour = 3600;
+&nbsp;
+&nbsp;	public void searchSolution(int timeLimit, CityMap g,Tour t,Date startingDate){
+<b class="nc">&nbsp;		if (timeLimit &lt;= 0) return;</b>
+<b class="nc">&nbsp;		startTime = System.currentTimeMillis();</b>
+<b class="nc">&nbsp;		this.timeLimit = timeLimit;</b>
+<b class="nc">&nbsp;		this.g = g;</b>
+<b class="nc">&nbsp;		bestSol = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;		Collection&lt;Delivery&gt; unvisited = new ArrayList&lt;&gt;(g.getNbNodes()-1);</b>
+<b class="nc">&nbsp;		unvisited.addAll(t.getDeliveries());</b>
+<b class="nc">&nbsp;        unvisited.remove(t.getStartingPoint());</b>
+&nbsp;
+<b class="nc">&nbsp;		Collection&lt;Pair&lt;Intersection,Date&gt;&gt; visited = new ArrayList&lt;&gt;(g.getNbNodes());</b>
+<b class="nc">&nbsp;		visited.add(new Pair&lt;&gt;(t.getStartingPoint().getIntersection(),startingDate));</b>
+&nbsp;
+<b class="nc">&nbsp;		bestSolCost = Integer.MAX_VALUE;</b>
+<b class="nc">&nbsp;		branchAndBound(t.getStartingPoint(), unvisited, visited, 0);</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public Pair&lt;Intersection,Date&gt; getSolution(int i){
+<b class="nc">&nbsp;		if (g != null &amp;&amp; i&gt;=0 &amp;&amp; i&lt;g.getNbNodes())</b>
+<b class="nc">&nbsp;			return bestSol.get(i);</b>
+<b class="nc">&nbsp;		return null;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	public double getSolutionCost(){
+<b class="nc">&nbsp;		if (g != null)</b>
+<b class="nc">&nbsp;			return bestSolCost;</b>
+<b class="nc">&nbsp;		return -1;</b>
+&nbsp;	}
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Method that must be defined in TemplateTSP subclasses
+&nbsp;	 * @param currentVertex
+&nbsp;	 * @param unvisited
+&nbsp;	 * @return a lower bound of the cost of paths in &lt;code&gt;g&lt;/code&gt; starting from &lt;code&gt;currentVertex&lt;/code&gt;, visiting
+&nbsp;	 * every vertex in &lt;code&gt;unvisited&lt;/code&gt; exactly once, and returning back to vertex &lt;code&gt;0&lt;/code&gt;.
+&nbsp;	 */
+&nbsp;	protected abstract int bound(Delivery currentVertex, Collection&lt;Delivery&gt; unvisited);
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Method that must be defined in TemplateTSP subclasses
+&nbsp;	 * @param currentVertex
+&nbsp;	 * @param unvisited
+&nbsp;	 * @param g
+&nbsp;	 * @return an iterator for visiting all vertices in &lt;code&gt;unvisited&lt;/code&gt; which are successors of &lt;code&gt;currentVertex&lt;/code&gt;
+&nbsp;	 */
+&nbsp;	protected abstract Iterator&lt;Delivery&gt; iterator(Delivery currentVertex, Collection&lt;Delivery&gt; unvisited, CityMap g, double currentTime);
+&nbsp;
+&nbsp;	/**
+&nbsp;	 * Template method of a branch and bound algorithm for solving the TSP in &lt;code&gt;g&lt;/code&gt;.
+&nbsp;	 * @param currentVertex the last visited vertex
+&nbsp;	 * @param unvisited the set of vertex that have not yet been visited
+&nbsp;	 * @param visited the sequence of vertices that have been already visited (including currentVertex)
+&nbsp;	 * @param currentCost the cost of the path corresponding to &lt;code&gt;visited&lt;/code&gt;
+&nbsp;	 */
+&nbsp;	private void branchAndBound(Delivery currentVertex, Collection&lt;Delivery&gt; unvisited,
+&nbsp;			Collection&lt;Pair&lt;Intersection, Date&gt;&gt; visited, double currentCost){
+<b class="nc">&nbsp;		if (System.currentTimeMillis() - startTime &gt; timeLimit) return;</b>
+<b class="nc">&nbsp;	    if (unvisited.isEmpty()){</b>
+<b class="nc">&nbsp;	    	if (g.hasRoadSegment(currentVertex.getIntersection(),g.getWarehouse().getIntersection())){</b>
+<b class="nc">&nbsp;	    		if (currentCost+g.getDistance(currentVertex.getIntersection(),g.getWarehouse().getIntersection()) &lt; bestSolCost){</b>
+<b class="nc">&nbsp;					bestSol.clear();</b>
+<b class="nc">&nbsp;					bestSol.addAll(visited);</b>
+<b class="nc">&nbsp;	    			bestSolCost = currentCost+g.getDistance(currentVertex.getIntersection(),g.getWarehouse().getIntersection());</b>
+&nbsp;	    		}
+&nbsp;	    	}
+<b class="nc">&nbsp;	    } else if (currentCost+bound(currentVertex,unvisited) &lt; bestSolCost){</b>
+<b class="nc">&nbsp;	        Iterator&lt;Delivery&gt; it = iterator(currentVertex, unvisited, g, currentTime);</b>
+<b class="nc">&nbsp;	        while (it.hasNext()){</b>
+<b class="nc">&nbsp;				Delivery nextVertex = it.next();</b>
+<b class="nc">&nbsp;				double travelTime = g.getDistance(currentVertex.getIntersection(), nextVertex.getIntersection());</b>
+<b class="nc">&nbsp;				double arrivalTime = currentTime + travelTime;</b>
+&nbsp;
+<b class="nc">&nbsp;				Date nextVertexStart = nextVertex.getTimeWindow().getStartingTime();</b>
+<b class="nc">&nbsp;				Date nextVertexEnd = nextVertex.getTimeWindow().getEndingTime();</b>
+&nbsp;
+<b class="nc">&nbsp;				Calendar calendar = Calendar.getInstance();</b>
+&nbsp;
+<b class="nc">&nbsp;				calendar.setTime(nextVertexEnd);</b>
+<b class="nc">&nbsp;				int timeEnd = (calendar.get(Calendar.HOUR_OF_DAY) - deliveryStartTime) * secondsInHour;</b>
+&nbsp;
+<b class="nc">&nbsp;				calendar.setTime(nextVertexStart);</b>
+<b class="nc">&nbsp;				int timeStart = (calendar.get(Calendar.HOUR_OF_DAY) - deliveryStartTime) * secondsInHour;</b>
+&nbsp;
+<b class="nc">&nbsp;				if (arrivalTime &lt; timeStart) {</b>
+<b class="nc">&nbsp;					arrivalTime = timeStart;</b>
+&nbsp;				}
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;				if (arrivalTime &gt;= timeStart &amp;&amp; arrivalTime &lt;= timeEnd) {</b>
+<b class="nc">&nbsp;					Calendar c = Calendar.getInstance();</b>
+<b class="nc">&nbsp;					calendar.set(Calendar.HOUR_OF_DAY, TimeWindow.defaultStartingHour);</b>
+<b class="nc">&nbsp;					calendar.set(Calendar.MINUTE, 0);</b>
+<b class="nc">&nbsp;					calendar.set(Calendar.SECOND, 0);</b>
+<b class="nc">&nbsp;					calendar.add(Calendar.SECOND, (int)arrivalTime);</b>
+<b class="nc">&nbsp;					Date timeDelivery = calendar.getTime();</b>
+<b class="nc">&nbsp;					Pair&lt;Intersection,Date&gt; deliveryDate = new Pair&lt;&gt;(nextVertex.getIntersection(),timeDelivery);</b>
+<b class="nc">&nbsp;					visited.add(deliveryDate);</b>
+<b class="nc">&nbsp;					unvisited.remove(nextVertex);</b>
+<b class="nc">&nbsp;					double previousTime = currentTime;</b>
+<b class="nc">&nbsp;					currentTime = arrivalTime + 300;</b>
+<b class="nc">&nbsp;					branchAndBound(nextVertex, unvisited, visited,</b>
+&nbsp;							currentCost + travelTime);
+<b class="nc">&nbsp;					currentTime = previousTime;</b>
+<b class="nc">&nbsp;					visited.remove(deliveryDate);</b>
+<b class="nc">&nbsp;					unvisited.add(nextVertex);</b>
+&nbsp;				}
+<b class="nc">&nbsp;	        }</b>
+&nbsp;	    }
+&nbsp;	}
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > IntersectionHoverHandler</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.view</a>
+</div>
+
+<h1>Coverage Summary for Class: IntersectionHoverHandler (com.malveillance.uberif.view)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IntersectionHoverHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.view;
+&nbsp;
+&nbsp;import com.malveillance.uberif.model.Intersection;
+&nbsp;import javafx.event.EventHandler;
+&nbsp;import javafx.scene.input.MouseEvent;
+&nbsp;
+&nbsp;import javafx.scene.control.Label;
+&nbsp;
+&nbsp;public class IntersectionHoverHandler implements EventHandler&lt;MouseEvent&gt; {
+&nbsp;    // private final Intersection intersection;
+&nbsp;
+&nbsp;    private GraphicalView graphicalView;
+&nbsp;
+&nbsp;    private Label intersectionLabel;
+&nbsp;
+&nbsp;    public IntersectionHoverHandler(GraphicalView graphicalView,
+<b class="nc">&nbsp;            /* Intersection intersection, */ Label intersectionLabel) {</b>
+&nbsp;        // this.intersection = intersection;
+<b class="nc">&nbsp;        this.intersectionLabel = intersectionLabel;</b>
+<b class="nc">&nbsp;        this.graphicalView = graphicalView;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void handle(MouseEvent event) {
+&nbsp;        // System.out.println(&quot;Mouse over intersection (&quot; + intersection.getId() + &quot;) at
+&nbsp;        // (&quot; + intersection.getLatitude() + &quot;, &quot; + intersection.getLongitude() + &quot;)&quot;);
+<b class="nc">&nbsp;        Intersection intersectionNearest = null;</b>
+<b class="nc">&nbsp;        double distanceMin = Double.MAX_VALUE;</b>
+&nbsp;
+<b class="nc">&nbsp;        for (Intersection intersection : graphicalView.getCityMap().getNodes().keySet()) {</b>
+<b class="nc">&nbsp;            if (intersection.isOwned()) {</b>
+<b class="nc">&nbsp;                intersection.setRadius((graphicalView.height / 150) * graphicalView.coef);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                intersection.setRadius((graphicalView.height / 220) * graphicalView.coef);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            double distance = Math.sqrt(Math.pow(intersection.getCircle().getCenterX() - event.getX(), 2)</b>
+<b class="nc">&nbsp;                    + Math.pow(intersection.getCircle().getCenterY() - event.getY(), 2));</b>
+<b class="nc">&nbsp;            if (distance &lt; distanceMin) {</b>
+<b class="nc">&nbsp;                intersectionNearest = intersection;</b>
+<b class="nc">&nbsp;                distanceMin = distance;</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        if (intersectionNearest != null &amp;&amp; distanceMin &lt; graphicalView.width / 24) {</b>
+<b class="nc">&nbsp;            intersectionLabel.setText( &quot;Intersection n°&quot; + intersectionNearest.getId() + &quot;Lat: &quot;</b>
+<b class="nc">&nbsp;                    + intersectionNearest.getLatitude() + &quot;\nLong: &quot; + intersectionNearest.getLongitude());</b>
+<b class="nc">&nbsp;            intersectionNearest.setRadius((graphicalView.height / 125) * graphicalView.coef);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,544 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > GraphicalView</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.view</a>
+</div>
+
+<h1>Coverage Summary for Class: GraphicalView (com.malveillance.uberif.view)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GraphicalView</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/184)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.view;
+&nbsp;
+&nbsp;import com.malveillance.uberif.controller.CityMapController;
+&nbsp;import com.malveillance.uberif.controller.PaneController;
+&nbsp;import com.malveillance.uberif.model.*;
+&nbsp;import com.malveillance.uberif.model.service.AlgoService;
+&nbsp;import com.malveillance.uberif.model.service.CityMapService;
+&nbsp;import com.malveillance.uberif.model.service.PaneService;
+&nbsp;import javafx.fxml.FXML;
+&nbsp;import javafx.collections.FXCollections;
+&nbsp;import javafx.collections.ObservableList;
+&nbsp;import javafx.scene.Cursor;
+&nbsp;import javafx.scene.control.*;
+&nbsp;import javafx.scene.image.Image;
+&nbsp;import javafx.scene.input.MouseEvent;
+&nbsp;import javafx.scene.layout.*;
+&nbsp;import javafx.scene.shape.Line;
+&nbsp;import javafx.scene.paint.Color;
+&nbsp;import javafx.scene.shape.Rectangle;
+&nbsp;import javafx.util.Pair;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;public class GraphicalView extends ShapeVisitor implements Observer {
+&nbsp;    private CityMapController cityMapController;
+&nbsp;    private PaneController paneController;
+&nbsp;
+&nbsp;    private List&lt;Pair&lt;Courier, List&lt;Pair&lt;RoadSegment, Date&gt;&gt;&gt;&gt; courierTourDatas;
+<b class="nc">&nbsp;    private int nbCouriers = 0;</b>
+&nbsp;
+<b class="nc">&nbsp;    private Courier noOne = new Courier(&quot;&quot;, Color.RED);</b>
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    protected void onOptimizeBtnClick() {
+<b class="nc">&nbsp;        System.out.println(&quot;Optimize click&quot;);</b>
+<b class="nc">&nbsp;        courierTourDatas = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for(Courier courier : cityMap.getCourierDotMap().keySet()) {</b>
+<b class="nc">&nbsp;            if(!courier.getName().isEmpty()) {</b>
+<b class="nc">&nbsp;                List&lt;Pair&lt;Intersection, TimeWindow&gt;&gt; deliveryPoints = cityMap.getSelectedPairList(courier);</b>
+<b class="nc">&nbsp;                Tour tour = new Tour(new Delivery(cityMap.getWarehouse().getIntersection(), new TimeWindow(0)));</b>
+<b class="nc">&nbsp;                for(Pair&lt;Intersection, TimeWindow&gt; d : deliveryPoints) {</b>
+<b class="nc">&nbsp;                    tour.addDelivery(new Delivery(d.getKey(), d.getValue()));</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;                List&lt;Pair&lt;Intersection, Date&gt;&gt; computedTravel = AlgoService.calculateOptimalRoute(cityMap, tour);</b>
+<b class="nc">&nbsp;                if(computedTravel == null)</b>
+&nbsp;                {
+<b class="nc">&nbsp;                    showDialogBoxError(courier);</b>
+&nbsp;                }
+&nbsp;                else
+&nbsp;                {
+<b class="nc">&nbsp;                    int j = 0;</b>
+<b class="nc">&nbsp;                    List&lt;Pair&lt;RoadSegment, Date&gt;&gt; travel = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;                    for(Pair&lt;Intersection, Date&gt; p : computedTravel) {</b>
+<b class="nc">&nbsp;                        if(!(p.getKey() == cityMap.getWarehouse().getIntersection()) || j == 0) {</b>
+<b class="nc">&nbsp;                            List&lt;RoadSegment&gt; roadSegments = cityMap.getNodes().get(p.getKey());</b>
+<b class="nc">&nbsp;                            for(RoadSegment r : roadSegments) {</b>
+<b class="nc">&nbsp;                                if(r.getDestination() == computedTravel.get(j + 1).getKey())</b>
+&nbsp;                                {
+<b class="nc">&nbsp;                                    visit(r);</b>
+<b class="nc">&nbsp;                                    travel.add(new Pair&lt;RoadSegment, Date&gt;(r, computedTravel.get(j + 1).getValue()));</b>
+<b class="nc">&nbsp;                                    j++;</b>
+<b class="nc">&nbsp;                                    break;</b>
+&nbsp;                                }
+<b class="nc">&nbsp;                            }</b>
+&nbsp;                        }
+<b class="nc">&nbsp;                    }</b>
+<b class="nc">&nbsp;                    courierTourDatas.add(new Pair&lt;Courier, List&lt;Pair&lt;RoadSegment, Date&gt;&gt;&gt;(courier, travel));</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    protected void onSaveBtnClick() {
+<b class="nc">&nbsp;        System.out.println(&quot;Save click&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    protected void onRestoreBtnClick() {
+<b class="nc">&nbsp;        System.out.println(&quot;Restore click&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    protected void onMouseEntered(MouseEvent event) {
+<b class="nc">&nbsp;        if (event.getSource() instanceof Button) {</b>
+<b class="nc">&nbsp;            ((Button) event.getSource()).setCursor(javafx.scene.Cursor.HAND);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    protected void onMouseExited(MouseEvent event) {
+<b class="nc">&nbsp;        if (event.getSource() instanceof Button) {</b>
+<b class="nc">&nbsp;            ((Button) event.getSource()).setCursor(Cursor.DEFAULT);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    protected void onPlusBtnClick() {
+<b class="nc">&nbsp;        String nameCourier = showDialogBoxInput();</b>
+<b class="nc">&nbsp;        if (nameCourier != null &amp;&amp; !nameCourier.isEmpty()) {</b>
+<b class="nc">&nbsp;            Random randomInt = new Random();</b>
+<b class="nc">&nbsp;            Courier courier = new Courier(nameCourier,</b>
+<b class="nc">&nbsp;                    Color.rgb(randomInt.nextInt(255), randomInt.nextInt(255), randomInt.nextInt(255)));</b>
+<b class="nc">&nbsp;            cityMap.addCourier(courier);</b>
+&nbsp;            ;
+&nbsp;
+<b class="nc">&nbsp;            if (nbCouriers == 0) {</b>
+<b class="nc">&nbsp;                minusBtn.getStyleClass().remove(&quot;grey-state&quot;);</b>
+<b class="nc">&nbsp;                minusBtn.getStyleClass().add(&quot;blue-state&quot;);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            nbCouriers++;</b>
+<b class="nc">&nbsp;            nbCourierLb.setText(String.valueOf(nbCouriers));</b>
+<b class="nc">&nbsp;            choiceCourier.getItems().add(courier.getName());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public String showDialogBoxInput() {
+<b class="nc">&nbsp;        final String[] res = { null };</b>
+<b class="nc">&nbsp;        TextInputDialog dialog = new TextInputDialog(&quot;&quot;);</b>
+<b class="nc">&nbsp;        dialog.setTitle(&quot;Enter the courier&#39;s name&quot;);</b>
+<b class="nc">&nbsp;        dialog.setHeaderText(&quot;Courier&#39;s name&quot;);</b>
+<b class="nc">&nbsp;        dialog.setContentText(&quot;Enter the courier&#39;s name : &quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        dialog.showAndWait().ifPresent(result -&gt; {</b>
+<b class="nc">&nbsp;            res[0] = result;</b>
+&nbsp;        });
+<b class="nc">&nbsp;        return res[0];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void showDialogBoxError(Courier courier) {
+<b class="nc">&nbsp;        TextInputDialog dialog = new TextInputDialog(&quot;&quot;);</b>
+<b class="nc">&nbsp;        dialog.setTitle(&quot;Error&quot;);</b>
+<b class="nc">&nbsp;        dialog.setHeaderText(&quot;There&#39;s no suitable tour for this Courier&quot;);</b>
+<b class="nc">&nbsp;        dialog.setContentText(&quot;Courier : &quot; + courier.getName());</b>
+&nbsp;
+<b class="nc">&nbsp;        dialog.showAndWait();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    protected void onMinusBtnClick() {
+<b class="nc">&nbsp;        if (nbCouriers &gt; 0) {</b>
+<b class="nc">&nbsp;            nbCouriers--;</b>
+<b class="nc">&nbsp;            nbCourierLb.setText(String.valueOf(nbCouriers));</b>
+&nbsp;
+<b class="nc">&nbsp;            Courier lastCourier = cityMap.getListCourier().get(cityMap.getListCourier().size() - 1);</b>
+&nbsp;
+&nbsp;            // clear the dots of the courier
+<b class="nc">&nbsp;            for (Pair&lt;Intersection, TimeWindow&gt; intersectionPair : cityMap.getSelectedPairList(lastCourier)) {</b>
+<b class="nc">&nbsp;                intersectionPair.getKey().setFill(Color.RED);</b>
+<b class="nc">&nbsp;                intersectionPair.getKey().setRadius((height / 220) * coef);</b>
+&nbsp;
+&nbsp;                // cityMap.getCourierDotMap().get(noOne).add(intersectionPair);
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            cityMap.removeCourier(lastCourier);</b>
+&nbsp;
+&nbsp;            // If the last is selected
+<b class="nc">&nbsp;            if (choiceCourier.getSelectionModel().isSelected(choiceCourier.getItems().size() - 1)) {</b>
+<b class="nc">&nbsp;                choiceCourier.getSelectionModel().selectFirst();</b>
+<b class="nc">&nbsp;                selectedCourier = new Pair&lt;&gt;(noOne, cityMap.getCourierDotMap().get(noOne));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            choiceCourier.getItems().remove(choiceCourier.getItems().size() - 1);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (nbCouriers == 0) {</b>
+<b class="nc">&nbsp;            minusBtn.getStyleClass().remove(&quot;blue-state&quot;);</b>
+<b class="nc">&nbsp;            minusBtn.getStyleClass().add(&quot;grey-state&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private TextField searchBox;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    protected void onSearchBoxTyped() {
+&nbsp;
+<b class="nc">&nbsp;        if (searchBox.getText().isEmpty()) {</b>
+<b class="nc">&nbsp;            for (Intersection intersection : cityMap.getNodes().keySet()) {</b>
+<b class="nc">&nbsp;                if (intersection.isOwned()) {</b>
+<b class="nc">&nbsp;                    intersection.getCircle().setRadius((height / 150) * coef);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    intersection.getCircle().setRadius((height / 220) * coef);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                intersection.getCircle().setVisible(true);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            for (Intersection intersection : cityMap.getNodes().keySet()) {</b>
+<b class="nc">&nbsp;                if (intersection.getId().contains(searchBox.getText())) {</b>
+<b class="nc">&nbsp;                    intersection.getCircle().setRadius((height / 100) * coef);</b>
+<b class="nc">&nbsp;                    intersection.getCircle().setVisible(true);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    intersection.getCircle().setRadius((height / 220) * coef);</b>
+<b class="nc">&nbsp;                    intersection.getCircle().setVisible(false);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private Label nbCourierLb;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private Label lbInfos;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private Button minusBtn;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private Pane mapPane;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private ChoiceBox choiceMap;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    private ChoiceBox choiceCourier;
+&nbsp;
+&nbsp;    double width;
+&nbsp;    double height;
+&nbsp;
+<b class="nc">&nbsp;    double coef = 1.0;</b>
+&nbsp;
+&nbsp;    private CityMap cityMap;
+&nbsp;
+&nbsp;    private Pair&lt;Courier, List&lt;Pair&lt;Intersection, TimeWindow&gt;&gt;&gt; selectedCourier;
+&nbsp;
+&nbsp;    @FXML
+&nbsp;    public void initialize() {
+&nbsp;        // Initialize UI
+<b class="nc">&nbsp;        minusBtn.getStyleClass().add(&quot;grey-state&quot;);</b>
+&nbsp;
+&nbsp;        // Create a list of choices
+<b class="nc">&nbsp;        ObservableList&lt;String&gt; mapChoices = FXCollections.observableArrayList(&quot;Small Map&quot;, &quot;Medium Map&quot;, &quot;Large Map&quot;);</b>
+&nbsp;
+&nbsp;        // Set the choices in the ChoiceBox
+<b class="nc">&nbsp;        choiceMap.setItems(mapChoices);</b>
+&nbsp;
+&nbsp;        // Optionally, set a default selected item
+<b class="nc">&nbsp;        choiceMap.getSelectionModel().selectFirst();</b>
+&nbsp;
+&nbsp;        // Add a listener
+<b class="nc">&nbsp;        choiceMap.getSelectionModel().selectedItemProperty()</b>
+<b class="nc">&nbsp;                .addListener(new ChoiceMenuMapListener(cityMapController, this, paneController));</b>
+<b class="nc">&nbsp;        choiceCourier.getSelectionModel().selectedItemProperty().addListener(new ChoiceMenuCourierListener(this));</b>
+&nbsp;
+&nbsp;        // Load initial map
+<b class="nc">&nbsp;        this.cityMap = cityMapController.loadNewCityMap((String) choiceMap.getSelectionModel().getSelectedItem());</b>
+<b class="nc">&nbsp;        this.cityMap.addObserver(this);</b>
+&nbsp;
+&nbsp;        // Add a listener to the width property of mapPane
+<b class="nc">&nbsp;        mapPane.widthProperty().addListener((observable, oldValue, newValue) -&gt; {</b>
+<b class="nc">&nbsp;            update(this.cityMap, this.cityMap.getNodes());</b>
+&nbsp;        });
+&nbsp;
+&nbsp;        // Add a listener to the height property of mapPane
+<b class="nc">&nbsp;        mapPane.heightProperty().addListener((observable, oldValue, newValue) -&gt; {</b>
+<b class="nc">&nbsp;            update(this.cityMap, this.cityMap.getNodes());</b>
+&nbsp;        });
+&nbsp;
+<b class="nc">&nbsp;        cityMap.addCourier(noOne);</b>
+<b class="nc">&nbsp;        selectedCourier = new Pair&lt;&gt;(noOne, cityMap.getCourierDotMap().get(noOne));</b>
+&nbsp;
+<b class="nc">&nbsp;        mapPane.addEventHandler(MouseEvent.MOUSE_MOVED, new IntersectionHoverHandler(this, lbInfos));</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCityMapController(CityMapController cityMapController) {
+<b class="nc">&nbsp;        this.cityMapController = cityMapController;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPaneController(PaneController paneController) {
+<b class="nc">&nbsp;        this.paneController = paneController;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public GraphicalView() {</b>
+<b class="nc">&nbsp;        CityMapService cityMapService = new CityMapService();</b>
+<b class="nc">&nbsp;        PaneService paneService = new PaneService();</b>
+<b class="nc">&nbsp;        cityMapController = new CityMapController(cityMapService);</b>
+<b class="nc">&nbsp;        paneController = new PaneController(paneService);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Methods to update the UI
+&nbsp;    // These methods can be called by the controller to update the UI
+&nbsp;    @Override
+&nbsp;    public void update(Observable o, Object arg) {
+<b class="nc">&nbsp;        if (mapPane.getWidth() &gt; mapPane.getHeight()) {</b>
+<b class="nc">&nbsp;            width = mapPane.getHeight();</b>
+<b class="nc">&nbsp;            height = width;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            width = mapPane.getWidth();</b>
+<b class="nc">&nbsp;            height = width;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Rectangle clip = new Rectangle(</b>
+&nbsp;                width, height
+&nbsp;        );
+<b class="nc">&nbsp;        clip.setLayoutX(-(width - mapPane.getWidth()) / 2);</b>
+<b class="nc">&nbsp;        clip.setLayoutY(-(height - mapPane.getHeight()) / 2);</b>
+<b class="nc">&nbsp;        mapPane.setClip(clip);</b>
+<b class="nc">&nbsp;        if (o instanceof CityMap newmap) {</b>
+<b class="nc">&nbsp;            switch (newmap.getMapName()) {</b>
+<b class="nc">&nbsp;                case &quot;Small&quot; -&gt; coef = 1.0;</b>
+<b class="nc">&nbsp;                case &quot;Medium&quot; -&gt; coef = 0.75;</b>
+<b class="nc">&nbsp;                case &quot;Large&quot; -&gt; coef = 0.3;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            newmap.setCourierDotMap(cityMap.getCourierDotMap());</b>
+<b class="nc">&nbsp;            mapPane.getChildren().clear();</b>
+&nbsp;            // Draw lines first
+<b class="nc">&nbsp;            newmap.getWarehouse().accept(this);</b>
+&nbsp;            // newmap.addCourier(noOne);
+&nbsp;
+<b class="nc">&nbsp;            for (Shape elem : newmap.getNodes().keySet()) {</b>
+<b class="nc">&nbsp;                elem.accept(this);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            if(courierTourDatas != null)</b>
+&nbsp;            {
+<b class="nc">&nbsp;                for(Pair&lt;Courier, List&lt;Pair&lt;RoadSegment, Date&gt;&gt;&gt; c : courierTourDatas) {</b>
+<b class="nc">&nbsp;                    for(Pair&lt;RoadSegment, Date&gt; p : c.getValue()) {</b>
+<b class="nc">&nbsp;                        visit(p.getKey());</b>
+<b class="nc">&nbsp;                    }</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            this.cityMap = newmap;</b>
+&nbsp;
+<b class="nc">&nbsp;            BackgroundImage backgroundImage = new BackgroundImage(</b>
+<b class="nc">&nbsp;                    new Image(&quot;file:src/main/resources/com/malveillance/uberif/&quot; + cityMap.getMapName() + &quot;Map.png&quot;),</b>
+&nbsp;                    BackgroundRepeat.NO_REPEAT,
+&nbsp;                    BackgroundRepeat.NO_REPEAT,
+&nbsp;                    BackgroundPosition.CENTER,
+&nbsp;                    new BackgroundSize(width, height, false, false, false, false));
+&nbsp;
+<b class="nc">&nbsp;            Background background = new Background(backgroundImage);</b>
+<b class="nc">&nbsp;            mapPane.setBackground(background);</b>
+&nbsp;
+&nbsp;            // printMinMaxLatLong();
+&nbsp;
+<b class="nc">&nbsp;            paneController.updateScale(newmap.getNodes().keySet());</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public void visit(Warehouse warehouse) {
+&nbsp;        // Implementation to draw warehouse
+<b class="nc">&nbsp;        double intersectionX = paneController.getIntersectionX(warehouse.intersection, width);</b>
+<b class="nc">&nbsp;        double intersectionY = paneController.getIntersectionY(warehouse.intersection, height);</b>
+<b class="nc">&nbsp;        intersectionX = intersectionX - (width - mapPane.getWidth()) / 2;</b>
+<b class="nc">&nbsp;        intersectionY = intersectionY - (height - mapPane.getHeight()) / 2;</b>
+<b class="nc">&nbsp;        warehouse.getIntersection().setCircle(intersectionX, intersectionY, (height / 150) * coef, Color.GREEN);</b>
+<b class="nc">&nbsp;        mapPane.getChildren().add(warehouse.getIntersection().getCircle());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void visit(Intersection intersection) {
+&nbsp;        // Implementation to draw intersection
+<b class="nc">&nbsp;        double intersectionX = paneController.getIntersectionX(intersection, width);</b>
+<b class="nc">&nbsp;        double intersectionY = paneController.getIntersectionY(intersection, height);</b>
+<b class="nc">&nbsp;        intersectionX = intersectionX - (width - mapPane.getWidth()) / 2;</b>
+<b class="nc">&nbsp;        intersectionY = intersectionY - (height - mapPane.getHeight()) / 2;</b>
+&nbsp;
+<b class="nc">&nbsp;        if ((intersectionX != paneController.getIntersectionX(cityMap.getWarehouse().intersection, width))</b>
+<b class="nc">&nbsp;                &amp;&amp; (intersectionY != paneController.getIntersectionY(cityMap.getWarehouse().intersection, height))) {</b>
+&nbsp;
+<b class="nc">&nbsp;            intersection.setCircle(intersectionX, intersectionY, (height / 220) * coef, Color.RED);</b>
+&nbsp;
+<b class="nc">&nbsp;            Set&lt;Courier&gt; couriers = cityMap.getCourierDotMap().keySet();</b>
+<b class="nc">&nbsp;            for (Courier courier : couriers) {</b>
+<b class="nc">&nbsp;                if (!courier.getName().isEmpty()) {</b>
+<b class="nc">&nbsp;                    List&lt;Pair&lt;Intersection, TimeWindow&gt;&gt; pairs = cityMap.getSelectedPairList(courier);</b>
+<b class="nc">&nbsp;                    for (Pair&lt;Intersection, TimeWindow&gt; pair : pairs) {</b>
+<b class="nc">&nbsp;                        if (pair.getKey().equals(intersection)) {</b>
+<b class="nc">&nbsp;                            intersection.setCircle(intersectionX, intersectionY, (height / 150) * coef,</b>
+<b class="nc">&nbsp;                                    courier.getColor());</b>
+<b class="nc">&nbsp;                            break;</b>
+&nbsp;                        }
+<b class="nc">&nbsp;                    }</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;
+<b class="nc">&nbsp;            cityMap.getSelectedPairList(noOne).add(new Pair&lt;&gt;(intersection, new TimeWindow(null, null)));</b>
+<b class="nc">&nbsp;            mapPane.getChildren().add(intersection.getCircle());</b>
+<b class="nc">&nbsp;            intersection.getCircle().addEventHandler(MouseEvent.MOUSE_CLICKED,</b>
+&nbsp;                    new IntersectionClickHandler(intersection, this));
+&nbsp;
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void visit(RoadSegment segment) {
+&nbsp;        // Implementation to draw segment
+<b class="nc">&nbsp;        Line road = new Line(</b>
+<b class="nc">&nbsp;            paneController.getIntersectionX(segment.getOrigin(), width) - (width - mapPane.getWidth()) / 2,</b>
+<b class="nc">&nbsp;            paneController.getIntersectionY(segment.getOrigin(), height) - (height - mapPane.getHeight()) / 2,</b>
+<b class="nc">&nbsp;            paneController.getIntersectionX(segment.getDestination(), width) - (width - mapPane.getWidth()) / 2,</b>
+<b class="nc">&nbsp;            paneController.getIntersectionY(segment.getDestination(), height) - (height - mapPane.getHeight()) / 2</b>
+&nbsp;        );
+&nbsp;
+<b class="nc">&nbsp;        road.setStroke(Color.GREY);</b>
+<b class="nc">&nbsp;        road.setStrokeWidth(3.0);</b>
+<b class="nc">&nbsp;        mapPane.getChildren().add(road);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public CityMap getCityMap() {
+<b class="nc">&nbsp;        return this.cityMap;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setSelectedCourier(Pair&lt;Courier, List&lt;Pair&lt;Intersection, TimeWindow&gt;&gt;&gt; selectedCourier) {
+<b class="nc">&nbsp;        this.selectedCourier = selectedCourier;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Pair&lt;Courier, List&lt;Pair&lt;Intersection, TimeWindow&gt;&gt;&gt; getSelectedCourier() {
+<b class="nc">&nbsp;        return selectedCourier;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /*
+&nbsp;     * public void printMinMaxLatLong() {
+&nbsp;     * double minLat = Double.MAX_VALUE;
+&nbsp;     * double maxLat = Double.MIN_VALUE;
+&nbsp;     * double minLong = Double.MAX_VALUE;
+&nbsp;     * double maxLong = Double.MIN_VALUE;
+&nbsp;     * 
+&nbsp;     * 
+&nbsp;     * for (Intersection inter : this.cityMap.getNodes().keySet()) {
+&nbsp;     * if (inter.getLatitude() &lt; minLat) {
+&nbsp;     * minLat = inter.getLatitude();
+&nbsp;     * } else if (inter.getLatitude() &gt; maxLat) {
+&nbsp;     * maxLat = inter.getLatitude();
+&nbsp;     * }
+&nbsp;     * 
+&nbsp;     * if (inter.getLongitude() &lt; minLong) {
+&nbsp;     * minLong = inter.getLongitude();
+&nbsp;     * } else if (inter.getLongitude() &gt; maxLong) {
+&nbsp;     * maxLong = inter.getLongitude();
+&nbsp;     * }
+&nbsp;     * }
+&nbsp;     * 
+&nbsp;     * System.out.println(&quot;minLat : &quot; + minLat + &quot;\nmaxLat : &quot; + maxLat +
+&nbsp;     * &quot;\nminLong : &quot; + minLong + &quot;\nmaxLong : &quot; + maxLong);
+&nbsp;     * }
+&nbsp;     */
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

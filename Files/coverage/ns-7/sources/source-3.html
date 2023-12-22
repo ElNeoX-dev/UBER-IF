@@ -1,0 +1,153 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ChoiceMenuMapListener</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.view</a>
+</div>
+
+<h1>Coverage Summary for Class: ChoiceMenuMapListener (com.malveillance.uberif.view)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ChoiceMenuMapListener</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.view;
+&nbsp;
+&nbsp;import com.malveillance.uberif.controller.CityMapController;
+&nbsp;import com.malveillance.uberif.controller.PaneController;
+&nbsp;import com.malveillance.uberif.model.*;
+&nbsp;import com.malveillance.uberif.model.service.AlgoService;
+&nbsp;import javafx.beans.value.ObservableValue;
+&nbsp;import javafx.beans.value.ChangeListener;
+&nbsp;
+&nbsp;public class ChoiceMenuMapListener implements ChangeListener&lt;String&gt; {
+&nbsp;
+&nbsp;    private GraphicalView graphicalView;
+&nbsp;    private CityMapController cityMapController;
+&nbsp;
+&nbsp;    private PaneController paneController;
+&nbsp;
+&nbsp;    public ChoiceMenuMapListener(CityMapController cityMapController, GraphicalView graphicalView,
+<b class="nc">&nbsp;            PaneController paneController) {</b>
+<b class="nc">&nbsp;        this.cityMapController = cityMapController;</b>
+<b class="nc">&nbsp;        this.paneController = paneController;</b>
+<b class="nc">&nbsp;        this.graphicalView = graphicalView;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void changed(ObservableValue&lt;? extends String&gt; observable, String oldValue, String newValue) {
+&nbsp;        // System.out.println(&quot;New map: &quot; + newValue);
+&nbsp;
+<b class="nc">&nbsp;        CityMap newCityMap = cityMapController.loadNewCityMap(newValue);</b>
+<b class="nc">&nbsp;        paneController.updateScale(newCityMap.getNodes().keySet());</b>
+&nbsp;        /* test Dijkstra */
+&nbsp;        // if (newValue.equals(&quot;Small Map&quot;)) {
+&nbsp;        // Tour tour = new Tour();
+&nbsp;        // for (Intersection i : newCityMap.getNodes().keySet()) {
+&nbsp;        // tour.addDelivery(new Delivery(i, null, null));
+&nbsp;        // }
+&nbsp;        // AlgoService.calculateOptimalRoute(newCityMap,tour);
+&nbsp;        // }
+&nbsp;        /* fin test */
+&nbsp;
+<b class="nc">&nbsp;        if (newCityMap != null) {</b>
+<b class="nc">&nbsp;            graphicalView.update(newCityMap, newCityMap.getNodes());</b>
+&nbsp;
+&nbsp;        } else {
+&nbsp;            // Handle the case where the city map is not found or invalid
+<b class="nc">&nbsp;            System.out.println(&quot;City map not found for: &quot; + newValue);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

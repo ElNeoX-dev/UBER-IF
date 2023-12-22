@@ -1,0 +1,273 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AlgoService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.model.service</a>
+</div>
+
+<h1>Coverage Summary for Class: AlgoService (com.malveillance.uberif.model.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AlgoService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/102)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.model.service;
+&nbsp;
+&nbsp;import com.malveillance.uberif.model.*;
+&nbsp;import com.malveillance.uberif.model.algo.TSP;
+&nbsp;import com.malveillance.uberif.model.algo.TSP1;
+&nbsp;import javafx.util.Pair;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import java.util.Map;
+&nbsp;
+<b class="nc">&nbsp;public class AlgoService {</b>
+<b class="nc">&nbsp;    private static double courierSpeed = 15 / 3.6;</b>
+&nbsp;
+&nbsp;    private static CityMap createSubGraph(CityMap cityMap, List&lt;Intersection&gt; intersections) {
+<b class="nc">&nbsp;        CityMap subGraph = new CityMap(cityMap.getWarehouse(), intersections);</b>
+<b class="nc">&nbsp;        for (Intersection intersection : subGraph.getNodes().keySet()) {</b>
+<b class="nc">&nbsp;            subGraph.setAdjacentRoads(intersection, cityMap.getAdjacentRoads(intersection));</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return subGraph;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static CityMap makeCompleteGraph(CityMap cityMap) {
+<b class="nc">&nbsp;        List&lt;Intersection&gt; intersections = new ArrayList&lt;&gt;(cityMap.getNodes().keySet());</b>
+<b class="nc">&nbsp;        CityMap completeGraph = new CityMap(cityMap.getWarehouse(), intersections);</b>
+<b class="nc">&nbsp;        for (Intersection source : cityMap.getNodes().keySet()) {</b>
+<b class="nc">&nbsp;            for (Intersection destination : cityMap.getNodes().keySet()) {</b>
+<b class="nc">&nbsp;                if (!source.equals(destination) &amp;&amp; !cityMap.hasRoadSegment(source, destination)) {</b>
+<b class="nc">&nbsp;                    completeGraph.addRoadSegment(new RoadSegment(source, destination, CityMap.INFINITE_LENGTH, &quot;&quot;));</b>
+<b class="nc">&nbsp;                } else if (cityMap.hasRoadSegment(source, destination)) {</b>
+<b class="nc">&nbsp;                    completeGraph.addRoadSegment(new RoadSegment(source, destination, cityMap.getDistance(source, destination), &quot;&quot;));</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return completeGraph;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static Pair&lt;Double, List&lt;Intersection&gt;&gt; dijkstra(CityMap graph, Intersection start, Intersection end) {
+<b class="nc">&nbsp;        Map&lt;Intersection, Double&gt; distances = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        Map&lt;Intersection, Intersection&gt; previous = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        PriorityQueue&lt;Intersection&gt; queue = new PriorityQueue&lt;&gt;(Comparator.comparingDouble(distances::get));</b>
+<b class="nc">&nbsp;        List&lt;Intersection&gt; path = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        for (Intersection vertex : graph.getNodes().keySet()) {</b>
+<b class="nc">&nbsp;            distances.put(vertex, Double.MAX_VALUE);</b>
+<b class="nc">&nbsp;            previous.put(vertex, null);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        distances.put(start, 0.0);</b>
+<b class="nc">&nbsp;        queue.add(start);</b>
+&nbsp;
+<b class="nc">&nbsp;        while (!queue.isEmpty()) {</b>
+<b class="nc">&nbsp;            Intersection current = queue.poll();</b>
+<b class="nc">&nbsp;            if (current.equals(end)) {</b>
+<b class="nc">&nbsp;                double totalDistance = distances.get(end);</b>
+<b class="nc">&nbsp;                while (current != null) {</b>
+<b class="nc">&nbsp;                    path.add(0, current);</b>
+<b class="nc">&nbsp;                    current = previous.get(current);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                return new Pair&lt;&gt;(totalDistance, path);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            for (RoadSegment edge : graph.getAdjacentRoads(current)) {</b>
+<b class="nc">&nbsp;                Intersection neighbor = edge.getDestination();</b>
+<b class="nc">&nbsp;                double totalDistance = distances.get(current) + edge.getLength();</b>
+<b class="nc">&nbsp;                if (totalDistance &lt; distances.get(neighbor)) {</b>
+<b class="nc">&nbsp;                    distances.put(neighbor, totalDistance);</b>
+<b class="nc">&nbsp;                    previous.put(neighbor, current);</b>
+<b class="nc">&nbsp;                    queue.add(neighbor);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return new Pair&lt;&gt;(Double.MAX_VALUE, new ArrayList&lt;&gt;());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static CityMap convertToTimeGraph(CityMap graph) {
+<b class="nc">&nbsp;        graph.getNodes().forEach((node, roadSegments) -&gt;</b>
+<b class="nc">&nbsp;                roadSegments.forEach(roadSegment -&gt;</b>
+<b class="nc">&nbsp;                        roadSegment.setLength(roadSegment.getLength() / courierSpeed)));</b>
+<b class="nc">&nbsp;        return graph;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static List&lt;Pair&lt;Intersection, Date&gt;&gt; calculateOptimalRoute(CityMap cityMap, Tour tour) {
+<b class="nc">&nbsp;        List&lt;Intersection&gt; allIntersections = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;Delivery&gt; deliveries = tour.getDeliveries();</b>
+&nbsp;
+<b class="nc">&nbsp;        for (Delivery delivery : deliveries) {</b>
+<b class="nc">&nbsp;            allIntersections.add(delivery.getIntersection());</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        CityMap subGraph = createSubGraph(cityMap, allIntersections);</b>
+<b class="nc">&nbsp;        CityMap completeSubGraph = makeCompleteGraph(subGraph);</b>
+&nbsp;
+&nbsp;        /*System.out.println(&quot;SUBGRAPH&quot;);
+&nbsp;        System.out.println(subGraph);
+&nbsp;
+&nbsp;        System.out.println(&quot;COMPLETESUBGRAPH&quot;);
+&nbsp;        System.out.println(completeSubGraph);*/
+&nbsp;
+<b class="nc">&nbsp;        Map&lt;Pair&lt;Intersection, Intersection&gt;, List&lt;Intersection&gt;&gt; allPaths = new HashMap&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        for (Delivery deliveryA : deliveries) {</b>
+<b class="nc">&nbsp;            for (Delivery deliveryB : deliveries) {</b>
+<b class="nc">&nbsp;                Intersection start = deliveryA.getIntersection();</b>
+<b class="nc">&nbsp;                Intersection end = deliveryB.getIntersection();</b>
+<b class="nc">&nbsp;                if (!start.equals(end) &amp;&amp; completeSubGraph.hasRoadSegment(start, end)) {</b>
+<b class="nc">&nbsp;                    Pair&lt;Double, List&lt;Intersection&gt;&gt; result = dijkstra(cityMap, start, end);</b>
+<b class="nc">&nbsp;                    double distance = result.getKey();</b>
+<b class="nc">&nbsp;                    List&lt;Intersection&gt; path = result.getValue();</b>
+<b class="nc">&nbsp;                    if (!path.isEmpty()) {</b>
+<b class="nc">&nbsp;                        completeSubGraph.setDistance(start, end, distance);</b>
+<b class="nc">&nbsp;                        allPaths.put(new Pair&lt;&gt;(start, end), path);</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        /* System.out.println(&quot;COMPLETESUBGRAPH AFTER DIJKSTRA&quot;);
+&nbsp;        System.out.println(completeSubGraph);*/
+&nbsp;
+<b class="nc">&nbsp;        TSP tsp = new TSP1();</b>
+<b class="nc">&nbsp;        long startTime = System.currentTimeMillis();</b>
+<b class="nc">&nbsp;        CityMap completeSubTimeGraph = convertToTimeGraph(completeSubGraph);</b>
+<b class="nc">&nbsp;        Calendar calendar = Calendar.getInstance();</b>
+<b class="nc">&nbsp;        calendar.set(Calendar.HOUR_OF_DAY, TimeWindow.defaultStartingHour);</b>
+<b class="nc">&nbsp;        calendar.set(Calendar.MINUTE, 0);</b>
+<b class="nc">&nbsp;        calendar.set(Calendar.SECOND, 0);</b>
+<b class="nc">&nbsp;        Date startingTime = calendar.getTime();</b>
+<b class="nc">&nbsp;        tsp.searchSolution(20000, completeSubTimeGraph, tour, startingTime);</b>
+&nbsp;        //System.out.println(&quot;Solution of cost &quot; + tsp.getSolutionCost() + &quot; found in &quot; + (System.currentTimeMillis() - startTime) + &quot;ms&quot;);
+&nbsp;
+<b class="nc">&nbsp;        Intersection firstIntersection = completeSubGraph.getWarehouse().getIntersection();</b>
+<b class="nc">&nbsp;        Intersection prev = firstIntersection;</b>
+<b class="nc">&nbsp;        List&lt;Pair&lt;Intersection, Date&gt;&gt; finalTour = new LinkedList&lt;&gt;();</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            for (int i = 0; i &lt; completeSubGraph.getNbNodes(); i++) {</b>
+<b class="nc">&nbsp;                Pair&lt;Intersection, Date&gt; delivery = tsp.getSolution(i);</b>
+<b class="nc">&nbsp;                Intersection next = delivery.getKey();</b>
+<b class="nc">&nbsp;                Date arrivalDate = delivery.getValue();</b>
+<b class="nc">&nbsp;                List&lt;Intersection&gt; path = allPaths.getOrDefault(new Pair&lt;&gt;(prev, next), Arrays.asList(prev, next));</b>
+&nbsp;
+<b class="nc">&nbsp;                Intersection intersection = path.get(1);</b>
+<b class="nc">&nbsp;                finalTour.add(new Pair&lt;&gt;(intersection, arrivalDate));</b>
+<b class="nc">&nbsp;                for (int j = 2; j &lt; path.size(); j++) {</b>
+<b class="nc">&nbsp;                    intersection = path.get(j);</b>
+<b class="nc">&nbsp;                    finalTour.add(new Pair&lt;&gt;(intersection, null));</b>
+&nbsp;                }
+<b class="nc">&nbsp;                prev = next;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            List&lt;Intersection&gt; path = allPaths.getOrDefault(new Pair&lt;&gt;(prev, firstIntersection), Arrays.asList(prev, firstIntersection));</b>
+<b class="nc">&nbsp;            for (int j = 1; j &lt; path.size(); j++) {</b>
+<b class="nc">&nbsp;                finalTour.add(new Pair&lt;&gt;(path.get(j),null));</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (IndexOutOfBoundsException ex) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;No possible solution&quot;);</b>
+<b class="nc">&nbsp;            return null;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;
+&nbsp;        /*finalTour.forEach(obj -&gt; {
+&nbsp;            System.out.print(obj.getKey().getId());
+&nbsp;            Date date = obj.getValue();
+&nbsp;            if (date != null)
+&nbsp;                System.out.print(&quot; at &quot; + date);
+&nbsp;            System.out.print(&quot; -&gt; &quot;);
+&nbsp;        });*/
+<b class="nc">&nbsp;        return finalTour;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

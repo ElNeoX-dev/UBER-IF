@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > IntersectionClickHandler</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.view</a>
+</div>
+
+<h1>Coverage Summary for Class: IntersectionClickHandler (com.malveillance.uberif.view)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IntersectionClickHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/56)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.view;
+&nbsp;
+&nbsp;import com.malveillance.uberif.model.Courier;
+&nbsp;import com.malveillance.uberif.model.Intersection;
+&nbsp;import com.malveillance.uberif.model.TimeWindow;
+&nbsp;import javafx.collections.ObservableList;
+&nbsp;import javafx.event.EventHandler;
+&nbsp;import javafx.scene.control.ButtonType;
+&nbsp;import javafx.scene.control.ChoiceDialog;
+&nbsp;import javafx.scene.control.TextInputDialog;
+&nbsp;import javafx.scene.input.MouseEvent;
+&nbsp;import javafx.scene.paint.Color;
+&nbsp;import javafx.util.Pair;
+&nbsp;
+&nbsp;import java.util.Calendar;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;public class IntersectionClickHandler implements EventHandler&lt;MouseEvent&gt; {
+&nbsp;    private Intersection intersection;
+&nbsp;
+&nbsp;    private GraphicalView graphicalView;
+&nbsp;
+<b class="nc">&nbsp;    public IntersectionClickHandler(Intersection intersection, GraphicalView graphicalView) {</b>
+<b class="nc">&nbsp;        this.intersection = intersection;</b>
+<b class="nc">&nbsp;        this.graphicalView = graphicalView;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void handle(MouseEvent event) {
+&nbsp;        // System.out.println(&quot;Mouse clicked over intersection (&quot; + intersection.getId()
+&nbsp;        // + &quot;) at (&quot; + intersection.getLatitude() + &quot;, &quot; + intersection.getLongitude()
+&nbsp;        // + &quot;)&quot;);
+<b class="nc">&nbsp;        Courier currentCourier = graphicalView.getSelectedCourier().getKey();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (!currentCourier.getName().isEmpty()) {</b>
+&nbsp;            // To unselect a circle : press shift + click
+<b class="nc">&nbsp;            if (event.isShiftDown()) {</b>
+<b class="nc">&nbsp;                intersection.setIsOwned(false);</b>
+<b class="nc">&nbsp;                intersection.setFill(Color.RED);</b>
+&nbsp;                // Reinitialize the pair containing the intersection and the time window
+<b class="nc">&nbsp;                for (Pair&lt;Intersection, TimeWindow&gt; intersectionPair : graphicalView.getCityMap()</b>
+<b class="nc">&nbsp;                        .getSelectedPairList(currentCourier)) {</b>
+<b class="nc">&nbsp;                    if (intersectionPair.getKey().equals(intersection)) {</b>
+<b class="nc">&nbsp;                        intersectionPair.getValue().setStartingTime(null);</b>
+<b class="nc">&nbsp;                        intersectionPair.getValue().setEndingTime(null);</b>
+<b class="nc">&nbsp;                        graphicalView.getCityMap().getSelectedPairList(currentCourier).remove(intersectionPair);</b>
+<b class="nc">&nbsp;                        break;</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                }</b>
+&nbsp;
+<b class="nc">&nbsp;                graphicalView.getCityMap().getSelectedPairList(currentCourier)</b>
+<b class="nc">&nbsp;                        .removeIf(pair -&gt; pair.getKey().equals(intersection));</b>
+&nbsp;
+&nbsp;            } else {
+<b class="nc">&nbsp;                if (graphicalView.getCityMap().seeSelectedIntersectionList(currentCourier).contains(intersection)) {</b>
+&nbsp;
+&nbsp;                } else {
+<b class="nc">&nbsp;                    String result = showChoiceDialogTime();</b>
+<b class="nc">&nbsp;                    int startH = -1;</b>
+&nbsp;                    try {
+<b class="nc">&nbsp;                        startH = Integer.parseInt(result.replace(&quot;h&quot;, &quot;&quot;));</b>
+<b class="nc">&nbsp;                    } catch (NumberFormatException err) {</b>
+<b class="nc">&nbsp;                        System.out.println(&quot;Erreur lors du parseInt : &quot; + err);</b>
+<b class="nc">&nbsp;                    }</b>
+&nbsp;
+<b class="nc">&nbsp;                    if (!result.isEmpty() &amp;&amp; startH &gt;= 8 &amp;&amp; startH &lt;= 12) {</b>
+<b class="nc">&nbsp;                        intersection.setIsOwned(true);</b>
+<b class="nc">&nbsp;                        intersection.setFill(currentCourier.getColor());</b>
+<b class="nc">&nbsp;                        intersection.getCircle().setRadius(graphicalView.height / 150);</b>
+&nbsp;
+<b class="nc">&nbsp;                        Calendar cal = Calendar.getInstance();</b>
+<b class="nc">&nbsp;                        cal.set(Calendar.HOUR_OF_DAY, startH);</b>
+<b class="nc">&nbsp;                        Date startingTime = cal.getTime();</b>
+<b class="nc">&nbsp;                        TimeWindow timeWindow = new TimeWindow(startingTime, 60);</b>
+&nbsp;
+<b class="nc">&nbsp;                        graphicalView.getCityMap().getSelectedPairList(currentCourier)</b>
+<b class="nc">&nbsp;                                .add(new Pair&lt;&gt;(intersection, timeWindow));</b>
+&nbsp;                    }
+&nbsp;
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public String showChoiceDialogTime() {
+<b class="nc">&nbsp;        final String[] res = { &quot;&quot; };</b>
+<b class="nc">&nbsp;        ChoiceDialog dialog = new ChoiceDialog(&quot;8h&quot;);</b>
+<b class="nc">&nbsp;        dialog.setTitle(&quot;Enter a time window&quot;);</b>
+<b class="nc">&nbsp;        dialog.setHeaderText(&quot;Enter a time window&quot;);</b>
+<b class="nc">&nbsp;        dialog.setContentText(&quot;Please select the wanted delivery time : &quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        ObservableList&lt;String&gt; list = dialog.getItems();</b>
+<b class="nc">&nbsp;        list.add(&quot;8h&quot;);</b>
+<b class="nc">&nbsp;        list.add(&quot;9h&quot;);</b>
+<b class="nc">&nbsp;        list.add(&quot;10h&quot;);</b>
+<b class="nc">&nbsp;        list.add(&quot;11h&quot;);</b>
+<b class="nc">&nbsp;        list.add(&quot;12h&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        dialog.showAndWait().ifPresent(result -&gt; res[0] = dialog.getResult().toString());</b>
+&nbsp;
+<b class="nc">&nbsp;        return res[0];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String showDialogBoxInput() {
+<b class="nc">&nbsp;        final String[] res = { null };</b>
+<b class="nc">&nbsp;        TextInputDialog dialog = new TextInputDialog(&quot;&quot;);</b>
+<b class="nc">&nbsp;        dialog.setTitle(&quot;Enter a time window&quot;);</b>
+<b class="nc">&nbsp;        dialog.setHeaderText(&quot;Courier&#39;s name&quot;);</b>
+<b class="nc">&nbsp;        dialog.setContentText(&quot;Enter the courier&#39;s name : &quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        dialog.showAndWait().ifPresent(result -&gt; {</b>
+<b class="nc">&nbsp;            res[0] = result;</b>
+&nbsp;        });
+<b class="nc">&nbsp;        return res[0];</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>

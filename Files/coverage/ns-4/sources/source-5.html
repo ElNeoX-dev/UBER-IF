@@ -1,0 +1,102 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TSP</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.malveillance.uberif.model.algo</a>
+</div>
+
+<h1>Coverage Summary for Class: TSP (com.malveillance.uberif.model.algo)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TSP</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.malveillance.uberif.model.algo;
+&nbsp;
+&nbsp;import com.malveillance.uberif.model.CityMap;
+&nbsp;import com.malveillance.uberif.model.Delivery;
+&nbsp;import com.malveillance.uberif.model.Intersection;
+&nbsp;import com.malveillance.uberif.model.Tour;
+&nbsp;import javafx.util.Pair;
+&nbsp;
+&nbsp;import java.util.Date;
+&nbsp;
+&nbsp;public interface TSP {
+&nbsp;	/**
+&nbsp;	 * Search for a shortest cost hamiltonian circuit in &lt;code&gt;g&lt;/code&gt; within &lt;code&gt;timeLimit&lt;/code&gt; milliseconds
+&nbsp;	 * (returns the best found tour whenever the time limit is reached)
+&nbsp;	 * Warning: The computed tour always start from vertex 0
+&nbsp;	 * @param timeLimit
+&nbsp;	 * @param g
+&nbsp;	 */
+&nbsp;	public void searchSolution(int timeLimit, CityMap g, Tour t,Date startingDate);
+&nbsp;	
+&nbsp;	/**
+&nbsp;	 * @param i
+&nbsp;	 * @return the ith visited vertex in the solution computed by &lt;code&gt;searchSolution&lt;/code&gt; 
+&nbsp;	 * (-1 if &lt;code&gt;searcheSolution&lt;/code&gt; has not been called yet, or if i &lt; 0 or i &gt;= g.getNbSommets())
+&nbsp;	 */
+&nbsp;	public Pair&lt;Intersection, Date&gt; getSolution(int i);
+&nbsp;	
+&nbsp;	/** 
+&nbsp;	 * @return the total cost of the solution computed by &lt;code&gt;searchSolution&lt;/code&gt; 
+&nbsp;	 * (-1 if &lt;code&gt;searcheSolution&lt;/code&gt; has not been called yet).
+&nbsp;	 */
+&nbsp;	public double getSolutionCost();
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-22 22:18</div>
+</div>
+</body>
+</html>
