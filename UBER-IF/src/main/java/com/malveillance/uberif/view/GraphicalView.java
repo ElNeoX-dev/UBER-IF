@@ -381,7 +381,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Update UI components if necessary
         // (assuming these components are part of the GraphicalView)
         //this.mapPane = newView.mapPane;
-        this.choiceMap = newView.choiceMap;
+        //this.choiceMap = newView.choiceMap;
         //this.choiceCourier = newView.choiceCourier;
         this.searchBox = newView.searchBox;
         //this.nbCourierLb = newView.nbCourierLb;
