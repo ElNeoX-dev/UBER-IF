@@ -59,6 +59,14 @@ public class TSP1 extends TemplateTSP {
 		return new SeqIter(sortedUnvisited, currentVertex, g);
 	}
 
+	/**
+	 * Compares time windows based on arrival times and window constraints
+	 * @param arrivalTime1 the arrival time to the first delivery
+	 * @param tw1          the time window of the first delivery
+	 * @param arrivalTime2 the arrival time to the second delivery
+	 * @param tw2          the time window of the second delivery
+	 * @return a comparison result
+	 */
 	private int compareTimeWindows(double arrivalTime1, TimeWindow tw1, double arrivalTime2, TimeWindow tw2) {
 		double tw1Start = convertToSecondsPastHour(8,tw1.getStartingTime());
 		double tw1End = convertToSecondsPastHour(8,tw1.getEndingTime());
@@ -83,6 +91,12 @@ public class TSP1 extends TemplateTSP {
 		return Double.compare(tw2End, tw1End);
 	}
 
+	/**
+	 * Converts a given time to seconds past the specified hour
+	 * @param hour the specified hour
+	 * @param time the time to be converted
+	 * @return the time in seconds past the specified hour
+	 */
 	private double convertToSecondsPastHour(int hour,Date time) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(time);
