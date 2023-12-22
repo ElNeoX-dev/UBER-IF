@@ -7,8 +7,8 @@ import com.malveillance.uberif.model.Shape;
 import com.malveillance.uberif.model.service.AlgoService;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
+import com.malveillance.uberif.util.ResourceReader;
 import com.malveillance.uberif.xml.XMLserializer;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,16 +28,12 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.scene.paint.Color;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.awt.*;
 import java.io.File;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 
@@ -574,8 +570,11 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
             this.cityMap = newmap;
 
+            ResourceReader rsReader = new ResourceReader();
+            InputStream is = rsReader.getFileAsIOStream(cityMap.getMapName() + "Map.png");
+
             BackgroundImage backgroundImage = new BackgroundImage(
-                    new Image("file:src/main/resources/com/malveillance/uberif/" + cityMap.getMapName() + "Map.png"),
+                    new Image(is),
                     BackgroundRepeat.NO_REPEAT,
                     BackgroundRepeat.NO_REPEAT,
                     BackgroundPosition.CENTER,
@@ -717,17 +716,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
      */
     public Pair<Courier, List<Pair<Intersection, TimeWindow>>> getSelectedCourier() {
         return selectedCourier;
-    }
-
-    /**
-     * Checks if the resource exists
-     * @param resourceName the resource name
-     * @return true if the resource exists, false otherwise
-     */
-    public boolean doesResourceExist(String resourceName) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource("output/"+resourceName);
-        return resource != null;
     }
 
 }

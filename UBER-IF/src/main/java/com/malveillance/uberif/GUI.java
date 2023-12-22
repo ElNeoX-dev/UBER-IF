@@ -4,7 +4,6 @@ import com.malveillance.uberif.controller.CityMapController;
 import com.malveillance.uberif.controller.PaneController;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
-import com.malveillance.uberif.view.GraphicalView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,17 +13,17 @@ import java.io.IOException;
 
 import javafx.application.Application;
 
+public class GUI extends Application {
 /**
  * JavaFX App
  */
-public class HelloApplication extends Application {
 
     /**
      * The graphical view.
      */
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("hello-view.fxml"));
         Parent root = fxmlLoader.load();
 
         // Set up the scene and stage
