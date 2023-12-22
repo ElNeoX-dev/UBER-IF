@@ -35,7 +35,7 @@ public class PDFRoadMap {
         return dateFormat.format(arrivalTime);
     }
 
-        /**
+    /**
      * Generates a PDF file containing the road map of the tour of a courier.
      * @param outputDirectory the output directory
      * @param fileName the file name
@@ -43,7 +43,7 @@ public class PDFRoadMap {
      */
     public static void generatePDF(String outputDirectory, String fileName, List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas) {
         try {
-          
+
             // Create the output directory if it doesn't exist
             File outputDir = new File(outputDirectory);
             if (!outputDir.exists()) {
