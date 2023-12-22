@@ -4,7 +4,7 @@
 
 To run the application, the user only has to build compile, and run the .jar directory.
 
-**ATTENTION: YOU WILL NEED JAVA 19 FOR THIS APPLICATION** 
+**ATTENTION: YOU WILL NEED JAVA 19 FOR THIS APPLICATION**
 
 ## OverView of the application
 
@@ -68,6 +68,6 @@ When clicking on the Save Roadmap button, a PDF file for the couriers, containin
 
 ### Choice of an intersection
 
-The manager can choose an intersection at which they want to be delivered by clicking on it. When hovering over the map, the points representing an intersection will get bigger, which allows them to select the wanted intersection. 
+The manager can choose an intersection at which they want to be delivered by clicking on it. When hovering over the map, the points representing an intersection will get bigger, which allows them to select the wanted intersection.
 
 After that, they'll have to select the desired time-window from a dropdown list at which they want to be delivered.

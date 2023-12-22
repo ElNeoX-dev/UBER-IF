@@ -2,7 +2,7 @@
 
 ## PLD Agile: Agile Development Report
 
-Mark Beckmann, Back-End Developer & Product Owner 
+Mark Beckmann, Back-End Developer & Product Owner
 
 Evann Guillot, Back-End Developer
 
@@ -10,7 +10,7 @@ Noham Martin, Back-End Developer
 
 Tim Morel, Front-End Developer
 
-Marie Roulier, Full-Stack Developer & Scrum Master 
+Marie Roulier, Full-Stack Developer & Scrum Master
 
 Hugo Warin, Full-Stack Developer
 
@@ -18,7 +18,7 @@ Zyad Haddad, Front-End Developer
 
 
 
-Group: H4132 Department: Computer Science 
+Group: H4132 Department: Computer Science
 
 University: INSA Lyon
 
@@ -346,7 +346,7 @@ Nonetheless, we think that we could have worked differently regarding the manage
 
 ### Human Review
 
-Regarding the human review, we loved working together. It was a great team and the mood was always good. 
+Regarding the human review, we loved working together. It was a great team and the mood was always good.
 
 Everybody was always motivated to work, even at 8 AM. The task repartition was also great, and we worked evenly outside of class.
 
