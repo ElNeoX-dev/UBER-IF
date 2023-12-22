@@ -381,7 +381,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         // Update UI components if necessary
         // (assuming these components are part of the GraphicalView)
         //this.mapPane = newView.mapPane;
-        //this.choiceMap = newView.choiceMap;
+        this.choiceMap = newView.choiceMap;
         //this.choiceCourier = newView.choiceCourier;
         this.searchBox = newView.searchBox;
         //this.nbCourierLb = newView.nbCourierLb;
@@ -592,7 +592,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
                 case "Large" -> coef = 0.3;
             }
 
-            //newmap.setCourierDotMap(cityMap.getCourierDotMap());
+            newmap.setCourierDotMap(cityMap.getCourierDotMap());
             mapPane.getChildren().clear();
             // Draw lines first
             newmap.getWarehouse().accept(this);
@@ -603,7 +603,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             }
 
 
-            //this.cityMap = newmap;
+            this.cityMap = newmap;
 
             ResourceReader rsReader = new ResourceReader();
             InputStream is = rsReader.getFileAsIOStream(cityMap.getMapName() + "Map.png");
