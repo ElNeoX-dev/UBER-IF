@@ -48,7 +48,7 @@ public class SaveCommand implements Command {
 
             if (!nameOutput.isEmpty()) {
                 try {
-                    graphicalView.getXmlSerializer().serialize(graphicalView.getCityMap().getCourierDotMap().keySet(), graphicalView.getCityMap().getWarehouse(), nameOutput);
+                    graphicalView.getXmlSerializer().serialize(graphicalView.getCityMap().getCourierDotMap().keySet(), graphicalView.getCityMap().getWarehouse(), path + nameOutput);
                 } catch (ParserConfigurationException e) {
                     System.out.println("ParserConfigurationException : " + e);
                     throw new RuntimeException(e);

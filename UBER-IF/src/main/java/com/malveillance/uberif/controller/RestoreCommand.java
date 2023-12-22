@@ -54,7 +54,7 @@ public class RestoreCommand implements Command {
         String path = graphicalView.showFileChooser();
         System.out.println(path);
         if (!path.isEmpty()) {
-            CityMap newMap = cityMapController.loadNewCityMap(path, true);
+            CityMap newMap = graphicalView.getCityMapController().loadNewCityMap(path, true);
             graphicalView.getCityMap().merge(newMap);
 
             for (Courier courier : graphicalView.getCityMap().getListCourier()) {

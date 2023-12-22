@@ -151,6 +151,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         return xmlSerializer;
     }
 
+    public CityMapController getCityMapController() {
+        return cityMapController;
+    }
+
     /**
      * Handles the restore button click event and restores the city map
      */
