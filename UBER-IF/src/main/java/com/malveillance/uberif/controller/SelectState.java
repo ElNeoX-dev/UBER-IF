@@ -6,20 +6,25 @@ import com.malveillance.uberif.view.GraphicalView;
 import javafx.scene.control.Label;
 
 /**
- * The class represents the SelectState.
+ * The class represents the state where the user is in the process of selecting a courier's route.
+ * It is associated with the "Select" button in the graphical user interface.
  */
 class SelectState implements State {
     private GraphicalView graphicalView = null;
 
-
+    /**
+     * Constructs a new SelectState
+     * @param graphicalView the graphical view associated with the state
+     */
     public SelectState(GraphicalView graphicalView){
         this.graphicalView= graphicalView.deepCopy();
     }
 
     /**
-     * Handles the input.
-     * @param context the context
-     * @param input the input
+     * Handles the input based on the user actions
+     * @param context       the context
+     * @param input         the input
+     * @param graphicalView the graphical view associated with the state
      */
     @Override
     public void handleInput(Context context, String input, GraphicalView graphicalView) {
@@ -41,18 +46,32 @@ class SelectState implements State {
         if (input.equals("restore")) {
             context.setState(new SelectState(graphicalView));
         }
-        // Other input handling for InitialState
     }
 
-
+    /**
+     * Gets the associated graphical view
+     * @return the graphical view
+     */
     @Override
     public GraphicalView getGraphicalView() {
         return graphicalView;
     }
 
+    /**
+     * Gets the currently selected courier
+     * @return the selected courier
+     */
     @Override
-    public Courier getSelectedCourier() {return graphicalView.getSelectedCourier().getKey();}
+    public Courier getSelectedCourier() {
+        return graphicalView.getSelectedCourier().getKey();
+    }
 
+    /**
+     * Gets the label containing information
+     * @return the information label
+     */
     @Override
-    public Label getlbInfos() {return graphicalView.getLbInfos();}
+    public Label getlbInfos() {
+        return graphicalView.getLbInfos();
+    }
 }

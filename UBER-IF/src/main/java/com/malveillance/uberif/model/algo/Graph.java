@@ -1,5 +1,8 @@
 package com.malveillance.uberif.model.algo;
 
+/**
+ * The interface represents a directed graph.
+ */
 public interface Graph {
 	/**
 	 * @return the number of vertices in <code>this</code>

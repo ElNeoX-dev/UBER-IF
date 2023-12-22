@@ -7,19 +7,36 @@ import com.malveillance.uberif.view.GraphicalView;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
-
+/**
+ * The class represents a command for removing a courier from the application.
+ * It is associated with the "Minus" button in the graphical user interface.
+ */
 public class MinusCommand implements Command {
+    /**
+     * The graphical view associated with the command
+     */
     private GraphicalView graphicalView;
+    /**
+     * The context managing the state transitions
+     */
     private Context context;
 
+    /**
+     * Constructs a new MinusCommand
+     * @param graphicalView the graphical view associated with the command
+     * @param context       the context managing the state transitions
+     */
     public MinusCommand(GraphicalView graphicalView, Context context) {
         this.graphicalView = graphicalView;
         this.context = context;
     }
 
+    /**
+     * Executes the removal of a courier from the application.
+     * It clears the dots associated with the courier, updates the graphical view, and notifies the context.
+     */
     @Override
     public void execute() {
-
         // CityMap previousCityMap = cityMap.deepCopy();
 
         if (graphicalView.getNbCouriers() > 0) {
@@ -54,8 +71,6 @@ public class MinusCommand implements Command {
         context.handleInput("minus", graphicalView);
     }
 
-
-
 //    @Override
 //    public void undo() {
 //        if (previousState != null) {
@@ -64,4 +79,3 @@ public class MinusCommand implements Command {
 //        }
 //    }
 }
-

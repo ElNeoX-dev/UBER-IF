@@ -8,8 +8,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+/**
+ * The class represents an iterator to traverse the set of vertices unvisited
+ */
 public class SeqIter implements Iterator<Delivery> {
+	/**
+	 * The set of vertices unvisited
+	 */
 	private ArrayList<Delivery> candidates;
+	/**
+	 * The index of the current vertex in <code>unvisited</code>
+	 */
 	private int currentIndex;
 
 	/**
@@ -30,16 +39,25 @@ public class SeqIter implements Iterator<Delivery> {
 		this.currentIndex = candidates.size() - 1;
 	}
 
+	/**
+	 * @return true if the iteration has more elements
+	 */
 	@Override
 	public boolean hasNext() {
 		return currentIndex >= 0;
 	}
 
+	/**
+	 * @return the next element in the iteration
+	 */
 	@Override
 	public Delivery next() {
 		return candidates.get(currentIndex--);
 	}
 
+	/**
+	 * Unsupported operation
+	 */
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException("Remove operation is not supported");

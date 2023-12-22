@@ -8,6 +8,9 @@ import javafx.util.Pair;
 
 import java.util.Date;
 
+/**
+ * The class represents a template for solving the TSP.
+ */
 public interface TSP {
 	/**
 	 * Search for a shortest cost hamiltonian circuit in <code>g</code> within <code>timeLimit</code> milliseconds
