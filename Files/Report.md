@@ -63,6 +63,8 @@ By Manager UberIF, we mean the user that get incoming delivery requests, calcula
 
 The aim of this diagram is to explain how we want to build our software to answer the client needs. It is important to note that this diagram constantly evolves and therefore only should be used to understand the general idea of how our software is structured. It is not the actual nor final version and doe not exactly explain all classes and packages.
 
+![Class Diagram](classDiag.png "Class Diagram")
+
 This diagram is organized into several packages, which group related classes and interfaces that interact with each other to perform various functions within the application.
 
 
