@@ -7,7 +7,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 /**
- * The {@code SaveCommand} class represents a command for saving the current state of the CityMap to an XML file.
+ * The class represents a command for saving the current state of the CityMap to an XML file.
  * It is associated with the "Save" button in the graphical user interface.
  */
 public class SaveCommand implements Command {
