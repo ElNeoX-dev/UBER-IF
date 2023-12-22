@@ -7,26 +7,60 @@ import com.malveillance.uberif.model.service.PaneService;
 
 import java.util.Set;
 
+/**
+ * The class represents a controller for the pane.
+ */
 public class PaneController {
 
+    /**
+     * The pane service.
+     */
     private PaneService paneService;
+
+    /**
+     * The actual state of the controller
+     */
     private State currentState;
+
+    /**
+     * Constructs a new PaneController.
+     */
     public PaneController(PaneService paneService) {
         this.paneService = paneService;
     }
 
+    /**
+     * handles the right click.
+     * @param intersection the intersection
+     */
     public void leftClick(Intersection intersection){
         //currentState.leftClick(this, intersection,new CityMap(null, null));
     }
+
+    /**
+     * returns the x position of the intersection.
+     * @param i the intersection
+     * @param paneWidth the pane width
+     * @return the x position of the intersection
+     */
     public double getIntersectionX(Intersection i, double paneWidth){
         return paneService.longitudeToX(i.getLongitude(), paneWidth);
     }
 
-    // Method to map latitude to Y position
+    /**
+     * returns the y position of the intersection.
+     * @param i the intersection
+     * @param paneHeight the pane height
+     * @return the y position of the intersection
+     */
     public double getIntersectionY(Intersection i, double paneHeight){
         return paneService.latitudeToY(i.getLatitude(), paneHeight);
     }
 
+    /**
+     * updates the scale of the pane with the intersections
+     * @param intersectionList the list of intersections
+     */
     public void updateScale(Set<Intersection> intersectionList) {
         paneService.setMinX(Double.MAX_VALUE);
         paneService.setMaxX(Double.MIN_VALUE);

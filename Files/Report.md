@@ -34,7 +34,8 @@ University: INSA Lyon
 8. [Why JUNIT?](#8-why-junit)
 9. [Discussion on Social and Environmental Issues related to the application](#9-discussion-on-social-and-environmental-issues-related-to-the-application)
 10. [Technical and Human Review](#10-technical-and-human-review)
-11. [Glossary](#11-glossary)
+11. [Possible Improvements](#11-possible-improvements)
+12. [Glossary](#12-glossary)
 
 ## 1. Introduction
 This report documents the Agile development process of the PLD Agile project. The project’s goal is to develop an application for optimizing delivery tours in urban settings using bicycles. Embracing Agile and SCRUM methodologies, the focus is on iterative development, robust team collaboration, and high adaptability.
@@ -343,8 +344,19 @@ Team member satisfaction, with a mean score of 8, reflected a positive atmospher
 
 Agile practices allowed team members to focus on their favourite areas of interest or desired learning.
 
+## 11. Possible improvements
 
-## 11. Glossary
+We could have improved our application by using SOLID principles. For instance, we should have done 1 class for 1 responsibility. What's more, we should have injected dependencies so that high-level modules didn't depend on low-level modules. Both should depend on abstractions. By using these principles, we could have gotten more test coverage.
+
+Also, our restoring of tours is not optimized at all. It doesn't display the previous tours as we would have liked.
+
+What we could have done also is display departure and arrival time for each delivery.
+
+What's more, by working more on the algorithms, we could have increased the number of delivery by courier. For now, a courier can only deliver 15 points at a time.
+
+Lastly, we could have improved the algorithms even more so that it would compute the delivery tours for all couriers, and not only consider a courier one by one.
+
+## 12. Glossary
 
 - **_Application_**: The software system designed for optimizing delivery tours in cities using bicycles.
 - **_City Map_**: A digital representation of a city's layout, including intersections and road segments, used for planning delivery tours.
