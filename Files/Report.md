@@ -2,7 +2,7 @@
 
 ## PLD Agile: Agile Development Report
 
-Mark Beckmann, Back-End Developer & Product Owner 
+Mark Beckmann, Back-End Developer & Product Owner
 
 Evann Guillot, Back-End Developer
 
@@ -10,7 +10,7 @@ Noham Martin, Back-End Developer
 
 Tim Morel, Front-End Developer
 
-Marie Roulier, Full-Stack Developer & Scrum Master 
+Marie Roulier, Full-Stack Developer & Scrum Master
 
 Hugo Warin, Full-Stack Developer
 
@@ -18,7 +18,7 @@ Zyad Haddad, Front-End Developer
 
 
 
-Group: H4132 Department: Computer Science 
+Group: H4132 Department: Computer Science
 
 University: INSA Lyon
 
@@ -219,6 +219,18 @@ The application employs the Model-View-Controller (MVC) architecture, pro- vidin
 
 **Complex Interaction Handling:** Efficient management of complex in- teractions between UI and business logic, crucial for modern web applica- tions.
 
+### Back End Choices
+
+We decided to implement at first a Dijkstra because it was the easiest solution for the first iteration, and we then decided to keep it instead of implementing an A* algorithm because it would have taken too long for the result.
+
+We thought about using four times our TSP function to get the optimal path for each TimeWindow and link all of them afterwards. This solution could have decreased considerably the time to compute a tour, so it could have increased the number of deliveries in a tour.
+
+We still didn't use this solution because, in reality, it wasn't possible to compute a unique optimal solution. We then decided to keep our simple TSP and optimise it thanks to:
+
+**An heuristic bound:** This heuristic allows us to not explore solutions that are obviously bad and wouldn't lead to an optimal solution.
+
+**The function iterator:** In this function, we sort the deliveries to explore the ones with earlier time windows first, so we get an optimal solution faster.
+
 ## 8. Why JUNIT?
 
 For unit testing, we will use JUnit, Mockito, and JFixture. Here is a simplified example of a unit test in Java using JFixture for test data generation and Mockito for mocking dependencies:
@@ -334,7 +346,7 @@ Nonetheless, we think that we could have worked differently regarding the manage
 
 ### Human Review
 
-Regarding the human review, we loved working together. It was a great team and the mood was always good. 
+Regarding the human review, we loved working together. It was a great team and the mood was always good.
 
 Everybody was always motivated to work, even at 8 AM. The task repartition was also great, and we worked evenly outside of class.
 

@@ -43,13 +43,6 @@ public class PDFRoadMap {
      */
     public static void generatePDF(String outputDirectory, String fileName, List<Pair<Courier, List<Pair<RoadSegment, Date>>>> courierTourDatas) {
         try {
-
-            // Create the output directory if it doesn't exist
-            File outputDir = new File(outputDirectory);
-            if (!outputDir.exists()) {
-                outputDir.mkdirs();
-            }
-
             // Construct the output file path
             String outputFilePath = outputDirectory + fileName + ".pdf";
             Path outputPath = Paths.get(outputFilePath);
@@ -68,9 +61,11 @@ public class PDFRoadMap {
                 contentStream = new PDPageContentStream(document, page);
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 20);
 
+                // Calculate the center of the page
                 float pageWidth = page.getMediaBox().getWidth();
                 float centerX = pageWidth / 2;
 
+                // Calculate the position for the title
                 float titleWidth = PDType1Font.HELVETICA_BOLD.getStringWidth("Road Map") / 1000 * 20;
                 float titleX = centerX - titleWidth / 2;
 
@@ -82,6 +77,7 @@ public class PDFRoadMap {
                 Courier courier = courierTourData.getKey();
                 List<Pair<RoadSegment, Date>> roadSegments = courierTourData.getValue();
 
+                // Process courier information and road segments
                 contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
                 contentStream.showText("Road Map for Courier " + courier.getName());
                 contentStream.newLineAtOffset(0, -12);
@@ -89,12 +85,15 @@ public class PDFRoadMap {
                 contentStream.newLineAtOffset(0, -12);
                 contentStream.setFont(PDType1Font.HELVETICA, 11);
 
+                // Keep track of the previous RoadSegment
                 RoadSegment previousRoadSegment = null;
                 for (int i = 0; i < roadSegments.size(); i++) {
                     RoadSegment segment = roadSegments.get(i).getKey();
                     Date arrivalTime = roadSegments.get(i).getValue();
 
+                    // Check if the current RoadSegment is different from the previous one
                     if (i == 0 || !Objects.equals(previousRoadSegment.getName(), segment.getName()) || arrivalTime != null) {
+                        // Add text to the content stream
                         if (i > 0) {
                             RoadSegment previousSegment = roadSegments.get(i - 1).getKey();
                             String turnDirection = segment.getTurnDirection(previousSegment);
@@ -103,6 +102,20 @@ public class PDFRoadMap {
                                 contentStream.newLineAtOffset(0, -12);
                                 contentStream.showText("Turn " + turnDirection + " on " + segment.getName());
                                 countLines++;
+
+                                if (countLines >= 45) {
+                                    countLines = 0;
+                                    contentStream.endText();
+                                    contentStream.close();
+
+                                    page = new PDPage();
+                                    document.addPage(page);
+                                    contentStream = new PDPageContentStream(document, page);
+                                    contentStream.setFont(PDType1Font.HELVETICA, 11);
+
+                                    contentStream.beginText();
+                                    contentStream.newLineAtOffset(100, 700);
+                                }
                             }
                         } else {
                             contentStream.newLineAtOffset(0, -12);
@@ -116,37 +129,39 @@ public class PDFRoadMap {
                             contentStream.newLineAtOffset(0, -12);
                             countLines += 3;
 
-                        }
-                    }
-                    if (countLines >= 45) {
-                        countLines = 0;
-                        contentStream.endText();
-                        contentStream.close();
+                            if (countLines >= 45) {
+                                countLines = 0;
+                                contentStream.endText();
+                                contentStream.close();
 
-                        page = new PDPage();
-                        document.addPage(page);
-                        contentStream = new PDPageContentStream(document, page);
-                        contentStream.setFont(PDType1Font.HELVETICA, 11);
-                        contentStream.beginText();
+                                page = new PDPage();
+                                document.addPage(page);
+                                contentStream = new PDPageContentStream(document, page);
+                                contentStream.setFont(PDType1Font.HELVETICA, 11);
+                                contentStream.beginText();
+                            }
+                        }
                     }
                     previousRoadSegment = segment;
                 }
 
                 contentStream.showText("You're back to the Warehouse. Your tour is finished!");
                 countLines += 3;
-                if (countLines >= 35){
+                if (countLines >= 45){
                     countLines = 0;
-                    page = new PDPage();
-                    document.addPage(page);
-
-                    contentStream = new PDPageContentStream(document, page);
-                }
-
-                // Finish the current page and start a new one
-                if (contentStream != null) {
                     contentStream.endText();
                     contentStream.close();
+
+                    page = new PDPage();
+                    document.addPage(page);
+                    contentStream = new PDPageContentStream(document, page);
+                    contentStream.setFont(PDType1Font.HELVETICA, 11);
+                    contentStream.beginText();
                 }
+
+
+                contentStream.endText();
+                contentStream.close();
             }
 
             // Save the document to the specified output path
