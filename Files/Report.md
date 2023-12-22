@@ -2,7 +2,7 @@
 
 ## PLD Agile: Agile Development Report
 
-Mark Beckmann, Back-End Developer & Product Owner 
+Mark Beckmann, Back-End Developer & Product Owner
 
 Evann Guillot, Back-End Developer
 
@@ -10,7 +10,7 @@ Noham Martin, Back-End Developer
 
 Tim Morel, Front-End Developer
 
-Marie Roulier, Full-Stack Developer & Scrum Master 
+Marie Roulier, Full-Stack Developer & Scrum Master
 
 Hugo Warin, Full-Stack Developer
 
@@ -18,7 +18,7 @@ Zyad Haddad, Front-End Developer
 
 
 
-Group: H4132 Department: Computer Science 
+Group: H4132 Department: Computer Science
 
 University: INSA Lyon
 
@@ -62,6 +62,8 @@ By Manager UberIF, we mean the user that get incoming delivery requests, calcula
 ## 4. Class and Package Diagrams
 
 The aim of this diagram is to explain how we want to build our software to answer the client needs. It is important to note that this diagram constantly evolves and therefore only should be used to understand the general idea of how our software is structured. It is not the actual nor final version and doe not exactly explain all classes and packages.
+
+![Class Diagram](classDiag.png "Class Diagram")
 
 This diagram is organized into several packages, which group related classes and interfaces that interact with each other to perform various functions within the application.
 
@@ -219,6 +221,18 @@ The application employs the Model-View-Controller (MVC) architecture, pro- vidin
 
 **Complex Interaction Handling:** Efficient management of complex in- teractions between UI and business logic, crucial for modern web applica- tions.
 
+### Back End Choices
+
+We decided to implement at first a Dijkstra because it was the easiest solution for the first iteration, and we then decided to keep it instead of implementing an A* algorithm because it would have taken too long for the result.
+
+We thought about using four times our TSP function to get the optimal path for each TimeWindow and link all of them afterwards. This solution could have decreased considerably the time to compute a tour, so it could have increased the number of deliveries in a tour.
+
+We still didn't use this solution because, in reality, it wasn't possible to compute a unique optimal solution. We then decided to keep our simple TSP and optimise it thanks to:
+
+**An heuristic bound:** This heuristic allows us to not explore solutions that are obviously bad and wouldn't lead to an optimal solution.
+
+**The function iterator:** In this function, we sort the deliveries to explore the ones with earlier time windows first, so we get an optimal solution faster.
+
 ## 8. Why JUNIT?
 
 For unit testing, we will use JUnit, Mockito, and JFixture. Here is a simplified example of a unit test in Java using JFixture for test data generation and Mockito for mocking dependencies:
@@ -334,7 +348,7 @@ Nonetheless, we think that we could have worked differently regarding the manage
 
 ### Human Review
 
-Regarding the human review, we loved working together. It was a great team and the mood was always good. 
+Regarding the human review, we loved working together. It was a great team and the mood was always good.
 
 Everybody was always motivated to work, even at 8 AM. The task repartition was also great, and we worked evenly outside of class.
 
@@ -346,9 +360,11 @@ Agile practices allowed team members to focus on their favourite areas of intere
 
 ## 11. Possible improvements
 
+One of our biggest mistakes is that we didn't start by implementing the states (going back with the equivalent of Control + Z). Next time, we'll do it at the beginning.
+
 We could have improved our application by using SOLID principles. For instance, we should have done 1 class for 1 responsibility. What's more, we should have injected dependencies so that high-level modules didn't depend on low-level modules. Both should depend on abstractions. By using these principles, we could have gotten more test coverage.
 
-Also, our restoring of tours is not optimized at all. It doesn't display the previous tours as we would have liked.
+Also, our restoring of tours is not optimized. It doesn't automatically change map and update the list of couriers with the information contained in the file. For instance, if the user is on the small map and the restored tours were on the large map, it won't work.
 
 What we could have done also is display departure and arrival time for each delivery.
 
@@ -375,3 +391,4 @@ Lastly, we could have improved the algorithms even more so that it would compute
 - **_Travel Speed:_** The assumed constant speed of the couriers, used for calculating tour duration and feasibility.
 - **_Delivery Performance Time:_** The time taken to perform a delivery, assumed to be constant (e.g., 15 minutes).
 - **_User:_** The person operating the application, responsible for loading maps, inputting delivery requests, and managing couriers. In our case, the user is the manager of UBER'IF.
+- 

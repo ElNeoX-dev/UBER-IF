@@ -7,7 +7,7 @@ import com.malveillance.uberif.model.Shape;
 import com.malveillance.uberif.model.service.AlgoService;
 import com.malveillance.uberif.model.service.CityMapService;
 import com.malveillance.uberif.model.service.PaneService;
-import com.malveillance.uberif.util.ResourceReader;
+import com.malveillance.uberif.util.Reader;
 import com.malveillance.uberif.xml.XMLserializer;
 import javafx.fxml.FXML;
 import javafx.collections.FXCollections;
@@ -113,7 +113,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
      * Handles the optimize button click event and optimizes the routes using the TSP algorithm
      */
     @FXML
-    protected void onOptimizeBtnClick() {
+    public void onOptimizeBtnClick() {
         System.out.println("Optimize click");
         OptimizeRouteCommand optimizeCommand;
         optimizeCommand = new OptimizeRouteCommand(this, context);
@@ -147,6 +147,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         this.lbInfos = lbInfos;
     }
 
+    public XMLserializer getXmlSerializer() {
+        return xmlSerializer;
+    }
+
     /**
      * Handles the restore button click event and restores the city map
      */
@@ -160,21 +164,6 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         update(this.cityMap, this.cityMap.getNodes());
     }
 
-    public String showFileChooser() {
-        String path = "";
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Please choose the .uberif file to load");
-        File defaultDirectory = new File("./..");
-        chooser.setInitialDirectory(defaultDirectory);
-        chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Uber'IF Files", "*.uberif")
-        );
-        File selectedFile = chooser.showOpenDialog(new Stage());
-        if (selectedFile != null) {
-            path = selectedFile.getPath();
-        }
-        return path;
-    }
 
     @FXML
     public void onSaveFdRBtnClick() {
@@ -605,7 +594,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
 
             this.cityMap = newmap;
 
-            ResourceReader rsReader = new ResourceReader();
+            Reader rsReader = new Reader();
             InputStream is = rsReader.getFileAsIOStream(cityMap.getMapName() + "Map.png");
 
             BackgroundImage backgroundImage = new BackgroundImage(
@@ -720,6 +709,21 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         drawLine(segment, Color.GREY);
     }
 
+    public String showFileChooser() {
+        String path = "";
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Please choose the .uberif file to load");
+        File defaultDirectory = new File("./..");
+        chooser.setInitialDirectory(defaultDirectory);
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Uber'IF Files", "*.uberif")
+        );
+        File selectedFile = chooser.showOpenDialog(new Stage());
+        if (selectedFile != null) {
+            path = selectedFile.getPath();
+        }
+        return path;
+    }
 
     /**
      * Draws a line on the map pane

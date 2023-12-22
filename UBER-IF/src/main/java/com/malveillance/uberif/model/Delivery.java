@@ -1,5 +1,7 @@
 package com.malveillance.uberif.model;
 
+import java.util.Objects;
+
 /**
  * The class represents a delivery with information about the delivery location
  * and the time window within which the delivery is expected.
@@ -77,5 +79,18 @@ public class Delivery {
                 "intersection=" + intersection +
                 ", timeWindow=" + timeWindow +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Delivery delivery = (Delivery) o;
+        return Objects.equals(intersection, delivery.intersection) && Objects.equals(timeWindow, delivery.timeWindow);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(intersection, timeWindow);
     }
 }
