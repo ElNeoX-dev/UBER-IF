@@ -111,7 +111,6 @@ public class AlgoService {
      * @return A list of pairs, containing an intersection and the estimated arrival date
      */
     public static List<Pair<Intersection, Date>> calculateOptimalRoute(CityMap cityMap, Tour tour) {
-        System.out.println(cityMap.getWarehouse().getIntersection().equals(tour.getStartingPoint().getIntersection()));
         List<Intersection> allIntersections = new ArrayList<>();
         List<Delivery> deliveries = tour.getDeliveries();
 
