@@ -2,7 +2,7 @@
 
 ## Running the application
 
-To run the application, the user only has to build compile, and run the .jar directory.
+To run the application, the user only has to build compile, and run the .jar directory by entering the command: java -jar UBER-IF-1.0-SNAPSHOT-all.jar
 
 **ATTENTION: YOU WILL NEED JAVA 19 FOR THIS APPLICATION**
 
