@@ -27,14 +27,5 @@ public class PlusCommand implements Command {
         context.handleInput("plus", graphicalView);
         }
 
-
-
-//    @Override
-//    public void undo() {
-//        if (previousState != null) {
-//            // Restore the previous state
-//
-//        }
-//    }
 }
 

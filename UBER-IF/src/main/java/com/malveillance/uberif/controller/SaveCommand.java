@@ -38,15 +38,5 @@ public class SaveCommand implements Command {
         }
         context.handleInput("save", graphicalView);
     }
-
-
-
-//    @Override
-//    public void undo() {
-//        if (previousState != null) {
-//            // Restore the previous state
-//
-//        }
-//    }
 }
 
