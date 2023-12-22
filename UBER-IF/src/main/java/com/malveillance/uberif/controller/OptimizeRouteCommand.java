@@ -29,7 +29,6 @@ public class OptimizeRouteCommand implements Command {
 
         // CityMap previousCityMap = cityMap.deepCopy();
 
-        graphicalView.setCourierTourDatas(new ArrayList<>());
         graphicalView.getMapPane().getChildren().clear();
         graphicalView.update(graphicalView.getCityMap(), graphicalView.getCityMap().getNodes());
         for(Courier courier : graphicalView.getCityMap().getCourierDotMap().keySet()) {

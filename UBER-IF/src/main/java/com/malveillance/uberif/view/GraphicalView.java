@@ -623,6 +623,7 @@ public class GraphicalView extends ShapeVisitor implements Observer {
             paneController.updateScale(newmap.getNodes().keySet());
 
 
+            setCourierTourDatas(new ArrayList<>());
             if (newmap.getTravelList() != null) {
                 for (Courier courier : newmap.getTravelList().keySet()) {
                     List<Pair<Intersection, Date>> computedTravel = newmap.getTravelPlan(courier);
