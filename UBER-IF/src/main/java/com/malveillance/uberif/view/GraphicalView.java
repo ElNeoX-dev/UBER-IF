@@ -713,6 +713,10 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         drawLine(segment, Color.GREY);
     }
 
+    /**
+     * Displays a dialog box to choose a file
+     * @return the path of the file
+     */
     public String showFileChooser() {
         String path = "";
         FileChooser chooser = new FileChooser();
@@ -779,68 +783,88 @@ public class GraphicalView extends ShapeVisitor implements Observer {
         return this.cityMap;
     }
 
+    /**
+     * Returns the coefficient
+     * @return
+     */
     public double getCoef() {
         return coef;
     }
-        /**
-         * Sets the selected courier
-         * @param selectedCourier the selected courier
-         */
-        public void setSelectedCourier (Pair < Courier, List < Pair < Intersection, TimeWindow >>> selectedCourier){
-            this.selectedCourier = selectedCourier;
-        }
+    /**
+     * Sets the selected courier
+     * @param selectedCourier the selected courier
+     */
+    public void setSelectedCourier (Pair < Courier, List < Pair < Intersection, TimeWindow >>> selectedCourier){
+        this.selectedCourier = selectedCourier;
+    }
 
-        /**
-         * Returns the selected courier
-         * @return the selected courier
-         */
-        public Pair<Courier, List<Pair<Intersection, TimeWindow>>> getSelectedCourier () {
-            return selectedCourier;
-        }
+    /**
+     * Returns the selected courier
+     * @return the selected courier
+     */
+    public Pair<Courier, List<Pair<Intersection, TimeWindow>>> getSelectedCourier () {
+        return selectedCourier;
+    }
 
 
-        public void onKeyPressedHandler (KeyEvent event){
-            KeyboardHandler keyboardHandler = new KeyboardHandler(this);
-            keyboardHandler.handle(event); // Assuming handleKeyEvent is a method in KeyboardHandler
-        }
+    /**
+     * Handles the key pressed event
+     * @param event the key event
+     */
+    public void onKeyPressedHandler (KeyEvent event){
+        KeyboardHandler keyboardHandler = new KeyboardHandler(this);
+        keyboardHandler.handle(event); // Assuming handleKeyEvent is a method in KeyboardHandler
+    }
 
-        public Context getContext () {
-            return this.context;
-        }
+    /**
+     * Returns the context
+     * @return the context
+     */
+    public Context getContext () {
+        return this.context;
+    }
 
-        public Invoker getInvoker () {
-            return this.invoker;
-        }
+    /**
+     * Returns the invoker
+     * @return the invoker
+     */
+    public Invoker getInvoker () {
+        return this.invoker;
+    }
 
-        public GraphicalView deepCopy () {
-            GraphicalView copy = new GraphicalView();
+    /**
+     * Returns a deep copy of the GraphicalView
+     * @return a deep copy of the GraphicalView
+     */
+    public GraphicalView deepCopy () {
+        GraphicalView copy = new GraphicalView();
 
-            // Deep copy of cityMap
-            copy.cityMap = this.cityMap.deepCopy();
+        // Deep copy of cityMap
+        copy.cityMap = this.cityMap.deepCopy();
 
-            // Copying primitive and immutable fields
-            copy.nbCouriers = this.nbCouriers;
-            copy.courierTourDatas = this.courierTourDatas;
+        // Copying primitive and immutable fields
+        copy.nbCouriers = this.nbCouriers;
+        copy.courierTourDatas = this.courierTourDatas;
 
-            // Assuming Courier has a proper copy constructor or clone method
-            copy.noOne = new Courier(this.noOne);
-            copy.selectedCourier = this.selectedCourier;
-            copy.lbInfos = this.lbInfos;
+        // Assuming Courier has a proper copy constructor or clone method
+        copy.noOne = new Courier(this.noOne);
+        copy.selectedCourier = this.selectedCourier;
+        copy.lbInfos = this.lbInfos;
 
-            // Copying context and invoker if necessary
-            // This depends on how these should be treated in a deep copy (shared, independent, etc.)
-            // copy.context = new Context(copy.cityMap); // Example, if a new context is needed
-            // copy.invoker = new Invoker(); // Example, if a new invoker is needed
+        // Copying context and invoker if necessary
+        // This depends on how these should be treated in a deep copy (shared, independent, etc.)
+        // copy.context = new Context(copy.cityMap); // Example, if a new context is needed
+        // copy.invoker = new Invoker(); // Example, if a new invoker is needed
 
-            // XMLSerializer, controllers, and other services might be shared or reinitialized
-            copy.xmlSerializer = this.xmlSerializer; // Shared instance, or create a new one if independent
-            copy.cityMapController = this.cityMapController; // Shared instance, or create new
-            copy.paneController = this.paneController; // Shared instance, or create new
+        // XMLSerializer, controllers, and other services might be shared or reinitialized
+        copy.xmlSerializer = this.xmlSerializer; // Shared instance, or create a new one if independent
+        copy.cityMapController = this.cityMapController; // Shared instance, or create new
+        copy.paneController = this.paneController; // Shared instance, or create new
 
-            // UI elements (Buttons, Labels, etc.) are typically not deep-copied
-            // Instead, set up the UI state based on the copied data model
+        // UI elements (Buttons, Labels, etc.) are typically not deep-copied
+        // Instead, set up the UI state based on the copied data model
 
-            return copy;
-        }
+        return copy;
+    }
 
 }
