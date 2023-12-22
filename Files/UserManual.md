@@ -4,6 +4,8 @@
 
 To run the application, the user only has to build compile, and run the .jar directory.
 
+**ATTENTION: YOU WILL NEED JAVA 19 FOR THIS APPLICATION** 
+
 ## OverView of the application
 
 This is what our application looks like when the user (the manager) runs the application.
@@ -41,19 +43,25 @@ The manager can select a courier in the dropdown list. After that, the intersect
 
 ### Compute a delivery tour
 
-By clicking on the Validate button, the manager starts the computing process which will determine the best tour for the selected courier.
+By clicking on the Calculate Routes button, the manager starts the computing process which will determine the best tour for the selected courier.
 
 If there's no tour possible for the chosen intersections at the given time windows, a pop-up window will tell the user about it.
 
-Otherwise, the tour is displayed on the map, in the same colour as the one of the selected courier. A PDF file for the couriers, containing the directions, departure and arrival time (one page for each courier) is generated in resources > output.
+Otherwise, the tour is displayed on the map, in the same colour as the one of the selected courier.
 
 ### Saving tours to a file
 
-When clicking on the Save Tours button, the manager will have to enter the name of the file in which they want the current computed tours to be saved.
+When clicking on the Save button, the manager will have to select where they want to save the file, and then enter the name of the file (*without the extension*) in which they want the current computed tours to be saved.
+
+This will generate a .uberif file.
 
 ### Restoring tours from a file
 
-When clicking on the Restore Previous Tour button, the manager will have to enter the name of the file from which they want the tours to be restored. After that, the tours will be displayed on the map.
+When clicking on the Restore button, the manager will have to select the file from which they want the tours to be restored. After that, the tours will be displayed on the map.
+
+### Saving the roadmap of the couriers in a PDF file
+
+When clicking on the Save Roadmap button, a PDF file for the couriers, containing the directions, departure and arrival time (one page for each courier) is generated in resources > output.
 
 ### Choice of an intersection
 
