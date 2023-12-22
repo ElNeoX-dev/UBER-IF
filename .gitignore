@@ -4,9 +4,6 @@
 #idea
 .idea/
 
-*.gif
-*.css 
-*.js
 
 build
 .gradle
